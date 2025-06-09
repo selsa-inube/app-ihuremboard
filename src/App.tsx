@@ -9,6 +9,7 @@ import {
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { environment } from "@config/environment";
+import { AppPage } from "@components/layout/AppPage";
 import { ErrorPage } from "@components/layout/ErrorPage";
 import { decrypt } from "@utils/encrypt";
 import { usePortalData } from "@hooks/usePortalData";
@@ -76,8 +77,8 @@ const router = createBrowserRouter(
         element={<FirstPage />}
         errorElement={<ErrorPage />}
       />
+      <Route path="/*" element={<AppPage />}></Route>
       <Route path="/logout" element={<LogOut />} />
-      <Route path="/" element={<h1>Hola mundo</h1>} />
     </>,
   ),
 );
