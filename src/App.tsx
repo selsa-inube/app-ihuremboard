@@ -15,6 +15,8 @@ import { usePortalData } from "@hooks/usePortalData";
 import { useStaffUserAccount } from "@hooks/useStaffUserAccount";
 import { useBusinessManagers } from "@hooks/useBusinessManagers";
 
+import { LoginRoutes } from "./routes/login";
+import { Login } from "./pages/login";
 import { GlobalStyles } from "./styles/global";
 import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
 import { useAppContext } from "./context/AppContext/useAppContext";
@@ -65,7 +67,7 @@ function FirstPage() {
     return <ErrorPage errorCode={1004} />;
   }
 
-  return null;
+  return <Login />;
 }
 
 const router = createBrowserRouter(
@@ -76,8 +78,8 @@ const router = createBrowserRouter(
         element={<FirstPage />}
         errorElement={<ErrorPage />}
       />
+      <Route path="*" element={<LoginRoutes />} />
       <Route path="/logout" element={<LogOut />} />
-      <Route path="/" element={<h1>Hola mundo</h1>} />
     </>,
   ),
 );
