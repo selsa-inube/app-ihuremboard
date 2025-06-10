@@ -20,6 +20,7 @@ import { Login } from "./pages/login";
 import { GlobalStyles } from "./styles/global";
 import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
 import { useAppContext } from "./context/AppContext/useAppContext";
+import { ProtectedAppPage } from "./ProtectedAppPage";
 import { AppProvider } from "./context/AppContext";
 
 function LogOut() {
@@ -45,7 +46,7 @@ function FirstPage() {
   useEffect(() => {
     if (userAccount && !userAccountLoading && !userAccountError) {
       setStaffUser(userAccount);
-      navigate("/", { replace: true });
+      navigate("/login", { replace: true });
     }
   }, [
     userAccount,
@@ -78,8 +79,9 @@ const router = createBrowserRouter(
         element={<FirstPage />}
         errorElement={<ErrorPage />}
       />
-      <Route path="*" element={<LoginRoutes />} />
+      <Route path="/login/*" element={<LoginRoutes />} />
       <Route path="/logout" element={<LogOut />} />
+      <Route path="*" element={<ProtectedAppPage />} />
     </>,
   ),
 );
