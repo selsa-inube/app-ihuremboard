@@ -134,7 +134,7 @@ function App() {
   ]);
 
   if (isLoading || isFetching || isFetchingManagers) {
-    return <LoadingApp />; // 👈 también aquí usamos el nuevo componente
+    return <LoadingApp />;
   }
 
   if (hasPortalError || hasManagersError) {
