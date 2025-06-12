@@ -1,17 +1,20 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-
+import { useNavigate, UNSAFE_NavigationContext } from "react-router-dom";
 import { LoadingAppUI } from "./interface";
+import { useContext } from "react";
 
 function LoadingApp() {
-  const navigate = useNavigate();
+  const routerContext = useContext(UNSAFE_NavigationContext);
+  const navigate = routerContext ? useNavigate() : null;
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigate("/");
-    }, 2000);
+    if (navigate) {
+      const timer = setTimeout(() => {
+        navigate("/");
+      }, 2000);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, [navigate]);
 
   return <LoadingAppUI />;

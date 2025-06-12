@@ -23,6 +23,8 @@ import { useAppContext } from "./context/AppContext/useAppContext";
 import { ProtectedAppPage } from "./ProtectedAppPage";
 import { AppProvider } from "./context/AppContext";
 
+import { LoadingApp } from "./pages/login/outlets/LoadingApp";
+
 function LogOut() {
   localStorage.clear();
   const { logout } = useAuth0();
@@ -132,7 +134,7 @@ function App() {
   ]);
 
   if (isLoading || isFetching || isFetchingManagers) {
-    return <div>Cargando...</div>;
+    return <LoadingApp />; // 👈 también aquí usamos el nuevo componente
   }
 
   if (hasPortalError || hasManagersError) {
