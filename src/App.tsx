@@ -9,16 +9,18 @@ import {
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { environment } from "@config/environment";
-import { AppPage } from "@components/layout/AppPage";
 import { ErrorPage } from "@components/layout/ErrorPage";
 import { decrypt } from "@utils/encrypt";
 import { usePortalData } from "@hooks/usePortalData";
 import { useStaffUserAccount } from "@hooks/useStaffUserAccount";
 import { useBusinessManagers } from "@hooks/useBusinessManagers";
 
+import { LoginRoutes } from "./routes/login";
+import { Login } from "./pages/login";
 import { GlobalStyles } from "./styles/global";
 import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
 import { useAppContext } from "./context/AppContext/useAppContext";
+import { ProtectedAppPage } from "./ProtectedAppPage";
 import { AppProvider } from "./context/AppContext";
 
 function LogOut() {
@@ -44,7 +46,7 @@ function FirstPage() {
   useEffect(() => {
     if (userAccount && !userAccountLoading && !userAccountError) {
       setStaffUser(userAccount);
-      navigate("/", { replace: true });
+      navigate("/login", { replace: true });
     }
   }, [
     userAccount,
@@ -66,7 +68,7 @@ function FirstPage() {
     return <ErrorPage errorCode={1004} />;
   }
 
-  return null;
+  return <Login />;
 }
 
 const router = createBrowserRouter(
@@ -77,8 +79,9 @@ const router = createBrowserRouter(
         element={<FirstPage />}
         errorElement={<ErrorPage />}
       />
-      <Route path="/*" element={<AppPage />}></Route>
+      <Route path="/login/*" element={<LoginRoutes />} />
       <Route path="/logout" element={<LogOut />} />
+      <Route path="*" element={<ProtectedAppPage />} />
     </>,
   ),
 );
