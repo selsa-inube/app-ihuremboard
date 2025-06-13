@@ -22,6 +22,7 @@ import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
 import { useAppContext } from "./context/AppContext/useAppContext";
 import { ProtectedAppPage } from "./ProtectedAppPage";
 import { AppProvider } from "./context/AppContext";
+import { RequestsRoutes } from "./routes/requests";
 
 function LogOut() {
   localStorage.clear();
@@ -80,6 +81,7 @@ const router = createBrowserRouter(
         errorElement={<ErrorPage />}
       />
       <Route path="/login/*" element={<LoginRoutes />} />
+      <Route path="/*" element={<RequestsRoutes />} />
       <Route path="/logout" element={<LogOut />} />
       <Route path="*" element={<ProtectedAppPage />} />
     </>,
