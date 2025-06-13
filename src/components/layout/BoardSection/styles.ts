@@ -38,6 +38,7 @@ const StyledBoardSection = styled.div<IStyledBoardSection>`
     margin-right: ${({ $isTablet }) => ($isTablet ? "20px" : "0px")};
   }
 `;
+
 const StyledCollapseIcon = styled.div<IStyledCollapseIcon>`
   display: flex;
   transition: all 500ms ease;

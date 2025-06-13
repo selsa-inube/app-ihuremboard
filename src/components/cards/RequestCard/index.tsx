@@ -60,10 +60,10 @@ const RequestCard = (props: RequestCardProps) => {
           </Stack>
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">
-              Responsable
+              Nombre de empleado
             </Text>
             <Text size="medium" appearance="gray">
-              {hasResponsible ? responsible : "Sin responsable"}
+              {hasResponsible ? responsible : "Sin nombre de empleado"}
             </Text>
           </Stack>
         </Stack>

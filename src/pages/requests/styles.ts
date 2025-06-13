@@ -28,11 +28,13 @@ interface ISearchContainer {
 }
 
 const StyledBoardContainer = styled.div<IBoardContainer>`
-  flex-direction: ${({ $isTablet }) => ($isTablet ? "row" : "column")};
   display: grid;
   grid-template-columns: ${({ $isTablet }) =>
     $isTablet ? "1fr" : "repeat(auto-fit, minmax(200px, 1fr))"};
   width: 100%;
+  max-width: 1200px; /* este es el ancho máximo que va a tener tu contenedor */
+  margin-left: auto;
+  margin-right: auto;
   border-top: 1px solid
     ${({ theme }) =>
       theme?.palette?.neutral?.N900 || inube.palette.neutral.N900};

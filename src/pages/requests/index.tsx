@@ -47,8 +47,8 @@ function Requests() {
 
   const { data } = useHumanResourceRequests<IRequest>(
     formatHumanResourceRequests,
-    undefined,
   );
+
   const debouncedSearchTerm = useDebouncedSearch(searchTerm);
   useOutsideClick(menuRef, isMenuOpen, () => setIsMenuOpen(false));
 
