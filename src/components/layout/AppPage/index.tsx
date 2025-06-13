@@ -26,7 +26,6 @@ const renderLogo = (imgUrl: string, clientName: string) => {
     </StyledContentImg>
   );
 };
-
 function AppPage() {
   const { user, logoUrl, selectedClient, businessUnits, setSelectedClient } =
     useAppContext();
