@@ -9,7 +9,6 @@ import {
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { environment } from "@config/environment";
-import { LoadingApp } from "@pages/login/outlets/LoadingApp";
 import { ErrorPage } from "@components/layout/ErrorPage";
 import { decrypt } from "@utils/encrypt";
 import { usePortalData } from "@hooks/usePortalData";
@@ -23,6 +22,7 @@ import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
 import { useAppContext } from "./context/AppContext/useAppContext";
 import { ProtectedAppPage } from "./ProtectedAppPage";
 import { AppProvider } from "./context/AppContext";
+import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
 
 function LogOut() {
   localStorage.clear();
@@ -62,7 +62,7 @@ function FirstPage() {
   }
 
   if (userAccountLoading) {
-    return <div>Cargando!!...</div>;
+    return <LoadingAppUI />;
   }
 
   if (userAccountError || !userAccount) {
@@ -133,7 +133,7 @@ function App() {
   ]);
 
   if (isLoading || isFetching || isFetchingManagers) {
-    return <LoadingApp />;
+    return <LoadingAppUI />;
   }
 
   if (hasPortalError || hasManagersError) {
