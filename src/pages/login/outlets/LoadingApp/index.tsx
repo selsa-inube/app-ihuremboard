@@ -8,13 +8,13 @@ function LoadingApp() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/employees/select-employee");
+      navigate("/");
     }, 2000);
 
     return () => clearTimeout(timer);
   }, [navigate]);
 
-  return <LoadingAppUI inLogin />;
+  return <LoadingAppUI />;
 }
 
 export { LoadingApp };
