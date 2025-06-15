@@ -22,6 +22,7 @@ import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
 import { useAppContext } from "./context/AppContext/useAppContext";
 import { ProtectedAppPage } from "./ProtectedAppPage";
 import { AppProvider } from "./context/AppContext";
+import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
 
 function LogOut() {
   localStorage.clear();
@@ -61,7 +62,7 @@ function FirstPage() {
   }
 
   if (userAccountLoading) {
-    return <div>Cargando!!...</div>;
+    return <LoadingAppUI />;
   }
 
   if (userAccountError || !userAccount) {
@@ -132,7 +133,7 @@ function App() {
   ]);
 
   if (isLoading || isFetching || isFetchingManagers) {
-    return <div>Cargando...</div>;
+    return <LoadingAppUI />;
   }
 
   if (hasPortalError || hasManagersError) {

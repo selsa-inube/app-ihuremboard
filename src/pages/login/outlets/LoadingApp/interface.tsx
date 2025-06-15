@@ -2,9 +2,20 @@ import { Stack, Text, Spinner } from "@inubekit/inubekit";
 
 import { spacing } from "@design/tokens/spacing";
 
-function LoadingAppUI() {
+interface LoadingAppUIProps {
+  inLogin?: boolean;
+}
+
+function LoadingAppUI(props: LoadingAppUIProps) {
+  const { inLogin = false } = props;
   return (
-    <Stack gap={spacing.s200} direction="column">
+    <Stack
+      gap={spacing.s200}
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      height={inLogin ? "auto" : "100vh"}
+    >
       <Stack direction="column">
         <Text type="title" textAlign="center">
           Cargando la aplicación
@@ -14,7 +25,7 @@ function LoadingAppUI() {
         </Text>
       </Stack>
       <Stack alignItems="center" direction="column">
-        <Spinner size="large" appearance="primary" transparent={false} />
+        <Spinner size="large" />
       </Stack>
     </Stack>
   );
