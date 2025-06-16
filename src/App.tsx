@@ -16,13 +16,14 @@ import { useStaffUserAccount } from "@hooks/useStaffUserAccount";
 import { useBusinessManagers } from "@hooks/useBusinessManagers";
 
 import { LoginRoutes } from "./routes/login";
+import { RequestsRoutes } from "./routes/requests";
 import { Login } from "./pages/login";
 import { GlobalStyles } from "./styles/global";
 import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
 import { useAppContext } from "./context/AppContext/useAppContext";
 import { ProtectedAppPage } from "./ProtectedAppPage";
 import { AppProvider } from "./context/AppContext";
-import { RequestsRoutes } from "./routes/requests";
+import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
 
 function LogOut() {
   localStorage.clear();
@@ -62,7 +63,7 @@ function FirstPage() {
   }
 
   if (userAccountLoading) {
-    return <div>Cargando!!...</div>;
+    return <LoadingAppUI />;
   }
 
   if (userAccountError || !userAccount) {
@@ -81,7 +82,7 @@ const router = createBrowserRouter(
         errorElement={<ErrorPage />}
       />
       <Route path="/login/*" element={<LoginRoutes />} />
-      <Route path="/*" element={<RequestsRoutes />} />
+      <Route path="/requests/*" element={<RequestsRoutes />} />
       <Route path="/logout" element={<LogOut />} />
       <Route path="*" element={<ProtectedAppPage />} />
     </>,
@@ -134,7 +135,7 @@ function App() {
   ]);
 
   if (isLoading || isFetching || isFetchingManagers) {
-    return <div>Cargando...</div>;
+    return <LoadingAppUI />;
   }
 
   if (hasPortalError || hasManagersError) {
