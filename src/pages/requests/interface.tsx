@@ -24,6 +24,7 @@ import {
   StyledMenuContainer,
   StyledMenuButton,
   StyledMenuIconContainer,
+  StyledLayoutContainer,
 } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { RequestsNav } from "./config/nav.config";
@@ -129,14 +130,14 @@ function RequestsUI(props: RequestsUIProps) {
     selectedStatusFilters: { value: string }[],
   ) => {
     return sectionInformation.filter(
-      ({ id, title, requestDate, responsible }) => {
+      ({ id, title, requestDate, employeeName }) => {
         const titleTransformed = getRequestTypeTitle(title);
 
         const matchesSearch = [
           id,
           titleTransformed,
           requestDate,
-          responsible,
+          employeeName,
         ].some((field) =>
           field?.toString().toLowerCase().includes(debouncedSearchTerm),
         );
@@ -194,208 +195,215 @@ function RequestsUI(props: RequestsUIProps) {
   };
 
   return (
-    <AppMenu
-      appName={appName ?? ""}
-      appRoute={appRoute ?? []}
-      navigatePage={navigatePage ?? ""}
-      isMobile={isMobile}
-    >
-      <SearchContainer $isTablet={isTablet}>
-        <Stack gap={spacing.s150} direction="column" width="100%">
-          <Stack
-            direction="row"
-            gap={spacing.s150}
-            padding={
-              isTablet
-                ? `${spacing.s0} ${spacing.s0} ${spacing.s150} ${spacing.s0}`
-                : spacing.s0
-            }
-          >
-            <Input
-              id="seeker"
-              placeholder="Palabra clave"
-              iconAfter={<MdSearch size={20} />}
-              size="compact"
-              fullwidth={isTablet}
-              onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-            />
-            {isTablet && (
-              <>
-                <StyledMenuIconContainer>
-                  <Icon
-                    appearance="dark"
-                    icon={<MdMoreVert />}
-                    cursorHover
-                    parentHover={false}
-                    disabled={false}
-                    spacing="narrow"
-                    variant="empty"
-                    size="24px"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsMenuOpen(!isMenuOpen);
-                    }}
-                  />
-                </StyledMenuIconContainer>
-                {isMenuOpen && (
-                  <StyledMenuContainer
-                    $isTablet={isTablet}
-                    $isMobile={isMobile}
-                    ref={menuRef}
-                  >
-                    <StyledMenuButton onClick={openFilterModal}>
-                      <Icon
-                        appearance="primary"
-                        icon={<MdOutlineFilterAlt />}
-                        spacing="narrow"
-                        variant="empty"
-                        size="24px"
-                      />
-                      <Text size="medium">
-                        Filtrar ({selectedFilters.length})
-                      </Text>
-                      <Stack
-                        margin={`${spacing.s0} ${spacing.s0} ${spacing.s0} ${spacing.s300}`}
-                      >
+    <StyledLayoutContainer>
+      <AppMenu
+        appName={appName ?? ""}
+        appRoute={appRoute ?? []}
+        navigatePage={navigatePage ?? ""}
+        isMobile={isMobile}
+      >
+        <SearchContainer $isTablet={isTablet}>
+          <Stack gap={spacing.s150} direction="column" width="100%">
+            <Stack
+              direction="row"
+              gap={spacing.s150}
+              padding={
+                isTablet
+                  ? `${spacing.s0} ${spacing.s0} ${spacing.s150} ${spacing.s0}`
+                  : spacing.s0
+              }
+            >
+              <Input
+                id="seeker"
+                placeholder="Palabra clave"
+                iconAfter={<MdSearch size={20} />}
+                size="compact"
+                fullwidth={isTablet}
+                onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+              />
+              {isTablet && (
+                <>
+                  <StyledMenuIconContainer>
+                    <Icon
+                      appearance="dark"
+                      icon={<MdMoreVert />}
+                      cursorHover
+                      parentHover={false}
+                      disabled={false}
+                      spacing="narrow"
+                      variant="empty"
+                      size="24px"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsMenuOpen(!isMenuOpen);
+                      }}
+                    />
+                  </StyledMenuIconContainer>
+                  {isMenuOpen && (
+                    <StyledMenuContainer
+                      $isTablet={isTablet}
+                      $isMobile={isMobile}
+                      ref={menuRef}
+                    >
+                      <StyledMenuButton onClick={openFilterModal}>
                         <Icon
-                          icon={<MdClear />}
-                          size="18px"
-                          cursorHover
-                          appearance="dark"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            closeFilterModal();
-                            setIsMenuOpen(false);
-                          }}
+                          appearance="primary"
+                          icon={<MdOutlineFilterAlt />}
+                          spacing="narrow"
+                          variant="empty"
+                          size="24px"
                         />
-                      </Stack>
-                    </StyledMenuButton>
-                  </StyledMenuContainer>
-                )}
-              </>
+                        <Text size="medium">
+                          Filtrar ({selectedFilters.length})
+                        </Text>
+                        <Stack
+                          margin={`${spacing.s0} ${spacing.s0} ${spacing.s0} ${spacing.s300}`}
+                        >
+                          <Icon
+                            icon={<MdClear />}
+                            size="18px"
+                            cursorHover
+                            appearance="dark"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              closeFilterModal();
+                              setIsMenuOpen(false);
+                            }}
+                          />
+                        </Stack>
+                      </StyledMenuButton>
+                    </StyledMenuContainer>
+                  )}
+                </>
+              )}
+            </Stack>
+
+            {!isTablet && (
+              <StyledRequestsContainer $isTablet={isTablet}>
+                <SelectedFilters
+                  onRemove={handleRemove}
+                  filters={selectedFilters.map((filter) => ({
+                    id: filter.id,
+                    label: filter.label,
+                    type: statusOptions.some(
+                      (status) => status.value === filter.value,
+                    )
+                      ? "status"
+                      : "assignment",
+                    count: getFilterCount(filter),
+                  }))}
+                />
+                <Button
+                  appearance="gray"
+                  iconBefore={<MdOutlineFilterAltOff />}
+                  type="button"
+                  spacing="wide"
+                  variant="outlined"
+                  disabled={selectedFilters.length === 0}
+                  onClick={() => setSelectedFilters([])}
+                >
+                  Quitar
+                </Button>
+                <Button
+                  appearance="primary"
+                  iconBefore={<MdOutlineFilterAlt />}
+                  type="button"
+                  spacing="wide"
+                  variant="outlined"
+                  onClick={openFilterModal}
+                >
+                  Filtrar
+                </Button>
+              </StyledRequestsContainer>
             )}
           </Stack>
+        </SearchContainer>
 
-          {!isTablet && (
-            <StyledRequestsContainer $isTablet={isTablet}>
-              <SelectedFilters
-                onRemove={handleRemove}
-                filters={selectedFilters.map((filter) => ({
-                  id: filter.id,
-                  label: filter.label,
-                  type: statusOptions.some(
-                    (status) => status.value === filter.value,
-                  )
-                    ? "status"
-                    : "assignment",
-                  count: getFilterCount(filter),
-                }))}
-              />
-              <Button
-                appearance="gray"
-                iconBefore={<MdOutlineFilterAltOff />}
-                type="button"
-                spacing="wide"
-                variant="outlined"
-                disabled={selectedFilters.length === 0}
-                onClick={() => setSelectedFilters([])}
-              >
-                Quitar
-              </Button>
-              <Button
-                appearance="primary"
-                iconBefore={<MdOutlineFilterAlt />}
-                type="button"
-                spacing="wide"
-                variant="outlined"
-                onClick={openFilterModal}
-              >
-                Filtrar
-              </Button>
-            </StyledRequestsContainer>
-          )}
-        </Stack>
-      </SearchContainer>
-
-      {isFilterModalOpen && (
-        <FilterRequestModal
-          portalId="portal"
-          assignmentOptions={assignmentOptions}
-          statusOptions={statusOptions}
-          onCloseModal={closeFilterModal}
-          onClearFilters={() => setSelectedFilters([])}
-          onSubmit={handleApplyFilters}
-          selectedFilters={selectedFilters.map((filter) => ({
-            ...filter,
-            count: getFilterCount(filter),
-          }))}
-          onRemoveFilter={handleRemove}
-        />
-      )}
-
-      <StyledBoardContainer $isTablet={isTablet}>
-        {boardSections.map(
-          ({ value, sectionTitle, sectionBackground, sectionInformation }) => {
-            const filteredRequests = filterRequests(
-              sectionInformation,
-              value,
-              debouncedSearchTerm,
-              selectedAssignmentFilters,
-              selectedStatusFilters,
-            );
-            return (
-              <BoardSection
-                key={sectionTitle}
-                sectionTitle={sectionTitle}
-                sectionBackground={sectionBackground}
-                orientation={isTablet ? "horizontal" : "vertical"}
-                sectionInformation={filteredRequests}
-                errorLoadingPins={false}
-                searchRequestValue={debouncedSearchTerm}
-                selectedFilters={selectedFilters}
-              >
-                {filteredRequests.length > 0 ? (
-                  filteredRequests.map(
-                    ({
-                      id,
-                      title,
-                      requestDate,
-                      responsible,
-                      hasResponsible,
-                    }) => (
-                      <RequestCard
-                        key={id}
-                        id={id}
-                        title={getRequestTypeTitle(title)}
-                        requestDate={requestDate}
-                        responsible={responsible}
-                        hasResponsible={hasResponsible}
-                        onclick={() => {
-                          const requestTypeTitle = getRequestTypeTitle(title);
-                          if (RequestsNav[requestTypeTitle]) {
-                            navigate(
-                              `${RequestsNav[requestTypeTitle].path}/${id}`,
-                              {
-                                state: { section: value },
-                              },
-                            );
-                          }
-                        }}
-                      />
-                    ),
-                  )
-                ) : (
-                  <Text>
-                    No hay solicitudes que coincidan con los filtros
-                    seleccionados.
-                  </Text>
-                )}
-              </BoardSection>
-            );
-          },
+        {isFilterModalOpen && (
+          <FilterRequestModal
+            portalId="portal"
+            assignmentOptions={assignmentOptions}
+            statusOptions={statusOptions}
+            onCloseModal={closeFilterModal}
+            onClearFilters={() => setSelectedFilters([])}
+            onSubmit={handleApplyFilters}
+            selectedFilters={selectedFilters.map((filter) => ({
+              ...filter,
+              count: getFilterCount(filter),
+            }))}
+            onRemoveFilter={handleRemove}
+          />
         )}
-      </StyledBoardContainer>
-    </AppMenu>
+
+        <StyledBoardContainer $isTablet={isTablet}>
+          {boardSections.map(
+            ({
+              value,
+              sectionTitle,
+              sectionBackground,
+              sectionInformation,
+            }) => {
+              const filteredRequests = filterRequests(
+                sectionInformation,
+                value,
+                debouncedSearchTerm,
+                selectedAssignmentFilters,
+                selectedStatusFilters,
+              );
+              return (
+                <BoardSection
+                  key={sectionTitle}
+                  sectionTitle={sectionTitle}
+                  sectionBackground={sectionBackground}
+                  orientation={isTablet ? "horizontal" : "vertical"}
+                  sectionInformation={filteredRequests}
+                  errorLoadingPins={false}
+                  searchRequestValue={debouncedSearchTerm}
+                  selectedFilters={selectedFilters}
+                >
+                  {filteredRequests.length > 0 ? (
+                    filteredRequests.map(
+                      ({
+                        id,
+                        title,
+                        requestDate,
+                        employeeName,
+                        hasEmployeeName,
+                      }) => (
+                        <RequestCard
+                          key={id}
+                          id={id}
+                          title={getRequestTypeTitle(title)}
+                          requestDate={requestDate}
+                          employeeName={employeeName}
+                          hasEmployeeName={hasEmployeeName}
+                          onclick={() => {
+                            const requestTypeTitle = getRequestTypeTitle(title);
+                            if (RequestsNav[requestTypeTitle]) {
+                              navigate(
+                                `${RequestsNav[requestTypeTitle].path}/${id}`,
+                                {
+                                  state: { section: value },
+                                },
+                              );
+                            }
+                          }}
+                        />
+                      ),
+                    )
+                  ) : (
+                    <Text>
+                      No hay solicitudes que coincidan con los filtros
+                      seleccionados.
+                    </Text>
+                  )}
+                </BoardSection>
+              );
+            },
+          )}
+        </StyledBoardContainer>
+      </AppMenu>
+    </StyledLayoutContainer>
   );
 }
 

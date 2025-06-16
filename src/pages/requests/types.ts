@@ -10,8 +10,8 @@ interface IRequest {
   id: string;
   title: string;
   requestDate: string;
-  responsible: string;
-  hasResponsible: boolean;
+  employeeName: string;
+  hasEmployeeName?: boolean;
   status: "pending" | "inProgress" | "completed";
 }
 
@@ -32,8 +32,8 @@ interface RequestItem {
   id: string;
   title: string;
   requestDate: string;
-  responsible: string;
-  hasResponsible?: boolean;
+  employeeName: string;
+  hasEmployeeName?: boolean;
   status: string;
 }
 

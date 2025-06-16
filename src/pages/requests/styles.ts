@@ -27,6 +27,13 @@ interface ISearchContainer {
   $isTablet: boolean;
 }
 
+const StyledLayoutContainer = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
 const StyledBoardContainer = styled.div<IBoardContainer>`
   display: grid;
   grid-template-columns: ${({ $isTablet }) =>
@@ -110,4 +117,5 @@ export {
   StyledMenuContainer,
   StyledMenuButton,
   StyledMenuIconContainer,
+  StyledLayoutContainer,
 };

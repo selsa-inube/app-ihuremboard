@@ -1,15 +1,13 @@
 import { Stack, Text, Divider } from "@inubekit/inubekit";
-
 import { spacing } from "@design/tokens/spacing";
-
 import { StyledRequestCard, StyledTitle } from "./styles";
 
 interface RequestCardProps {
   id: string;
   title: string;
   requestDate: string;
-  responsible?: string;
-  hasResponsible?: boolean;
+  employeeName?: string;
+  hasEmployeeName?: boolean;
   onclick?: () => void;
 }
 
@@ -18,8 +16,8 @@ const RequestCard = (props: RequestCardProps) => {
     id,
     title,
     requestDate,
-    responsible = "Sin responsable",
-    hasResponsible = false,
+    employeeName = "Sin nombre de empleado",
+    hasEmployeeName = false,
     onclick,
   } = props;
 
@@ -63,7 +61,7 @@ const RequestCard = (props: RequestCardProps) => {
               Nombre de empleado
             </Text>
             <Text size="medium" appearance="gray">
-              {hasResponsible ? responsible : "Sin nombre de empleado"}
+              {hasEmployeeName ? employeeName : "Sin nombre de empleado"}
             </Text>
           </Stack>
         </Stack>
