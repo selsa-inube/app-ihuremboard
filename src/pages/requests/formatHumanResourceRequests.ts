@@ -33,6 +33,7 @@ export const formatHumanResourceRequests = (
       responsible: req.userNameInCharge,
       hasResponsible,
       status,
+      employeeName: req.employeeName,
     };
   });
 };

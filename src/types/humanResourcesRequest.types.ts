@@ -18,6 +18,7 @@ export interface TaskToManageHumanResourceRequest {
 
 export interface HumanResourceRequest {
   employeeId: string;
+  employeeName: string;
   humanResourceRequestData: HumanResourceRequestData;
   humanResourceRequestDate: string;
   humanResourceRequestDescription: string;
