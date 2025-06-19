@@ -16,6 +16,7 @@ import { useStaffUserAccount } from "@hooks/useStaffUserAccount";
 import { useBusinessManagers } from "@hooks/useBusinessManagers";
 
 import { LoginRoutes } from "./routes/login";
+import { RequestsRoutes } from "./routes/requests";
 import { Login } from "./pages/login";
 import { GlobalStyles } from "./styles/global";
 import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
@@ -81,6 +82,7 @@ const router = createBrowserRouter(
         errorElement={<ErrorPage />}
       />
       <Route path="/login/*" element={<LoginRoutes />} />
+      <Route path="/" element={<RequestsRoutes />} />
       <Route path="/logout" element={<LogOut />} />
       <Route path="*" element={<ProtectedAppPage />} />
     </>,
