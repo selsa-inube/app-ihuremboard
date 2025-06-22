@@ -26,8 +26,6 @@ import {
   StyledMenuIconContainer,
   StyledLayoutContainer,
 } from "./styles";
-import { useNavigate } from "react-router-dom";
-import { RequestsNav } from "./config/nav.config";
 
 export interface RequestsUIProps {
   appName?: string;
@@ -44,6 +42,7 @@ export interface RequestsUIProps {
   debouncedSearchTerm: string;
   selectedFilters: IOption[];
   boardSections: BoardSections[];
+  isLoadingRequests: boolean;
   openFilterModal: () => void;
   closeFilterModal: () => void;
   setIsMenuOpen: (isOpen: boolean) => void;
@@ -71,6 +70,7 @@ function RequestsUI(props: RequestsUIProps) {
     openFilterModal,
     closeFilterModal,
     setIsMenuOpen,
+    isLoadingRequests,
   } = props;
 
   function getRequestTypeTitle(type: string): string {
@@ -79,8 +79,6 @@ function RequestsUI(props: RequestsUIProps) {
     }
     return "Tipo desconocido";
   }
-
-  const navigate = useNavigate();
 
   const handleRemove = (filterIdToRemove: string) => {
     setSelectedFilters(
@@ -350,6 +348,7 @@ function RequestsUI(props: RequestsUIProps) {
                 selectedAssignmentFilters,
                 selectedStatusFilters,
               );
+
               return (
                 <BoardSection
                   key={sectionTitle}
@@ -360,34 +359,18 @@ function RequestsUI(props: RequestsUIProps) {
                   errorLoadingPins={false}
                   searchRequestValue={debouncedSearchTerm}
                   selectedFilters={selectedFilters}
+                  isLoading={isLoadingRequests}
                 >
                   {filteredRequests.length > 0 ? (
                     filteredRequests.map(
-                      ({
-                        id,
-                        title,
-                        requestDate,
-                        employeeName,
-                        hasEmployeeName,
-                      }) => (
+                      ({ id, title, requestDate, employeeId }) => (
                         <RequestCard
                           key={id}
                           id={id}
                           title={getRequestTypeTitle(title)}
                           requestDate={requestDate}
-                          employeeName={employeeName}
-                          hasEmployeeName={hasEmployeeName}
-                          onclick={() => {
-                            const requestTypeTitle = getRequestTypeTitle(title);
-                            if (RequestsNav[requestTypeTitle]) {
-                              navigate(
-                                `${RequestsNav[requestTypeTitle].path}/${id}`,
-                                {
-                                  state: { section: value },
-                                },
-                              );
-                            }
-                          }}
+                          employeeId={employeeId}
+                          hasEmployeeName={true}
                         />
                       ),
                     )
