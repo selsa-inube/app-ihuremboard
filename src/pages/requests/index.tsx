@@ -45,7 +45,7 @@ function Requests() {
   const isTablet = useMediaQuery("(max-width: 1280px)");
   const isMobile = useMediaQuery("(max-width: 490px)");
 
-  const { data } = useHumanResourceRequests<IRequest>(
+  const { data, isLoading } = useHumanResourceRequests<IRequest>(
     formatHumanResourceRequests,
   );
 
@@ -102,6 +102,7 @@ function Requests() {
       closeFilterModal={closeFilterModal}
       setIsMenuOpen={setIsMenuOpen}
       boardSections={boardSections}
+      isLoadingRequests={isLoading}
     />
   );
 }
