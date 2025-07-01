@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Outlet } from "react-router-dom";
 import { Grid, Header, useMediaQuery, Icon } from "@inubekit/inubekit";
 import { MdOutlineChevronRight } from "react-icons/md";
 
@@ -13,6 +14,8 @@ import {
   StyledLogo,
   StyledCollapseIcon,
   StyledCollapse,
+  StyledMain,
+  StyledScrollableContainer,
 } from "./styles";
 
 const renderLogo = (imgUrl: string, clientName: string) => {
@@ -26,6 +29,7 @@ const renderLogo = (imgUrl: string, clientName: string) => {
     </StyledContentImg>
   );
 };
+
 function AppPage() {
   const { user, logoUrl, selectedClient, businessUnits, setSelectedClient } =
     useAppContext();
@@ -62,6 +66,7 @@ function AppPage() {
           }}
           menu={userMenu}
         />
+
         <StyledCollapseIcon
           $collapse={collapse}
           ref={collapseMenuRef}
@@ -75,6 +80,7 @@ function AppPage() {
             cursorHover
           />
         </StyledCollapseIcon>
+
         {collapse && (
           <StyledCollapse ref={businessUnitChangeRef}>
             <BusinessUnitChange
@@ -84,6 +90,12 @@ function AppPage() {
             />
           </StyledCollapse>
         )}
+
+        <StyledScrollableContainer>
+          <StyledMain>
+            <Outlet />
+          </StyledMain>
+        </StyledScrollableContainer>
       </Grid>
     </StyledAppPage>
   );
