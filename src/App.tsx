@@ -9,6 +9,7 @@ import {
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { environment } from "@config/environment";
+import { AppPage } from "@components/layout/AppPage";
 import { ErrorPage } from "@components/layout/ErrorPage";
 import { decrypt } from "@utils/encrypt";
 import { usePortalData } from "@hooks/usePortalData";
@@ -21,7 +22,6 @@ import { Login } from "./pages/login";
 import { GlobalStyles } from "./styles/global";
 import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
 import { useAppContext } from "./context/AppContext/useAppContext";
-import { ProtectedAppPage } from "./ProtectedAppPage";
 import { AppProvider } from "./context/AppContext";
 import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
 
@@ -82,9 +82,13 @@ const router = createBrowserRouter(
         errorElement={<ErrorPage />}
       />
       <Route path="/login/*" element={<LoginRoutes />} />
-      <Route path="/" element={<RequestsRoutes />} />
       <Route path="/logout" element={<LogOut />} />
-      <Route path="*" element={<ProtectedAppPage />} />
+
+      <Route path="/" element={<AppPage />}>
+        <Route index element={<RequestsRoutes />} />
+      </Route>
+
+      <Route path="*" element={<ErrorPage />} />
     </>,
   ),
 );

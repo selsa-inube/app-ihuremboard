@@ -13,6 +13,11 @@ const StyledAppPage = styled.div`
   box-sizing: border-box;
 `;
 
+const StyledScrollableContainer = styled.div`
+  overflow-y: auto;
+  height: 100%;
+`;
+
 const StyledContainer = styled.div`
   display: inherit;
   overflow: hidden;
@@ -24,8 +29,6 @@ const StyledContainer = styled.div`
 
 const StyledMain = styled.main`
   box-sizing: border-box;
-  width: 100%;
-  max-width: 1192px;
   padding-bottom: ${spacing.s100};
 `;
 
@@ -73,4 +76,5 @@ export {
   StyledCollapse,
   StyledCollapseIcon,
   StyledMainScroll,
+  StyledScrollableContainer,
 };
