@@ -362,18 +362,15 @@ function RequestsUI(props: RequestsUIProps) {
                   isLoading={isLoadingRequests}
                 >
                   {filteredRequests.length > 0 ? (
-                    filteredRequests.map(
-                      ({ id, title, requestDate, employeeId }) => (
-                        <RequestCard
-                          key={id}
-                          id={id}
-                          title={getRequestTypeTitle(title)}
-                          requestDate={requestDate}
-                          employeeId={employeeId}
-                          hasEmployeeName={true}
-                        />
-                      ),
-                    )
+                    filteredRequests.map(({ id, title, requestDate }) => (
+                      <RequestCard
+                        key={id}
+                        id={id}
+                        title={getRequestTypeTitle(title)}
+                        requestDate={requestDate}
+                        hasEmployeeName={true}
+                      />
+                    ))
                   ) : (
                     <Text>
                       No hay solicitudes que coincidan con los filtros
