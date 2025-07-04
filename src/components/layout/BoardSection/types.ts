@@ -23,6 +23,7 @@ interface IBoardSectionProps {
   searchRequestValue: string;
   selectedFilters: IOption[];
   children?: React.ReactNode;
+  isLoading?: boolean;
 }
 export type {
   SectionBackground,
