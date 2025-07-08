@@ -9,7 +9,6 @@ import {
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { environment } from "@config/environment";
-import { AppPage } from "@components/layout/AppPage";
 import { ErrorPage } from "@components/layout/ErrorPage";
 import { decrypt } from "@utils/encrypt";
 import { usePortalData } from "@hooks/usePortalData";
@@ -17,12 +16,13 @@ import { useStaffUserAccount } from "@hooks/useStaffUserAccount";
 import { useBusinessManagers } from "@hooks/useBusinessManagers";
 
 import { LoginRoutes } from "./routes/login";
-import { RequestsRoutes } from "./routes/requests";
 import { Login } from "./pages/login";
 import { GlobalStyles } from "./styles/global";
 import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
 import { useAppContext } from "./context/AppContext/useAppContext";
 import { AppProvider } from "./context/AppContext";
+import { ProtectedAppPage } from "./ProtectedAppPage";
+import { RequestsRoutes } from "./routes/requests";
 import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
 
 function LogOut() {
@@ -48,7 +48,7 @@ function FirstPage() {
   useEffect(() => {
     if (userAccount && !userAccountLoading && !userAccountError) {
       setStaffUser(userAccount);
-      navigate("/login", { replace: true });
+      navigate(`/login/${userAccount}/checking-credentials`, { replace: true });
     }
   }, [
     userAccount,
@@ -82,13 +82,11 @@ const router = createBrowserRouter(
         errorElement={<ErrorPage />}
       />
       <Route path="/login/*" element={<LoginRoutes />} />
-      <Route path="/logout" element={<LogOut />} />
-
-      <Route path="/" element={<AppPage />}>
+      <Route path="/" element={<ProtectedAppPage />}>
         <Route index element={<RequestsRoutes />} />
       </Route>
-
-      <Route path="*" element={<ErrorPage />} />
+      <Route path="logout" element={<LogOut />} />
+      <Route path="*" element={<ProtectedAppPage />} />
     </>,
   ),
 );
