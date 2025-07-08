@@ -55,8 +55,13 @@ interface IOptionWithSubOptions {
   useCaseName: string;
 }
 
+interface IUseCasesByRole {
+  listOfUseCasesByRoles: string[];
+}
+
 export type {
   IStaffPortalByBusinessManager,
   IStaffUserAccount,
   IOptionWithSubOptions,
+  IUseCasesByRole,
 };

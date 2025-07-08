@@ -4,6 +4,7 @@ import {
   IOptionWithSubOptions,
   IStaffPortalByBusinessManager,
   IStaffUserAccount,
+  IUseCasesByRole,
 } from "@ptypes/staffPortalBusiness.types";
 import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
 import { Employee } from "@ptypes/employeePortalConsultation.types";
@@ -67,4 +68,6 @@ export interface IAppContextType {
   setOptionForCustomerPortal: React.Dispatch<
     React.SetStateAction<IOptionWithSubOptions[] | null>
   >;
+  useCasesByRole: IUseCasesByRole[];
+  setUseCasesByRole: React.Dispatch<React.SetStateAction<IUseCasesByRole[]>>;
 }
