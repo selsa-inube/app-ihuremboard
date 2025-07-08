@@ -35,6 +35,7 @@ interface RequestItem {
   employeeName: string;
   hasEmployeeName?: boolean;
   status: string;
+  employeeId?: string;
 }
 
 type Status = "pending" | "inProgress" | "completed";
