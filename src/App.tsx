@@ -16,13 +16,13 @@ import { useStaffUserAccount } from "@hooks/useStaffUserAccount";
 import { useBusinessManagers } from "@hooks/useBusinessManagers";
 
 import { LoginRoutes } from "./routes/login";
-import { RequestsRoutes } from "./routes/requests";
 import { Login } from "./pages/login";
 import { GlobalStyles } from "./styles/global";
 import { BusinessUnitsLoader } from "./BusinessUnitsLoader";
 import { useAppContext } from "./context/AppContext/useAppContext";
-import { ProtectedAppPage } from "./ProtectedAppPage";
 import { AppProvider } from "./context/AppContext";
+import { ProtectedAppPage } from "./ProtectedAppPage";
+import { RequestsRoutes } from "./routes/requests";
 import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
 
 function LogOut() {
@@ -48,7 +48,7 @@ function FirstPage() {
   useEffect(() => {
     if (userAccount && !userAccountLoading && !userAccountError) {
       setStaffUser(userAccount);
-      navigate("/login", { replace: true });
+      navigate(`/login/${userAccount}/checking-credentials`, { replace: true });
     }
   }, [
     userAccount,
@@ -82,8 +82,10 @@ const router = createBrowserRouter(
         errorElement={<ErrorPage />}
       />
       <Route path="/login/*" element={<LoginRoutes />} />
-      <Route path="/" element={<RequestsRoutes />} />
-      <Route path="/logout" element={<LogOut />} />
+      <Route path="/" element={<ProtectedAppPage />}>
+        <Route index element={<RequestsRoutes />} />
+      </Route>
+      <Route path="logout" element={<LogOut />} />
       <Route path="*" element={<ProtectedAppPage />} />
     </>,
   ),
