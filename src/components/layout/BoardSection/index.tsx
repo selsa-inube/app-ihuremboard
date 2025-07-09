@@ -1,5 +1,5 @@
 import { MdOutlineChevronRight } from "react-icons/md";
-import { Stack, Icon, Text } from "@inubekit/inubekit";
+import { Stack, Icon, Text, SkeletonLine } from "@inubekit/inubekit";
 
 import {
   StyledBoardSection,
@@ -16,6 +16,7 @@ function BoardSection(props: IBoardSectionProps) {
     orientation = "vertical",
     sectionInformation,
     children,
+    isLoading = false,
   } = props;
 
   const { collapse, handleCollapse, getNoDataMessage, isTablet, isMobile } =
@@ -76,7 +77,11 @@ function BoardSection(props: IBoardSectionProps) {
           justifyContent={isMobile || isTablet ? "center" : "flex-start"}
           gap="20px"
         >
-          {!isEmpty ? (
+          {isLoading ? (
+            Array.from({ length: 3 }).map((_, index) => (
+              <SkeletonLine key={index} width="100%" animated />
+            ))
+          ) : !isEmpty ? (
             children
           ) : (
             <StyledEmptyContainer>
