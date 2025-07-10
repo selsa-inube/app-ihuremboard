@@ -34,6 +34,7 @@ interface IStaffUserAccount {
   staffId: string;
   staffName: string;
   userAccount: string;
+  selectedBusinessUnitCode?: string;
 }
 
 interface ISubOption {

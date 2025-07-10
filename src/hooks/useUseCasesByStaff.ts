@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
 import { IUseCasesByRole } from "@ptypes/staffPortalBusiness.types";
 import { useErrorFlag } from "./useErrorFlag";
@@ -26,7 +25,18 @@ export const useUseCasesByStaff = ({
 
   useEffect(() => {
     const fetchUseCases = async () => {
+      console.log("Ejecutando fetch con:", {
+        userName,
+        businessManagerCode,
+        businessUnitCode,
+      });
+
       if (!userName || !businessManagerCode || !businessUnitCode) {
+        console.warn("FALTAN PARÁMETROS para obtener casos de uso", {
+          userName,
+          businessManagerCode,
+          businessUnitCode,
+        });
         setHasError(400);
         setUseCases([]);
         return;
@@ -43,11 +53,9 @@ export const useUseCasesByStaff = ({
         );
 
         setUseCases(data);
-
-        if (onUseCasesLoaded) {
-          onUseCasesLoaded(data);
-        }
-      } catch {
+        onUseCasesLoaded?.(data);
+      } catch (error) {
+        console.error("Error al obtener los casos de uso:", error);
         setHasError(500);
         setFlagShown(true);
       } finally {

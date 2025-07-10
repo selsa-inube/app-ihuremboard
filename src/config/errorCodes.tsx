@@ -107,6 +107,13 @@ const errorCodes: Record<number, ErrorDetail> = {
       "Si el problema persiste, contacta al equipo de soporte técnico.",
     ],
   },
+  1008: {
+    whatWentWrong: ["El usuario no tiene privilegios para acceder al portal."],
+    howToFix: [
+      "Asegúrate de tener los permisos adecuados.",
+      "Contacta al administrador si crees que esto es un error.",
+    ],
+  },
 };
 
 export { errorCodes };
