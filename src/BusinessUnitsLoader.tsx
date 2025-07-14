@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import { useBusinessUnits } from "@hooks/useBusinessUnits";
-import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
 import { ErrorPage } from "@components/layout/ErrorPage";
 import { useAppContext } from "./context/AppContext/useAppContext";
+import { useUseCasesByStaff } from "@hooks/useUseCasesByStaff";
 
 interface BusinessUnitsLoaderProps {
   portalCode: string;
@@ -19,9 +19,7 @@ export function BusinessUnitsLoader({ portalCode }: BusinessUnitsLoaderProps) {
   } = useAppContext();
 
   const { logout } = useAuth0();
-
   const [shouldLogout, setShouldLogout] = useState(false);
-  const [hasValidated, setHasValidated] = useState(false);
 
   const userAccount = staffUser?.identificationDocumentNumber || "";
   const businessManagerCode = staffUser?.businessManagerCode || "";
@@ -34,12 +32,6 @@ export function BusinessUnitsLoader({ portalCode }: BusinessUnitsLoaderProps) {
     staffUser.staffByBusinessUnitAndRole.length > 0 &&
     !!selectedBusinessUnitCode;
 
-  const canValidateUseCases =
-    !!userAccount &&
-    !!businessManagerCode &&
-    hasBusinessUnitSelected &&
-    !hasValidated;
-
   const {
     businessUnitsData,
     hasError: businessUnitsError,
@@ -49,42 +41,22 @@ export function BusinessUnitsLoader({ portalCode }: BusinessUnitsLoaderProps) {
   const isStaffUserReady =
     !!staffUser && Object.keys(staffUser).length > 0 && hasBusinessUnitSelected;
 
-  useEffect(() => {
-    const validateAccess = async () => {
-      try {
-        const useCases = await getUseCasesByStaff(
-          userAccount,
-          businessManagerCode,
-          selectedBusinessUnitCode,
-        );
-
-        const hasPortalAccess = useCases.some((useCase) =>
-          useCase.listOfUseCasesByRoles?.includes("PortalBoardAccess"),
-        );
-
-        if (!hasPortalAccess) {
-          setShouldLogout(true);
-        } else {
-          setUseCasesByRole(useCases);
-        }
-      } catch (error) {
-        console.error("❌ Error al validar casos de uso", error);
-        setShouldLogout(true);
-      } finally {
-        setHasValidated(true);
-      }
-    };
-
-    if (canValidateUseCases) {
-      validateAccess();
-    }
-  }, [
-    userAccount,
+  useUseCasesByStaff({
+    userName: userAccount,
     businessManagerCode,
-    selectedBusinessUnitCode,
-    canValidateUseCases,
-    setUseCasesByRole,
-  ]);
+    businessUnitCode: selectedBusinessUnitCode,
+    onUseCasesLoaded: (data) => {
+      const hasPortalAccess = data.some((useCase) =>
+        useCase.listOfUseCasesByRoles?.includes("PortalBoardAccess"),
+      );
+
+      if (!hasPortalAccess) {
+        setShouldLogout(true);
+      } else {
+        setUseCasesByRole(data);
+      }
+    },
+  });
 
   useEffect(() => {
     if (shouldLogout) {
