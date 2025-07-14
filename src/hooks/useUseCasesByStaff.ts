@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
 import { IUseCasesByRole } from "@ptypes/staffPortalBusiness.types";
-import { useErrorFlag } from "./useErrorFlag";
 
 interface UseCasesProps {
   userName: string;
   businessManagerCode: string;
   businessUnitCode: string;
-  onUseCasesLoaded?: (useCases: IUseCasesByRole[]) => void;
+  onUseCasesLoaded?: (useCases: IUseCasesByRole) => void;
 }
 
 export const useUseCasesByStaff = ({
@@ -16,29 +15,19 @@ export const useUseCasesByStaff = ({
   businessUnitCode,
   onUseCasesLoaded,
 }: UseCasesProps) => {
-  const [useCases, setUseCases] = useState<IUseCasesByRole[]>([]);
+  const [useCases, setUseCases] = useState<IUseCasesByRole>({
+    listOfUseCasesByRoles: [],
+  });
   const [loading, setLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<number | null>(null);
-  const [flagShown, setFlagShown] = useState(false);
-
-  useErrorFlag(flagShown);
 
   useEffect(() => {
     const fetchUseCases = async () => {
-      console.log("Ejecutando fetch con:", {
-        userName,
-        businessManagerCode,
-        businessUnitCode,
-      });
-
       if (!userName || !businessManagerCode || !businessUnitCode) {
-        console.warn("FALTAN PARÁMETROS para obtener casos de uso", {
-          userName,
-          businessManagerCode,
-          businessUnitCode,
-        });
         setHasError(400);
-        setUseCases([]);
+        setUseCases({
+          listOfUseCasesByRoles: [],
+        });
         return;
       }
 
@@ -46,6 +35,7 @@ export const useUseCasesByStaff = ({
       setHasError(null);
 
       try {
+        console.log("Fetching use cases...");
         const data = await getUseCasesByStaff(
           userName,
           businessManagerCode,
@@ -57,14 +47,12 @@ export const useUseCasesByStaff = ({
       } catch (error) {
         console.error("Error al obtener los casos de uso:", error);
         setHasError(500);
-        setFlagShown(true);
       } finally {
         setLoading(false);
       }
     };
-
     fetchUseCases();
-  }, [userName, businessManagerCode, businessUnitCode, onUseCasesLoaded]);
+  }, []);
 
   return { useCases, loading, hasError };
 };

@@ -1,68 +1,49 @@
-import {
-  environment,
-  fetchTimeoutServices,
-  maxRetriesServices,
-} from "@config/environment";
+import { environment, fetchTimeoutServices } from "@config/environment";
 import { IUseCasesByRole } from "@ptypes/staffPortalBusiness.types";
-import { mapUseCasesApiToEntities } from "./mappers";
+import { mapUseCasesApiToEntity } from "./mappers";
 
 const getUseCasesByStaff = async (
   userName: string,
   businessManagerCode: string,
   businessUnitCode: string,
-): Promise<IUseCasesByRole[]> => {
-  const maxRetries = maxRetriesServices;
+): Promise<IUseCasesByRole> => {
   const fetchTimeout = fetchTimeoutServices;
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
 
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
+    const options: RequestInit = {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        "X-Action": "SearchUseCaseForStaff",
+        "X-User-Name": userName,
+      },
+      signal: controller.signal,
+    };
+    const params = new URLSearchParams({
+      businessManagerCode,
+      businessUnitCode,
+    });
 
-      const options: RequestInit = {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          "X-Action": "SearchUseCaseForStaff",
-          "X-User-Name": userName,
-        },
-        signal: controller.signal,
-      };
+    const res = await fetch(
+      `${environment.IVITE_ISTAFF_QUERY_PROCESS_SERVICE}/staffs?${params.toString()}`,
+      options,
+    );
 
-      const params = new URLSearchParams({
-        businessManagerCode,
-        businessUnitCode,
-      });
+    clearTimeout(timeoutId);
 
-      const res = await fetch(
-        `${environment.IVITE_ISTAFF_QUERY_PROCESS_SERVICE}/staffs/AC:SearchUseCaseForStaff?${params.toString()}`,
-        options,
-      );
+    const data = await res.json();
 
-      clearTimeout(timeoutId);
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw {
-          message: "Error al obtener los casos de uso del usuario",
-          status: res.status,
-          data,
-        };
-      }
-
-      return mapUseCasesApiToEntities(data);
-    } catch (error) {
-      console.error(`Intento ${attempt} fallido:`, error);
-      if (attempt === maxRetries) {
-        throw new Error(
-          "Todos los intentos fallaron. No se pudieron obtener los casos de uso del usuario.",
-        );
-      }
+    if (!res.ok) {
+      return {} as IUseCasesByRole;
     }
+    return mapUseCasesApiToEntity(data);
+  } catch {
+    throw new Error(
+      "Todos los intentos fallaron. No se pudieron obtener los casos de uso del usuario.",
+    );
   }
-
-  return [];
 };
 
 export { getUseCasesByStaff };
