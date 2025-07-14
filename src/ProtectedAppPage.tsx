@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AppPage } from "@components/layout/AppPage";
+import { ErrorPage } from "@components/layout/ErrorPage";
 import { useAppContext } from "@context/AppContext/useAppContext";
 import { useUseCasesByStaff } from "@hooks/useUseCasesByStaff";
 import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
@@ -9,7 +10,8 @@ import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
 function ProtectedAppPage() {
   const { selectedClient, user, businessManagers } = useAppContext();
   const navigate = useNavigate();
-  console.log("ProtectedAppPage - selectedClient:", selectedClient);
+  const [errorCode, setErrorCode] = useState<number | null>(null);
+
   const { useCases, loading } = useUseCasesByStaff({
     userName: user?.id ?? "",
     businessUnitCode: selectedClient?.name ?? "",
@@ -28,13 +30,13 @@ function ProtectedAppPage() {
       selectedClient &&
       !useCases?.listOfUseCasesByRoles?.includes("PortalBoardAccess")
     ) {
-      navigate("/logout", { replace: true });
+      setErrorCode(1008);
     }
-  }, [loading, selectedClient]);
+  }, [loading, selectedClient, useCases]);
 
-  if (loading) {
-    return <LoadingAppUI />;
-  }
+  if (loading) return <LoadingAppUI />;
+
+  if (errorCode !== null) return <ErrorPage errorCode={errorCode} />;
 
   return <AppPage />;
 }
