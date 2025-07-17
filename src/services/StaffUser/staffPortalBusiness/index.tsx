@@ -8,38 +8,41 @@ const getUseCasesByStaff = async (
   businessUnitCode: string,
 ): Promise<IUseCasesByRole> => {
   const fetchTimeout = fetchTimeoutServices;
+
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
 
-    const options: RequestInit = {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        "X-Action": "SearchUseCaseForStaff",
-        "X-User-Name": userName,
-      },
-      signal: controller.signal,
+    const headers = {
+      "Content-Type": "application/json; charset=UTF-8",
+      "X-Action": "SearchUseCaseForStaff",
+      "X-User-Name": userName,
     };
+
     const params = new URLSearchParams({
       businessManagerCode,
       businessUnitCode,
     });
 
-    const res = await fetch(
-      `${environment.IVITE_ISTAFF_QUERY_PROCESS_SERVICE}/staffs?${params.toString()}`,
-      options,
-    );
+    const url = `${environment.IVITE_ISTAFF_QUERY_PROCESS_SERVICE}/staffs?${params.toString()}`;
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers,
+      signal: controller.signal,
+    });
 
     clearTimeout(timeoutId);
 
     const data = await res.json();
 
     if (!res.ok) {
-      return {} as IUseCasesByRole;
+      return { listOfUseCasesByRoles: [] };
     }
+
     return mapUseCasesApiToEntity(data);
-  } catch {
+  } catch (error) {
+    console.error("❌ Error al obtener casos de uso:", error);
     throw new Error(
       "Todos los intentos fallaron. No se pudieron obtener los casos de uso del usuario.",
     );

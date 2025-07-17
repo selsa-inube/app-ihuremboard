@@ -18,16 +18,14 @@ export const useUseCasesByStaff = ({
   const [useCases, setUseCases] = useState<IUseCasesByRole>({
     listOfUseCasesByRoles: [],
   });
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchUseCases = async () => {
       if (!userName || !businessManagerCode || !businessUnitCode) {
         setHasError(400);
-        setUseCases({
-          listOfUseCasesByRoles: [],
-        });
+        setUseCases({ listOfUseCasesByRoles: [] });
         return;
       }
 
@@ -35,7 +33,6 @@ export const useUseCasesByStaff = ({
       setHasError(null);
 
       try {
-        console.log("Fetching use cases...");
         const data = await getUseCasesByStaff(
           userName,
           businessManagerCode,
@@ -45,14 +42,15 @@ export const useUseCasesByStaff = ({
         setUseCases(data);
         onUseCasesLoaded?.(data);
       } catch (error) {
-        console.error("Error al obtener los casos de uso:", error);
+        console.error("❌ Error al obtener casos de uso:", error);
         setHasError(500);
       } finally {
         setLoading(false);
       }
     };
+
     fetchUseCases();
-  }, []);
+  }, [userName, businessManagerCode, businessUnitCode]);
 
   return { useCases, loading, hasError };
 };
