@@ -68,7 +68,20 @@ function AppProvider(props: AppProviderProps) {
     }
   }, [staffUser]);
 
-  const [useCasesByRole, setUseCasesByRole] = useState<IUseCasesByRole[]>([]);
+  const [useCasesByRole, setUseCasesByRole] = useState<IUseCasesByRole[]>(
+    () => {
+      const stored = localStorage.getItem("useCasesByRole");
+      return stored ? JSON.parse(stored) : [];
+    },
+  );
+
+  useEffect(() => {
+    if (useCasesByRole && useCasesByRole.length > 0) {
+      localStorage.setItem("useCasesByRole", JSON.stringify(useCasesByRole));
+    } else {
+      localStorage.removeItem("useCasesByRole");
+    }
+  }, [useCasesByRole]);
 
   const [provisionedPortal, setProvisionedPortal] =
     useState<IStaffPortalByBusinessManager>(dataPortal);
