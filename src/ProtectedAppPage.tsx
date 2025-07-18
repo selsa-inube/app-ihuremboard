@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react"; // ✅ Importa Auth0
 
 import { AppPage } from "@components/layout/AppPage";
 import { ErrorPage } from "@components/layout/ErrorPage";
@@ -11,6 +12,7 @@ function ProtectedAppPage() {
   const { selectedClient, user, businessManagers, setUseCasesByRole } =
     useAppContext();
 
+  const { logout } = useAuth0(); // ✅ Obtiene la función de logout de Auth0
   const navigate = useNavigate();
   const [errorCode, setErrorCode] = useState<number | null>(null);
   const [sessionCleared, setSessionCleared] = useState(false);
@@ -48,9 +50,15 @@ function ProtectedAppPage() {
         sessionStorage.clear();
         setSessionCleared(true);
         setErrorCode(1008);
+
+        logout({
+          logoutParams: {
+            returnTo: window.location.origin,
+          },
+        });
       }
     }
-  }, [loading, selectedClient, useCases, sessionCleared]);
+  }, [loading, selectedClient, useCases, sessionCleared, logout]);
 
   if (loading) return <LoadingAppUI />;
   if (errorCode !== null) return <ErrorPage errorCode={errorCode} />;
