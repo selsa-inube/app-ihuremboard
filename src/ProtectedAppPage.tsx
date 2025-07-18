@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react"; // ✅ Importa Auth0
+import { useAuth0 } from "@auth0/auth0-react";
 
 import { AppPage } from "@components/layout/AppPage";
 import { ErrorPage } from "@components/layout/ErrorPage";
@@ -12,7 +12,7 @@ function ProtectedAppPage() {
   const { selectedClient, user, businessManagers, setUseCasesByRole } =
     useAppContext();
 
-  const { logout } = useAuth0(); // ✅ Obtiene la función de logout de Auth0
+  const { logout } = useAuth0();
   const navigate = useNavigate();
   const [errorCode, setErrorCode] = useState<number | null>(null);
   const [sessionCleared, setSessionCleared] = useState(false);
@@ -30,6 +30,13 @@ function ProtectedAppPage() {
           listOfUseCasesByRoles: useCases.listOfUseCasesByRoles,
         },
       ]);
+      // ✅ Guarda también en localStorage si es necesario
+      localStorage.setItem(
+        "useCasesByRole",
+        JSON.stringify([
+          { listOfUseCasesByRoles: useCases.listOfUseCasesByRoles },
+        ]),
+      );
     }
   }, [loading, useCases, setUseCasesByRole]);
 
@@ -46,16 +53,20 @@ function ProtectedAppPage() {
       !useCases?.listOfUseCasesByRoles?.includes("PortalBoardAccess")
     ) {
       if (!sessionCleared) {
-        localStorage.clear();
-        sessionStorage.clear();
         setSessionCleared(true);
         setErrorCode(1008);
 
-        logout({
-          logoutParams: {
-            returnTo: window.location.origin,
-          },
-        });
+        // ✅ Limpieza segura antes de cerrar sesión
+        localStorage.removeItem("useCasesByRole");
+        sessionStorage.clear();
+
+        setTimeout(() => {
+          logout({
+            logoutParams: {
+              returnTo: window.location.origin,
+            },
+          });
+        }, 100); // Espera corta para asegurar que se borre
       }
     }
   }, [loading, selectedClient, useCases, sessionCleared, logout]);
