@@ -18,7 +18,7 @@ const ClientsWithProps = (props: ClientsProps) => {
 
   const clients: IClient[] = (props.businessUnits ?? []).map((unit) => ({
     id: unit.businessUnitPublicCode,
-    name: unit.descriptionUse,
+    name: unit.businessUnitPublicCode,
     sigla: unit.abbreviatedName,
     logo: unit.urlLogo,
   }));
@@ -59,7 +59,7 @@ const ClientsWithContext = () => {
 
   const clients: IClient[] = (context.businessUnits ?? []).map((unit) => ({
     id: unit.businessUnitPublicCode,
-    name: unit.descriptionUse,
+    name: unit.businessUnitPublicCode,
     sigla: unit.abbreviatedName,
     logo: unit.urlLogo,
   }));

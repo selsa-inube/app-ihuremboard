@@ -41,7 +41,7 @@ function AppPage() {
   const handleLogoClick = (businessUnit: IBusinessUnit) => {
     setSelectedClient({
       id: businessUnit.businessUnitPublicCode,
-      name: businessUnit.descriptionUse,
+      name: businessUnit.businessUnitPublicCode,
       sigla: businessUnit.abbreviatedName,
       logo: businessUnit.urlLogo,
     });
