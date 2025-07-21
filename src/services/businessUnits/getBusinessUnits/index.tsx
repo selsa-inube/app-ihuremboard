@@ -36,19 +36,18 @@ const getBusinessUnitsForOfficer = async (
         method: "GET",
         headers: {
           ...headers,
-          "X-Action": "SearchBusinessUnitsForAnOfficerLinpar",
+          "X-Action": "SearchBusinessUnitsForAnOfficer",
         },
         signal: controller.signal,
       };
 
-      const url = `${environment.IVITE_ISTAFF_QUERY_PROCESS_SERVICE}/business-units-portal-staff/${userAccount.substring(0, 20)}/${portalPublicCode}`;
+      const url = `${environment.IVITE_ISTAFF_QUERY_PROCESS_SERVICE}/business-units-portal-staff/${userAccount}/${portalPublicCode}`;
       const res = await fetch(url, options);
 
-      if (res.status === 204) {
-        return [];
-      }
+      const data = res.status !== 204 ? await res.json() : [];
 
-      const data = await res.json();
+      console.log("🔎 Status de respuesta:", res.status);
+      console.log("🔎 Data cruda del backend:", data);
 
       if (!res.ok) {
         throw new BusinessUnitsError(
@@ -58,7 +57,15 @@ const getBusinessUnitsForOfficer = async (
         );
       }
 
-      return data.map(mapBusinessUnitsApiToEntity);
+      const mappedData = data.map(mapBusinessUnitsApiToEntity).filter(Boolean);
+
+      if (mappedData.length === 0) {
+        throw new Error(
+          "No se encontraron unidades de negocio para este usuario.",
+        );
+      }
+
+      return mappedData;
     } catch (error: unknown) {
       if (attempt === maxRetries) {
         const errorMsg = error instanceof Error ? error.message : String(error);

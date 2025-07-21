@@ -82,7 +82,7 @@ const router = createBrowserRouter(
         errorElement={<ErrorPage />}
       />
       <Route path="/login/*" element={<LoginRoutes />} />
-      <Route path="/" element={<ProtectedAppPage />}>
+      <Route path="*/" element={<ProtectedAppPage />}>
         <Route index element={<RequestsRoutes />} />
       </Route>
       <Route path="logout" element={<LogOut />} />
