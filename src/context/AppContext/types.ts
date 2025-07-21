@@ -55,7 +55,10 @@ export interface IAppContextType {
   staffUser: IStaffUserAccount;
   setStaffUser: React.Dispatch<React.SetStateAction<IStaffUserAccount>>;
   businessManagers: BusinessManager | null;
-  setBusinessManagers: React.Dispatch<React.SetStateAction<BusinessManager>>;
+  setBusinessManagers: React.Dispatch<
+    React.SetStateAction<BusinessManager | null>
+  >;
+
   businessUnits: IBusinessUnit[];
   setBusinessUnits: React.Dispatch<React.SetStateAction<IBusinessUnit[]>>;
   businessUnitsIsFetching: boolean;

@@ -9,8 +9,15 @@ import { useUseCasesByStaff } from "@hooks/useUseCasesByStaff";
 import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
 
 function ProtectedAppPage() {
-  const { selectedClient, user, businessManagers, setUseCasesByRole } =
-    useAppContext();
+  const {
+    selectedClient,
+    user,
+    businessManagers,
+    setUseCasesByRole,
+    setSelectedClient,
+    setUser,
+    setBusinessManagers,
+  } = useAppContext();
 
   const { logout } = useAuth0();
   const navigate = useNavigate();
@@ -23,20 +30,26 @@ function ProtectedAppPage() {
     businessManagerCode: businessManagers?.publicCode ?? "",
   });
 
+  const resetAppContext = () => {
+    setUseCasesByRole([]);
+    setSelectedClient(null);
+    setUser(null);
+    setBusinessManagers(null);
+  };
+
   useEffect(() => {
-    if (!loading && useCases?.listOfUseCasesByRoles?.length > 0) {
-      setUseCasesByRole([
+    if (
+      !loading &&
+      useCases?.listOfUseCasesByRoles?.length > 0 &&
+      useCases.listOfUseCasesByRoles.includes("PortalBoardAccess")
+    ) {
+      const rolesData = [
         {
           listOfUseCasesByRoles: useCases.listOfUseCasesByRoles,
         },
-      ]);
-      // ✅ Guarda también en localStorage si es necesario
-      localStorage.setItem(
-        "useCasesByRole",
-        JSON.stringify([
-          { listOfUseCasesByRoles: useCases.listOfUseCasesByRoles },
-        ]),
-      );
+      ];
+      setUseCasesByRole(rolesData);
+      localStorage.setItem("useCasesByRole", JSON.stringify(rolesData));
     }
   }, [loading, useCases, setUseCasesByRole]);
 
@@ -56,17 +69,17 @@ function ProtectedAppPage() {
         setSessionCleared(true);
         setErrorCode(1008);
 
-        // ✅ Limpieza segura antes de cerrar sesión
-        localStorage.removeItem("useCasesByRole");
-        sessionStorage.clear();
-
         setTimeout(() => {
+          localStorage.removeItem("useCasesByRole");
+          sessionStorage.clear();
+          resetAppContext();
+
           logout({
             logoutParams: {
               returnTo: window.location.origin,
             },
           });
-        }, 100); // Espera corta para asegurar que se borre
+        }, 5000);
       }
     }
   }, [loading, selectedClient, useCases, sessionCleared, logout]);
