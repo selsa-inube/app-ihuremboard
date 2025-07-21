@@ -9,7 +9,7 @@ import {
 import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
 import { Employee } from "@ptypes/employeePortalConsultation.types";
 
-interface BusinessManager {
+export interface BusinessManager {
   id: string;
   publicCode: string;
   language: string;

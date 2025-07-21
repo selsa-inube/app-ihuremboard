@@ -70,7 +70,7 @@ function ProtectedAppPage() {
         setErrorCode(1008);
 
         setTimeout(() => {
-          localStorage.removeItem("useCasesByRole");
+          localStorage.clear();
           sessionStorage.clear();
           resetAppContext();
 
