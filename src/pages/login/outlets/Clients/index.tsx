@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAppContext } from "@context/AppContext/useAppContext";
@@ -27,14 +27,6 @@ const ClientsWithProps = (props: ClientsProps) => {
     ref: null,
     value: true,
   });
-
-  // ✅ Si solo hay una unidad, la selecciona automáticamente y navega
-  useEffect(() => {
-    if (clients.length === 1 && props.handleClientChange) {
-      props.handleClientChange(clients[0]);
-      navigate("/login/loading-app");
-    }
-  }, [clients, props.handleClientChange, navigate]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setClientLocal({ ref: event.target, value: false });
@@ -76,14 +68,6 @@ const ClientsWithContext = () => {
     ref: null,
     value: true,
   });
-
-  // ✅ Si solo hay una unidad, la selecciona automáticamente y navega
-  useEffect(() => {
-    if (clients.length === 1 && context.handleClientChange) {
-      context.handleClientChange(clients[0]);
-      navigate("/login/loading-app");
-    }
-  }, [clients, context.handleClientChange, navigate]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setClientLocal({ ref: event.target, value: false });
