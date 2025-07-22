@@ -4,7 +4,6 @@ import { AppPage } from "@components/layout/AppPage";
 import { useAppContext } from "@context/AppContext/useAppContext";
 import { useUseCasesByStaff } from "@hooks/useUseCasesByStaff";
 import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
-import { useLocation } from "react-router-dom";
 import { useSignOut } from "@hooks/useSignOut";
 
 function ProtectedAppPage() {
@@ -16,7 +15,6 @@ function ProtectedAppPage() {
     businessUnitCode: selectedClient?.name ?? "",
     businessManagerCode: businessManagers?.publicCode ?? "",
   });
-  const location = useLocation();
   const { signOut } = useSignOut();
   useEffect(() => {
     if (!selectedClient) {
@@ -27,7 +25,6 @@ function ProtectedAppPage() {
   useEffect(() => {
     if (selectedClient && !loading) {
       if (!useCases?.listOfUseCasesByRoles?.includes("PortalBoardAccess")) {
-        location.state = { code: 1008, signOut: true };
         signOut("/error?code=1008");
       } else {
         setUseCasesByRole(useCases.listOfUseCasesByRoles);
