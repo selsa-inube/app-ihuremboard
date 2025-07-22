@@ -2,7 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { environment } from "@config/environment";
 
 export const useSignOut = () => {
-  const { logout } = useAuth0(); // Mover el hook al nivel superior
+  const { logout } = useAuth0();
 
   const signOut = (redirect?: string) => {
     localStorage.clear();
