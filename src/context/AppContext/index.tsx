@@ -11,7 +11,6 @@ import {
   IStaffPortalByBusinessManager,
   IOptionWithSubOptions,
   IStaffUserAccount,
-  IUseCasesByRole,
 } from "@ptypes/staffPortalBusiness.types";
 import {
   IBusinessManager,
@@ -74,12 +73,10 @@ function AppProvider(props: AppProviderProps) {
     }
   }, [staffUser]);
 
-  const [useCasesByRole, setUseCasesByRole] = useState<IUseCasesByRole[]>(
-    () => {
-      const stored = localStorage.getItem("useCasesByRole");
-      return stored ? JSON.parse(stored) : [];
-    },
-  );
+  const [useCasesByRole, setUseCasesByRole] = useState<string[]>(() => {
+    const stored = localStorage.getItem("useCasesByRole");
+    return stored ? JSON.parse(stored) : [];
+  });
 
   useEffect(() => {
     if (useCasesByRole && useCasesByRole.length > 0) {
