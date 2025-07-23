@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { Grid, Header, useMediaQuery, Icon } from "@inubekit/inubekit";
 import { MdOutlineChevronRight } from "react-icons/md";
@@ -7,6 +7,8 @@ import { userMenu } from "@config/nav.config";
 import { useAppContext } from "@context/AppContext/useAppContext";
 import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
 import { BusinessUnitChange } from "@components/inputs/BusinessUnitChange";
+import { useValidatePortalAccess } from "@hooks/useValidatePortalAccess";
+import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
 
 import {
   StyledAppPage,
@@ -35,19 +37,34 @@ function AppPage() {
   const [collapse, setCollapse] = useState(false);
   const collapseMenuRef = useRef<HTMLDivElement>(null);
   const businessUnitChangeRef = useRef<HTMLDivElement>(null);
-
   const isTablet = useMediaQuery("(max-width: 944px)");
+
+  const [validateTrigger, setValidateTrigger] = useState(!!selectedClient);
+
+  const { loading } = useValidatePortalAccess(validateTrigger);
 
   const handleLogoClick = (businessUnit: IBusinessUnit) => {
     setSelectedClient({
       id: businessUnit.businessUnitPublicCode,
-      name: businessUnit.descriptionUse,
+      name: businessUnit.businessUnitPublicCode,
       sigla: businessUnit.abbreviatedName,
       logo: businessUnit.urlLogo,
     });
 
+    setValidateTrigger(true);
     setCollapse(false);
   };
+
+  useEffect(() => {
+    if (validateTrigger) {
+      const timeout = setTimeout(() => setValidateTrigger(false), 100);
+      return () => clearTimeout(timeout);
+    }
+  }, [validateTrigger]);
+
+  if (loading || validateTrigger) {
+    return <LoadingAppUI />;
+  }
 
   const showBusinessUnitSelector = businessUnits.length > 1;
 

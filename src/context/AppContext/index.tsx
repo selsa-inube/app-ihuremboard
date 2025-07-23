@@ -10,12 +10,20 @@ import selsaLogo from "@assets/images/selsa.png";
 import {
   IStaffPortalByBusinessManager,
   IOptionWithSubOptions,
+  IStaffUserAccount,
 } from "@ptypes/staffPortalBusiness.types";
-import { IStaffUserAccount } from "@ptypes/staffPortalBusiness.types";
-import { IBusinessManager } from "@ptypes/employeePortalBusiness.types";
-import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
+import {
+  IBusinessManager,
+  IBusinessUnit,
+} from "@ptypes/employeePortalBusiness.types";
 import { Employee } from "@ptypes/employeePortalConsultation.types";
-import { IAppContextType, IPreferences, IClient } from "./types";
+import {
+  IAppContextType,
+  IPreferences,
+  IClient,
+  IUser,
+  BusinessManager,
+} from "./types";
 
 const AppContext = createContext<IAppContextType | undefined>(undefined);
 
@@ -31,16 +39,11 @@ function AppProvider(props: AppProviderProps) {
     props;
   const { user: auth0User } = useAuth0();
 
-  const [user, setUser] = useState<{
-    username: string;
-    id: string;
-    company: string;
-    urlImgPerfil: string;
-  } | null>(
+  const [user, setUser] = useState<IUser | null>(
     auth0User
       ? {
           username: auth0User.name ?? "",
-          id: "1234567890",
+          id: "0987654321",
           company: "Company Name",
           urlImgPerfil: auth0User.picture ?? "",
         }
@@ -58,15 +61,8 @@ function AppProvider(props: AppProviderProps) {
   });
 
   const [staffUser, setStaffUser] = useState<IStaffUserAccount>(() => {
-    const storedStaffUser = localStorage.getItem("staffUser");
-    if (storedStaffUser) {
-      try {
-        return JSON.parse(storedStaffUser);
-      } catch (error) {
-        console.error("Error al parsear staffUser desde localStorage", error);
-      }
-    }
-    return {} as IStaffUserAccount;
+    const stored = localStorage.getItem("staffUser");
+    return stored ? JSON.parse(stored) : ({} as IStaffUserAccount);
   });
 
   useEffect(() => {
@@ -77,30 +73,37 @@ function AppProvider(props: AppProviderProps) {
     }
   }, [staffUser]);
 
+  const [useCasesByRole, setUseCasesByRole] = useState<string[]>(() => {
+    const stored = localStorage.getItem("useCasesByRole");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  useEffect(() => {
+    if (useCasesByRole && useCasesByRole.length > 0) {
+      localStorage.setItem("useCasesByRole", JSON.stringify(useCasesByRole));
+    } else {
+      localStorage.removeItem("useCasesByRole");
+    }
+  }, [useCasesByRole]);
+
   const [provisionedPortal, setProvisionedPortal] =
     useState<IStaffPortalByBusinessManager>(dataPortal);
+
   const [businessManagers, setBusinessManagers] =
-    useState<IBusinessManager>(businessManagersData);
+    useState<BusinessManager | null>(businessManagersData);
+
   const [businessUnits, setBusinessUnits] =
     useState<IBusinessUnit[]>(businessUnitsData);
   const [businessUnitsIsFetching, setBusinessUnitsIsFetching] =
     useState<boolean>(false);
+
   const [optionForCustomerPortal, setOptionForCustomerPortal] = useState<
     IOptionWithSubOptions[] | null
   >(() => {
-    const storedOption = localStorage.getItem("optionForCustomerPortal");
-    if (storedOption) {
-      try {
-        return JSON.parse(storedOption);
-      } catch (error) {
-        console.error(
-          "Error al parsear optionForCustomerPortal desde localStorage",
-          error,
-        );
-      }
-    }
-    return null;
+    const stored = localStorage.getItem("optionForCustomerPortal");
+    return stored ? JSON.parse(stored) : null;
   });
+
   useEffect(() => {
     if (optionForCustomerPortal) {
       localStorage.setItem(
@@ -113,18 +116,8 @@ function AppProvider(props: AppProviderProps) {
   }, [optionForCustomerPortal]);
 
   const [selectedClient, setSelectedClient] = useState<IClient | null>(() => {
-    const storedClient = localStorage.getItem("selectedClient");
-    if (storedClient) {
-      try {
-        return JSON.parse(storedClient);
-      } catch (error) {
-        console.error(
-          "Error al parsear selectedClient desde localStorage",
-          error,
-        );
-      }
-    }
-    return null;
+    const stored = localStorage.getItem("selectedClient");
+    return stored ? JSON.parse(stored) : null;
   });
 
   useEffect(() => {
@@ -151,8 +144,8 @@ function AppProvider(props: AppProviderProps) {
   }, [logoUrl, preferences, user]);
 
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>(() => {
-    const storedEmployee = localStorage.getItem("selectedEmployee");
-    return storedEmployee ? JSON.parse(storedEmployee) : null;
+    const stored = localStorage.getItem("selectedEmployee");
+    return stored ? JSON.parse(stored) : null;
   });
 
   useEffect(() => {
@@ -192,6 +185,8 @@ function AppProvider(props: AppProviderProps) {
         setSelectedEmployee,
         optionForCustomerPortal,
         setOptionForCustomerPortal,
+        useCasesByRole,
+        setUseCasesByRole,
       }}
     >
       {children}

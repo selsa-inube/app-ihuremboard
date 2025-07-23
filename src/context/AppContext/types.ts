@@ -8,7 +8,7 @@ import {
 import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
 import { Employee } from "@ptypes/employeePortalConsultation.types";
 
-interface BusinessManager {
+export interface BusinessManager {
   id: string;
   publicCode: string;
   language: string;
@@ -54,7 +54,10 @@ export interface IAppContextType {
   staffUser: IStaffUserAccount;
   setStaffUser: React.Dispatch<React.SetStateAction<IStaffUserAccount>>;
   businessManagers: BusinessManager | null;
-  setBusinessManagers: React.Dispatch<React.SetStateAction<BusinessManager>>;
+  setBusinessManagers: React.Dispatch<
+    React.SetStateAction<BusinessManager | null>
+  >;
+
   businessUnits: IBusinessUnit[];
   setBusinessUnits: React.Dispatch<React.SetStateAction<IBusinessUnit[]>>;
   businessUnitsIsFetching: boolean;
@@ -67,4 +70,6 @@ export interface IAppContextType {
   setOptionForCustomerPortal: React.Dispatch<
     React.SetStateAction<IOptionWithSubOptions[] | null>
   >;
+  useCasesByRole: string[];
+  setUseCasesByRole: React.Dispatch<React.SetStateAction<string[]>>;
 }
