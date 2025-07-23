@@ -5,6 +5,7 @@ import { useHeaders } from "@hooks/useHeaders";
 
 export const useHumanResourceRequests = <T>(
   formatData: (data: HumanResourceRequest[]) => T[],
+  businessUnitId?: string,
 ) => {
   const [data, setData] = useState<T[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +17,7 @@ export const useHumanResourceRequests = <T>(
     setIsLoading(true);
     try {
       const headers = await getHeaders();
-      const requests = await getHumanResourceRequests(headers);
+      const requests = await getHumanResourceRequests(headers, businessUnitId);
       setData(formatData(requests ?? []));
       setError(null);
     } catch (err) {
@@ -33,8 +34,10 @@ export const useHumanResourceRequests = <T>(
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (businessUnitId) {
+      fetchData();
+    }
+  }, [businessUnitId]); // ✅ Ahora se recarga cuando cambia la unidad
 
   return { data, isLoading, error, refetch: fetchData };
 };

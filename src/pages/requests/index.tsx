@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useMediaQuery, IOption } from "@inubekit/inubekit";
-
+import { useAppContext } from "@context/AppContext/useAppContext";
 import { useHumanResourceRequests } from "@hooks/useHumanResourceRequests";
 
 import { formatHumanResourceRequests } from "./formatHumanResourceRequests";
@@ -46,8 +46,11 @@ function Requests() {
   const isTablet = useMediaQuery("(max-width: 1280px)");
   const isMobile = useMediaQuery("(max-width: 490px)");
 
+  const { selectedClient } = useAppContext();
+
   const { data, isLoading } = useHumanResourceRequests<IRequest>(
     formatHumanResourceRequests,
+    selectedClient?.id,
   );
 
   const debouncedSearchTerm = useDebouncedSearch(searchTerm);
@@ -82,6 +85,8 @@ function Requests() {
   }, []);
 
   const closeFilterModal = useCallback(() => setIsFilterModalOpen(false), []);
+
+  if (!selectedClient) return null;
 
   return (
     <RequestsUI
