@@ -37,7 +37,7 @@ export const useHumanResourceRequests = <T>(
     if (businessUnitId) {
       fetchData();
     }
-  }, [businessUnitId]); // ✅ Ahora se recarga cuando cambia la unidad
+  }, [businessUnitId]);
 
   return { data, isLoading, error, refetch: fetchData };
 };
