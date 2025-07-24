@@ -1,6 +1,7 @@
 import { useEffect, useRef, useMemo } from "react";
 import { useBusinessUnits } from "@hooks/useBusinessUnits";
 import { useAppContext } from "./context/AppContext/useAppContext";
+import { useSignOut } from "@hooks/useSignOut";
 
 interface BusinessUnitsLoaderProps {
   portalCode: string;
@@ -14,23 +15,28 @@ export function BusinessUnitsLoader({ portalCode }: BusinessUnitsLoaderProps) {
     setSelectedClient,
   } = useAppContext();
 
+  const { signOut } = useSignOut();
+
   const userAccount = useMemo(() => staffUser?.userAccount || "", [staffUser]);
 
-  const { businessUnitsData, hasError, isFetching } = useBusinessUnits(
-    userAccount,
-    portalCode,
-  );
+  const { businessUnitsData, hasError, codeError, isFetching } =
+    useBusinessUnits(userAccount, portalCode);
 
   const hasSetUnits = useRef(false);
+  const hasHandledError = useRef(false);
 
   useEffect(() => {
     setBusinessUnitsIsFetching(isFetching);
 
-    if (isFetching || hasError || hasSetUnits.current) {
+    if (isFetching || hasSetUnits.current || hasHandledError.current) return;
+
+    if (hasError && codeError === 1006) {
+      hasHandledError.current = true;
+      signOut("/error?code=1003");
       return;
     }
 
-    if (businessUnitsData.length > 0) {
+    if (!hasError && businessUnitsData.length > 0) {
       setBusinessUnits(businessUnitsData);
 
       if (businessUnitsData.length === 1) {
@@ -49,10 +55,12 @@ export function BusinessUnitsLoader({ portalCode }: BusinessUnitsLoaderProps) {
   }, [
     isFetching,
     hasError,
+    codeError,
     businessUnitsData,
     setBusinessUnits,
     setBusinessUnitsIsFetching,
     setSelectedClient,
+    signOut,
   ]);
 
   return null;
