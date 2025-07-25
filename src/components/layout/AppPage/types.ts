@@ -19,5 +19,13 @@ interface INav {
   title: string;
   sections: Record<string, INavSection>;
 }
+interface IBusinessUnit {
+  abbreviatedName: string;
+  businessUnitPublicCode: string;
+  descriptionUse: string;
+  firstMonthOfFiscalYear: string;
+  languageId: string;
+  urlLogo: string;
+}
 
-export type { INav, ISection };
+export type { INav, ISection, IBusinessUnit };
