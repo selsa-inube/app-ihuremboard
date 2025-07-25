@@ -6,9 +6,8 @@ import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
 import { InfoModal } from "@components/modals/InfoModal";
 import { useUseCasesByStaff } from "@hooks/useUseCasesByStaff";
 
+import { IClientLocal, IClient } from "./types";
 import { ClientsUI } from "./interface";
-import { IClientLocal } from "./types";
-import { IClient } from "./types";
 
 export interface ClientsProps {
   businessUnits?: IBusinessUnit[];
