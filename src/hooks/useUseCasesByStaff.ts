@@ -26,6 +26,7 @@ export const useUseCasesByStaff = ({
       if (!userName || !businessManagerCode || !businessUnitCode) {
         setHasError(400);
         setUseCases({ listOfUseCasesByRoles: [] });
+        setLoading(false);
         return;
       }
 
