@@ -36,7 +36,7 @@ const getBusinessUnitsForOfficer = async (
         method: "GET",
         headers: {
           ...headers,
-          "X-Action": "SearchBusinessUnitsForAnOfficerLinpar",
+          "X-Action": "SearchBusinessUnitsForAnOfficer",
         },
         signal: controller.signal,
       };
