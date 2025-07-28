@@ -6,10 +6,7 @@ import {
 
 import { mapHumanResourceRequestApiToEntity } from "./mappers";
 
-const getHumanResourceRequests = async (
-  headers: Record<string, string>,
-  businessUnitId?: string,
-) => {
+const getHumanResourceRequests = async (headers: Record<string, string>) => {
   const maxRetries = maxRetriesServices;
   const fetchTimeout = fetchTimeoutServices;
 
@@ -23,10 +20,6 @@ const getHumanResourceRequests = async (
         per_page: "500",
         sort: "desc.humanResourceRequestDate",
       });
-
-      if (businessUnitId) {
-        queryParameters.append("businessUnitPublicCode", businessUnitId);
-      }
 
       const res = await fetch(
         `${environment.IVITE_IPORTAL_EMPLOYEE_QUERY_PROCESS_SERVICE}/human-resources-requests?${queryParameters}`,
