@@ -28,8 +28,6 @@ export interface HumanResourceRequest {
   humanResourceRequestTraceabilities: HumanResourceRequestTraceability[];
   humanResourceRequestType: ERequestType;
   tasksToManageTheHumanResourcesRequests: TaskToManageHumanResourceRequest[];
-  userCodeInCharge: string;
-  userNameInCharge: string;
 }
 
 export interface IVacationGeneralInformationEntry {

@@ -23,8 +23,6 @@ const mapHumanResourceRequestApiToEntity = (
   humanResourceRequestType: item.humanResourceRequestType as ERequestType,
   employeeId: String(item.employeeId ?? ""),
   employeeName: String(item.employeeName ?? ""),
-  userCodeInCharge: String(item.userCodeInCharge ?? ""),
-  userNameInCharge: String(item.userNameInCharge ?? ""),
   humanResourceRequestTraceabilities: Array.isArray(
     item.humanResourceRequestTraceabilities,
   )
