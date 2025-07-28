@@ -18,7 +18,6 @@ export const useHumanResourceRequests = <T>(
     setIsLoading(true);
     try {
       const headers = await getHeaders();
-      console.log("X-Business-Unit:", headers["X-Business-Unit"]);
       const requests = await getHumanResourceRequests(headers);
       setData(formatData(requests ?? []));
       setError(null);
