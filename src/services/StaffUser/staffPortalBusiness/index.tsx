@@ -34,18 +34,16 @@ const getUseCasesByStaff = async (
 
     clearTimeout(timeoutId);
 
-    const text = await res.text();
-
     if (!res.ok) {
-      console.warn("Respuesta no OK:", res.status);
       return { listOfUseCasesByRoles: [] };
     }
 
-    if (!text) {
+    const contentLength = res.headers.get("content-length");
+    if (res.status === 204 || contentLength === "0") {
       return { listOfUseCasesByRoles: [] };
     }
 
-    const data = JSON.parse(text);
+    const data = await res.json();
     return mapUseCasesApiToEntity(data);
   } catch (error) {
     console.error("❌ Error al obtener casos de uso:", error);
