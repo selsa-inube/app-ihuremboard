@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { StoryFn, Meta } from "@storybook/react";
 import { Button, IOption } from "@inubekit/inubekit";
 
@@ -25,15 +25,6 @@ const story: Meta<typeof FilterRequestModal> = {
 
 const DefaultTemplate: StoryFn<FilterRequestModalProps> = (args) => {
   const [showModal, setShowModal] = useState(false);
-
-  useEffect(() => {
-    const existingPortal = document.getElementById("portal");
-    if (!existingPortal) {
-      const div = document.createElement("div");
-      div.id = "portal";
-      document.body.appendChild(div);
-    }
-  }, []);
 
   const handleShowModal = () => {
     setShowModal(!showModal);
