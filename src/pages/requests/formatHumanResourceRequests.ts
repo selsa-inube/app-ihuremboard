@@ -13,7 +13,8 @@ export const formatHumanResourceRequests = (
 
   return filtered.map((req) => {
     const statusRaw = req.humanResourceRequestStatus?.toLowerCase();
-    const hasResponsible = !!req.userCodeInCharge;
+    const hasResponsible = false;
+
     const isFinalized = ["closed", "rejected", "canceled"].includes(statusRaw);
 
     let status: Status;
@@ -30,7 +31,7 @@ export const formatHumanResourceRequests = (
       id: req.humanResourceRequestNumber,
       title: req.humanResourceRequestType,
       requestDate: formatDate(req.humanResourceRequestDate),
-      responsible: req.userNameInCharge,
+      responsible: "",
       hasResponsible,
       status,
       employeeName: req.employeeName,
