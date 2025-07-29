@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getHumanResourceRequests } from "@services/humanResourcesRequest/getHumanResourcesRequest";
 import { HumanResourceRequest } from "@ptypes/humanResourcesRequest.types";
 import { useHeaders } from "@hooks/useHeaders";
+import { useAppContext } from "@context/AppContext/useAppContext";
 
 export const useHumanResourceRequests = <T>(
   formatData: (data: HumanResourceRequest[]) => T[],
@@ -11,6 +12,7 @@ export const useHumanResourceRequests = <T>(
   const [error, setError] = useState<Error | null>(null);
 
   const { getHeaders } = useHeaders();
+  const { selectedClient } = useAppContext();
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -33,8 +35,10 @@ export const useHumanResourceRequests = <T>(
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (selectedClient?.id) {
+      fetchData();
+    }
+  }, [selectedClient?.id]);
 
   return { data, isLoading, error, refetch: fetchData };
 };

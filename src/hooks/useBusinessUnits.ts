@@ -87,14 +87,10 @@ export const useBusinessUnits = (
 
   useEffect(() => {
     if (!isFetching && hasError) {
-      if (
-        codeError === ERROR_CODE_EMPTY_DATA ||
-        codeError === ERROR_CODE_FETCH_FAILED
-      ) {
-        window.location.href = "/logout";
-      } else {
-        setFlagShown(true);
-      }
+      setFlagShown(
+        codeError !== ERROR_CODE_EMPTY_DATA &&
+          codeError !== ERROR_CODE_FETCH_FAILED,
+      );
     } else {
       setFlagShown(false);
     }

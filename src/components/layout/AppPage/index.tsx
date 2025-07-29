@@ -97,6 +97,8 @@ function AppPage() {
     return <LoadingAppUI />;
   }
 
+  const showBusinessUnitSelector = businessUnits.length > 1;
+
   return (
     <StyledAppPage>
       {localModalVisible && (
@@ -126,21 +128,23 @@ function AppPage() {
           menu={userMenu}
         />
 
-        <StyledCollapseIcon
-          $collapse={collapse}
-          ref={collapseMenuRef}
-          $isTablet={isTablet}
-          onClick={() => setCollapse(!collapse)}
-        >
-          <Icon
-            icon={<MdOutlineChevronRight />}
-            appearance="primary"
-            size="24px"
-            cursorHover
-          />
-        </StyledCollapseIcon>
+        {showBusinessUnitSelector && (
+          <StyledCollapseIcon
+            $collapse={collapse}
+            ref={collapseMenuRef}
+            $isTablet={isTablet}
+            onClick={() => setCollapse(!collapse)}
+          >
+            <Icon
+              icon={<MdOutlineChevronRight />}
+              appearance="primary"
+              size="24px"
+              cursorHover
+            />
+          </StyledCollapseIcon>
+        )}
 
-        {collapse && (
+        {collapse && showBusinessUnitSelector && (
           <StyledCollapse ref={businessUnitChangeRef}>
             <BusinessUnitChange
               businessUnits={businessUnits}
