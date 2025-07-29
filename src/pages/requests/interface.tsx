@@ -15,6 +15,7 @@ import { FilterRequestModal } from "@components/modals/FilterRequestModal";
 import { SelectedFilters } from "@components/cards/SelectedFilters";
 import { ERequestType } from "@ptypes/humanResourcesRequest.types";
 
+import { RequestsNav } from "./config/nav.config";
 import { IRoute, BoardSections, RequestItem } from "./types";
 
 import {
@@ -26,6 +27,8 @@ import {
   StyledMenuIconContainer,
   StyledLayoutContainer,
 } from "./styles";
+
+import { useNavigate } from "react-router-dom";
 
 export interface RequestsUIProps {
   appName?: string;
@@ -72,6 +75,8 @@ function RequestsUI(props: RequestsUIProps) {
     setIsMenuOpen,
     isLoadingRequests,
   } = props;
+
+  const navigate = useNavigate();
 
   function getRequestTypeTitle(type: string): string {
     if (type in ERequestType) {
@@ -369,6 +374,17 @@ function RequestsUI(props: RequestsUIProps) {
                         title={getRequestTypeTitle(title)}
                         requestDate={requestDate}
                         hasEmployeeName={true}
+                        onclick={() => {
+                          const requestTypeTitle = getRequestTypeTitle(title);
+                          if (RequestsNav[requestTypeTitle]) {
+                            navigate(
+                              `${RequestsNav[requestTypeTitle].path}/${id}`,
+                              {
+                                state: { section: value },
+                              },
+                            );
+                          }
+                        }}
                       />
                     ))
                   ) : (

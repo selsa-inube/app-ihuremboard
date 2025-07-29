@@ -3,4 +3,9 @@ const breadcrumbs = {
   url: "/",
 };
 
-export { breadcrumbs };
+const RequestsNav: Record<string, { path: string }> = {
+  "Vacaciones Pagadas": { path: "/holiday-request" },
+  "Vacaciones Disfrutadas": { path: "/holiday-request" },
+};
+
+export { breadcrumbs, RequestsNav };
