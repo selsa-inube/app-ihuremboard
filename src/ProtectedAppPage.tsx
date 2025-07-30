@@ -1,6 +1,7 @@
 import { AppPage } from "@components/layout/AppPage";
-import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
 import { useValidatePortalAccess } from "@hooks/useValidatePortalAccess";
+
+import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
 
 function ProtectedAppPage() {
   const { loading, isAuthorized } = useValidatePortalAccess(true);

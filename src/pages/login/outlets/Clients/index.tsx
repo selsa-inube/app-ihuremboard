@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAppContext } from "@context/AppContext/useAppContext";
-import { IClient } from "@context/AppContext/types";
 import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
+import { InfoModal } from "@components/modals/InfoModal";
+import { useUseCasesByStaff } from "@hooks/useUseCasesByStaff";
 
+import { IClientLocal, IClient } from "./types";
 import { ClientsUI } from "./interface";
-import { IClientLocal } from "./types";
 
 export interface ClientsProps {
   businessUnits?: IBusinessUnit[];
@@ -69,27 +70,62 @@ const ClientsWithContext = () => {
     value: true,
   });
 
+  const [selectedClient, setSelectedClient] = useState<IClient | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const { useCases, loading } = useUseCasesByStaff({
+    userName: context.user?.id ?? "",
+    businessUnitCode: selectedClient?.name ?? "",
+    businessManagerCode: context.businessManagers?.publicCode ?? "",
+  });
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setClientLocal({ ref: event.target, value: false });
-    const selectedClient = clients.find(
-      (client) => client.name === event.target.value,
-    );
-    if (selectedClient && context.handleClientChange) {
-      context.handleClientChange(selectedClient);
+    const client = clients.find((c) => c.name === event.target.value);
+
+    if (client && context.handleClientChange) {
+      context.handleClientChange(client);
+      setSelectedClient(client);
     }
   };
 
   const handleSubmit = () => {
-    navigate("/login/loading-app");
+    if (!selectedClient || loading) return;
+
+    const roles = useCases?.listOfUseCasesByRoles ?? [];
+    const hasAccess = roles.includes("PortalBoardAccess");
+
+    if (hasAccess) {
+      navigate("/login/loading-app");
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedClient(null);
   };
 
   return (
-    <ClientsUI
-      clients={clients}
-      client={clientLocal}
-      handleClientChange={handleChange}
-      handleSubmit={handleSubmit}
-    />
+    <>
+      <ClientsUI
+        clients={clients}
+        client={clientLocal}
+        handleClientChange={handleChange}
+        handleSubmit={handleSubmit}
+      />
+
+      {showModal && (
+        <InfoModal
+          title="Acceso no autorizado"
+          titleDescription="No tienes privilegios en esta unidad de negocio"
+          description="Por favor selecciona otra unidad "
+          buttonText="Cerrar"
+          onCloseModal={handleCloseModal}
+        />
+      )}
+    </>
   );
 };
 
