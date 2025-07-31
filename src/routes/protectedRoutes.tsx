@@ -1,4 +1,3 @@
-// src/router/protectedRouter.tsx
 import {
   Route,
   createBrowserRouter,

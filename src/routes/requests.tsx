@@ -1,4 +1,3 @@
-// src/routes/requests/index.tsx
 import { Route, Outlet } from "react-router-dom";
 import { Requests } from "@pages/requests";
 import { ApprovalsRoutes } from "./vacation";
