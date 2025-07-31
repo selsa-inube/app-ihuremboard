@@ -26,6 +26,10 @@ const StyledRequestCard = styled.div<IStyledRequestCard>`
     theme?.palette?.neutral?.N0 || inube.palette.neutral.N0};
   box-sizing: border-box;
   user-select: none;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const StyledTitle = styled.div<IStyledTitle>`
