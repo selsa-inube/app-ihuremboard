@@ -1,8 +1,8 @@
+// src/router/protectedRouter.tsx
 import {
   Route,
   createBrowserRouter,
   createRoutesFromElements,
-  Outlet,
 } from "react-router-dom";
 
 import { ErrorPage } from "@components/layout/ErrorPage";
@@ -11,7 +11,6 @@ import { ProtectedAppPage } from "src/ProtectedAppPage";
 import { RequestsRoutes } from "@routes/requests";
 import { FirstPage } from "@src/pages/firstPage";
 import { LogOut } from "@src/pages/logOut";
-import { ApprovalsRoutes } from "./vacation";
 
 export const protectedRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -27,13 +26,9 @@ export const protectedRouter = createBrowserRouter(
         element={<ProtectedAppPage />}
         errorElement={<ErrorPage errorCode={404} />}
       >
-        <Route index element={<RequestsRoutes />} />
-
-        <Route path="holiday-request" element={<Outlet />}>
-          {ApprovalsRoutes}
-        </Route>
+        {RequestsRoutes}
       </Route>
-      <Route path="logout" element={<LogOut />} />
+      <Route path="/logout" element={<LogOut />} />
     </>,
   ),
 );
