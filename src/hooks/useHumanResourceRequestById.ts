@@ -16,36 +16,42 @@ export const useHumanResourceRequestById = <T>(
   const { selectedClient } = useAppContext();
 
   const fetchData = async () => {
-    if (!requestId) return;
+    if (!requestId || !selectedClient?.id) {
+      console.warn("Faltan parámetros requeridos:", {
+        requestId,
+        selectedClient,
+      });
+      return;
+    }
 
     setIsLoading(true);
     try {
       const headers = await getHeaders();
+      headers["X-Business-Unit"] = selectedClient.id;
+
       const response = await getHumanResourceRequestById(requestId, headers);
+
       if (response) {
         setData(formatData(response));
       } else {
         setData(null);
       }
+
       setError(null);
     } catch (err) {
       const finalError = err instanceof Error ? err : new Error(String(err));
       setError(finalError);
       setData(null);
-      console.error(
-        `Error al obtener la solicitud por ID ${requestId}:`,
-        finalError,
-      );
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (selectedClient?.id && requestId) {
+    if (requestId && selectedClient?.id) {
       fetchData();
     }
-  }, [selectedClient?.id, requestId]);
+  }, [requestId, selectedClient?.id]);
 
   return { data, isLoading, error, refetch: fetchData };
 };
