@@ -1,24 +1,24 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useHumanResourceRequestById } from "@hooks/useHumanResourceRequestById";
+
+import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
 import { HumanResourceRequest } from "@ptypes/humanResourcesRequest.types";
 import { useAppContext } from "@context/AppContext/useAppContext";
 
 function RequestVacation() {
-  const { id } = useParams();
+  const { id: requestNumber } = useParams();
   const navigate = useNavigate();
   const { selectedClient } = useAppContext();
 
-  const shouldFetch = Boolean(id && selectedClient?.id);
+  const shouldFetch = Boolean(requestNumber && selectedClient?.id);
 
-  const { isLoading, error } =
-    useHumanResourceRequestById<HumanResourceRequest>(
-      shouldFetch ? id! : null,
-      (data) => data,
-    );
+  const { isLoading, error } = useHumanResourceRequest<HumanResourceRequest>(
+    shouldFetch ? requestNumber! : null,
+    (data) => data,
+  );
 
   useEffect(() => {
-    if (!isLoading && error?.message === "Solicitud no encontrada") {
+    if (!isLoading && error?.message === "No se encontró la solicitud.") {
       navigate("/error/404");
     }
   }, [isLoading, error, navigate]);

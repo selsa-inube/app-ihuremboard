@@ -4,10 +4,10 @@ import {
   environment,
 } from "@config/environment";
 
-import { mapHumanResourceRequestApiToEntity } from "./mappers";
+import { mapHumanResourceRequestApiToEntity } from "../mappers";
 
-const getHumanResourceRequestById = async (
-  humanResourceRequestId: string,
+const getHumanResourceRequests = async (
+  humanResourceRequestNumber: string,
   headers: Record<string, string>,
 ) => {
   const maxRetries = maxRetriesServices;
@@ -18,12 +18,16 @@ const getHumanResourceRequestById = async (
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
 
+      const queryParameters = new URLSearchParams({
+        humanResourceRequestNumber,
+      });
+
       const res = await fetch(
-        `${environment.IVITE_IHUREM_PERSISTENCE_PROCESS_SERVICE}/human-resources-requests/${humanResourceRequestId}/SearchByIdHumanResourcesRequest`,
+        `${environment.IVITE_IPORTAL_EMPLOYEE_QUERY_PROCESS_SERVICE}/human-resources-requests?${queryParameters}`,
         {
           method: "GET",
           headers: {
-            "X-Action": "SearchByIdHumanResourcesRequest",
+            "X-Action": "SearchAllHumanResourcesRequest",
             ...headers,
           },
           signal: controller.signal,
@@ -32,22 +36,27 @@ const getHumanResourceRequestById = async (
 
       clearTimeout(timeoutId);
 
+      if (res.status === 204) {
+        return null;
+      }
+
       if (!res.ok) {
         throw new Error(
-          `Error al obtener la solicitud ${humanResourceRequestId} (Status: ${res.status})`,
+          `Error al obtener la solicitud de recursos humanos (Status: ${res.status})`,
         );
       }
 
       const data = await res.json();
+
       return mapHumanResourceRequestApiToEntity(data);
     } catch (error) {
       if (attempt === maxRetries) {
         console.error(
-          "Error al obtener la solicitud de recursos humanos por ID:",
+          "Error al obtener la solicitud de recursos humanos:",
           error,
         );
         throw new Error(
-          "Todos los intentos fallaron. No se pudo obtener la solicitud por ID.",
+          "Todos los intentos fallaron. No se pudo obtener la solicitud de recursos humanos.",
         );
       }
     }
@@ -56,4 +65,4 @@ const getHumanResourceRequestById = async (
   return null;
 };
 
-export { getHumanResourceRequestById };
+export { getHumanResourceRequests };
