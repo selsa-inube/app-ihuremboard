@@ -41,15 +41,17 @@ export const useHumanResourceRequest = <T>(
         setData(formatData(response));
         setError(null);
       } else {
+        const notFoundError = new Error("No se encontró la solicitud.");
+        setError(notFoundError);
         setData(null);
-        setError(new Error("No se encontró la solicitud."));
-        setShowErrorFlag(true);
       }
     } catch (err) {
       const finalError = err instanceof Error ? err : new Error(String(err));
       setError(finalError);
       setData(null);
-      setShowErrorFlag(true);
+      if (finalError.message !== "No se encontró la solicitud.") {
+        setShowErrorFlag(true);
+      }
     } finally {
       setIsLoading(false);
     }
