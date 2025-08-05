@@ -22,7 +22,7 @@ export const useStaffUserAccount = ({
   const [hasError, setHasError] = useState<number | null>(1001);
   const [flagShown, setFlagShown] = useState(false);
 
-  useErrorFlag(flagShown);
+  useErrorFlag({ flagShown });
 
   useEffect(() => {
     const fetchUserAccount = async () => {

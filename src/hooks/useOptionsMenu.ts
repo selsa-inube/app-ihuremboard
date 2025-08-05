@@ -21,7 +21,7 @@ export function useOptionsMenu(
   const [flagShown, setFlagShown] = useState(false);
 
   const { provisionedPortal, selectedClient } = useAppContext();
-  useErrorFlag(flagShown);
+  useErrorFlag({ flagShown });
 
   useEffect(() => {
     const fetchoptionData = async () => {
