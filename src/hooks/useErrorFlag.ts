@@ -1,13 +1,21 @@
 import { useEffect } from "react";
 import { useFlag } from "@inubekit/inubekit";
 
-export const useErrorFlag = (
-  flagShown: boolean,
-  message?: string,
-  title?: string,
+interface UseErrorFlagProps {
+  flagShown: boolean;
+  message?: string;
+  title?: string;
+  isSuccess?: boolean;
+  duration?: number;
+}
+
+export const useErrorFlag = ({
+  flagShown,
+  message,
+  title,
   isSuccess = false,
-  duration?: number,
-) => {
+  duration,
+}: UseErrorFlagProps) => {
   const { addFlag } = useFlag();
 
   useEffect(() => {

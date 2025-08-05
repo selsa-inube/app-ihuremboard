@@ -12,7 +12,7 @@ export const usePortalData = (codeParame: string) => {
   const [isFetching, setIsFetching] = useState(true);
   const [flagShown, setFlagShown] = useState(false);
 
-  useErrorFlag(flagShown);
+  useErrorFlag({ flagShown });
 
   useEffect(() => {
     const fetchPortalData = async () => {

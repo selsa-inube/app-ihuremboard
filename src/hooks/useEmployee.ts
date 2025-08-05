@@ -19,7 +19,7 @@ export const useEmployee = (initialEmployeeId: string): UseEmployeeResult => {
   const [employeeId, setEmployeeId] = useState<string>(initialEmployeeId);
   const { getHeaders } = useHeaders();
 
-  useErrorFlag(!!error, error ?? undefined);
+  useErrorFlag({ flagShown: !!error, message: error ?? undefined });
 
   const fetchEmployee = useCallback(
     async (id = employeeId) => {

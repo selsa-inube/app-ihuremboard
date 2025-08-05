@@ -25,7 +25,7 @@ export const useBusinessUnits = (
   const [flagShown, setFlagShown] = useState(false);
   const { getHeaders } = useHeaders();
 
-  useErrorFlag(flagShown);
+  useErrorFlag({ flagShown });
 
   useEffect(() => {
     let isMounted = true;

@@ -18,7 +18,7 @@ export const useBusinessManagers = (
   const [isFetching, setIsFetching] = useState(false);
   const [flagShown, setFlagShown] = useState(false);
 
-  useErrorFlag(flagShown);
+  useErrorFlag({ flagShown });
 
   useEffect(() => {
     const fetchBusinessManagers = async () => {

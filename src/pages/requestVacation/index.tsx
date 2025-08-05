@@ -11,10 +11,7 @@ function RequestVacation() {
   const { selectedClient } = useAppContext();
   const { signOut } = useSignOut();
 
-  const { isLoading, error } = useHumanResourceRequest(
-    requestNumber,
-    (data) => data,
-  );
+  const { isLoading, error } = useHumanResourceRequest(requestNumber);
 
   useEffect(() => {
     if (!isLoading && error) {
