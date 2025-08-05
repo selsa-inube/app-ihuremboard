@@ -23,7 +23,7 @@ export const protectedRouter = createBrowserRouter(
       <Route
         path="/"
         element={<ProtectedAppPage />}
-        errorElement={<ErrorPage />}
+        errorElement={<ErrorPage errorCode={404} />}
       >
         {RequestsRoutes}
       </Route>

@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
-import { HumanResourceRequest } from "@ptypes/humanResourcesRequest.types";
 import { useAppContext } from "@context/AppContext/useAppContext";
 import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
 import { useSignOut } from "@hooks/useSignOut";
@@ -12,24 +11,19 @@ function RequestVacation() {
   const { selectedClient } = useAppContext();
   const { signOut } = useSignOut();
 
-  const shouldFetch = Boolean(requestNumber && selectedClient?.id);
-
-  const { isLoading, error } = useHumanResourceRequest<HumanResourceRequest>(
-    shouldFetch ? requestNumber! : null,
+  const { isLoading, error } = useHumanResourceRequest(
+    requestNumber,
     (data) => data,
   );
 
   useEffect(() => {
     if (!isLoading && error) {
-      if (error.message === "No se encontró la solicitud.") {
-        signOut("/error?code=404");
-      } else {
-        signOut("/error?code=500");
-      }
+      const errorCode = (error as { code?: number })?.code ?? 500;
+      signOut(`/error?code=${errorCode}`);
     }
   }, [isLoading, error, signOut]);
 
-  if (isLoading || !shouldFetch) {
+  if (isLoading || !requestNumber || !selectedClient?.id) {
     return <LoadingAppUI />;
   }
 
