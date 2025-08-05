@@ -29,7 +29,7 @@ function RequestVacation() {
     }
   }, [isLoading, error, signOut]);
 
-  if (isLoading) {
+  if (isLoading || !shouldFetch) {
     return <LoadingAppUI />;
   }
 
