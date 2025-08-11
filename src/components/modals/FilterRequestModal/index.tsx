@@ -168,7 +168,9 @@ export function FilterRequestModal(props: FilterRequestModalProps) {
                 size="compact"
                 fullwidth
                 onChange={(name, value) => {
-                  void formik.setFieldValue(name, value);
+                  setTimeout(() => {
+                    formik.setFieldValue(name, value);
+                  }, 0);
                 }}
                 options={sortedAssignmentOptions}
               />
@@ -196,7 +198,9 @@ export function FilterRequestModal(props: FilterRequestModalProps) {
                 size="compact"
                 fullwidth
                 onChange={(name, value) => {
-                  void formik.setFieldValue(name, value);
+                  setTimeout(() => {
+                    formik.setFieldValue(name, value);
+                  }, 0);
                 }}
                 options={sortedStatusOptions}
               />
