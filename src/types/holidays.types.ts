@@ -48,6 +48,6 @@ export enum HolidaysActionTypes {
 }
 
 export enum HolidayTypes {
-  EnjoyHolidays = "Disrutadas",
-  HolidayPay = "Pagadas",
+  enjoy_holidays = "Disrutadas",
+  holiday_pay = "Pagadas",
 }
