@@ -81,11 +81,11 @@ export enum ETaskStatus {
 }
 
 export enum ERequestStatus {
-  Canceled = "Cancelado",
-  Closed = "Cerrado",
-  Finished = "Finalizado",
-  InProgress = "En progreso",
-  Rejected = "Rechazado",
+  canceled = "Cancelado",
+  closed = "Cerrado",
+  finalized = "Finalizado",
+  inProgress = "En progreso",
+  rejected = "Rechazado",
 }
 
 export type HumanResourceRequests = HumanResourceRequest[];
