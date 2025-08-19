@@ -84,14 +84,14 @@ export enum ERequestStatus {
   closed = "Cerrada",
   rejected = "Rechazada",
   canceled = "Cancelada",
-  supervisorApproval = "Aprobacion Jefe Inmediato",
-  hrComplianceVerification = "Verificacion en Gestion Humana",
-  confirmationOfVacationTaken = "Confirmacion Disfrute de vacaciones",
-  successfullyProcessed = "Tramitada con Exito",
-  certificationGeneration = "Generacion de la certificacion",
-  onboardingInProgress = "Vinculación en Progreso",
-  pendingRegistrationInvitation = "Pendiente de Invitacion para registro",
-  pendingToCompleteRegistration = "Pendiente de completar registro",
+  supervisor_approval = "Aprobacion Jefe Inmediato",
+  HR_compliance_verification = "Verificacion en Gestion Humana",
+  confirmation_of_vacation_taken = "Confirmacion Disfrute de vacaciones",
+  successfully_processed = "Tramitada con Exito",
+  certification_generation = "Generacion de la certificacion",
+  onboarding_in_progress = "Vinculación en Progreso",
+  pending_registration_invitation = "Pendiente de Invitacion para registro",
+  pending_to_complete_registration = "Pendiente de completar registro",
 }
 
 export type HumanResourceRequests = HumanResourceRequest[];
