@@ -76,16 +76,22 @@ export enum ERequestType {
 }
 
 export enum ETaskStatus {
-  Assigned = "Asignada",
-  Executed = "Ejecutada",
+  assigned = "Asignada",
+  executed = "Ejecutada",
 }
 
 export enum ERequestStatus {
-  canceled = "Cancelado",
-  closed = "Cerrado",
-  finalized = "Finalizado",
-  inProgress = "En progreso",
-  rejected = "Rechazado",
+  closed = "Cerrada",
+  rejected = "Rechazada",
+  canceled = "Cancelada",
+  supervisorApproval = "Aprobacion Jefe Inmediato",
+  hrComplianceVerification = "Verificacion en Gestion Humana",
+  confirmationOfVacationTaken = "Confirmacion Disfrute de vacaciones",
+  successfullyProcessed = "Tramitada con Exito",
+  certificationGeneration = "Generacion de la certificacion",
+  onboardingInProgress = "Vinculación en Progreso",
+  pendingRegistrationInvitation = "Pendiente de Invitacion para registro",
+  pendingToCompleteRegistration = "Pendiente de completar registro",
 }
 
 export type HumanResourceRequests = HumanResourceRequest[];
