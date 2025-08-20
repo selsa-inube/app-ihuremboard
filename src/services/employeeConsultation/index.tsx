@@ -25,7 +25,7 @@ const getAllEmployees = async (
         page: page.toString(),
         per_page: perPage.toString(),
         sort: "FirstName:asc",
-        contract_status: "Formalized",
+        contract_status: "formalized",
       });
 
       const options: RequestInit = {
