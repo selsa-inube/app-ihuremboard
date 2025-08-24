@@ -5,6 +5,7 @@ import {
 } from "@config/environment";
 
 import { Employee } from "@ptypes/employeePortalConsultation.types";
+import { EContractStatus } from "@ptypes/employeePortalBusiness.types";
 
 import { mapEmployeeApiToEntity } from "./mappers";
 
@@ -25,7 +26,7 @@ const getAllEmployees = async (
         page: page.toString(),
         per_page: perPage.toString(),
         sort: "FirstName:asc",
-        contract_status: "formalized",
+        contract_status: EContractStatus.formalized,
       });
 
       const options: RequestInit = {
