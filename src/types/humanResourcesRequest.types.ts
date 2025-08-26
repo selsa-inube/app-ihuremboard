@@ -61,31 +61,37 @@ export type HumanResourceRequestData =
   | IVacationPaymentGeneralInformationEntry;
 
 export enum ERequestType {
-  Absence = "Ausencia",
-  Certification = "Certificación",
-  Disability = "Incapacidad",
-  Leave = "Permiso",
-  LeavingTheJob = "Retiro",
-  Onboarding = "Vinculación",
-  PaidVacations = "Vacaciones Pagadas",
-  PositionTransfer = "Traslado de cargo",
-  PQR = "PQR",
-  SalaryIncrease = "Ascenso salarial",
-  UnpaidLeave = "Licencia no remunerada",
-  VacationsEnjoyed = "Vacaciones Disfrutadas",
+  absence = "Ausencia",
+  certification = "Certificación",
+  disability = "Incapacidad",
+  leave = "Permiso",
+  leaving_the_job = "Retiro",
+  onboarding = "Vinculación",
+  paid_vacations = "Vacaciones Pagadas",
+  position_transfer = "Traslado de cargo",
+  pqr = "PQR",
+  salary_increase = "Ascenso salarial",
+  unpaid_leave = "Licencia no remunerada",
+  vacations_enjoyed = "Vacaciones Disfrutadas",
 }
 
 export enum ETaskStatus {
-  Assigned = "Asignada",
-  Executed = "Ejecutada",
+  assigned = "Asignada",
+  executed = "Ejecutada",
 }
 
 export enum ERequestStatus {
-  Canceled = "Cancelado",
-  Closed = "Cerrado",
-  Finished = "Finalizado",
-  InProgress = "En progreso",
-  Rejected = "Rechazado",
+  closed = "Cerrada",
+  rejected = "Rechazada",
+  canceled = "Cancelada",
+  supervisor_approval = "Aprobacion Jefe Inmediato",
+  HR_compliance_verification = "Verificacion en Gestion Humana",
+  confirmation_of_vacation_taken = "Confirmacion Disfrute de vacaciones",
+  successfully_processed = "Tramitada con Exito",
+  certification_generation = "Generacion de la certificacion",
+  onboarding_in_progress = "Vinculación en Progreso",
+  pending_registration_invitation = "Pendiente de Invitacion para registro",
+  pending_to_complete_registration = "Pendiente de completar registro",
 }
 
 export type HumanResourceRequests = HumanResourceRequest[];

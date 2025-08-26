@@ -34,6 +34,12 @@ interface IBusinessManager {
   urlLogo: string;
   customerId: string;
 }
+export enum EContractStatus {
+  in_the_process_of_formalization = "in_the_process_of_formalization",
+  formalized = "formalized",
+  finalized = "finalized",
+  in_the_process_of_ending = "in_the_process_of_ending",
+}
 
 export type {
   IBusinessManager,

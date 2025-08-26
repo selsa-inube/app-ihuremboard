@@ -6,6 +6,7 @@ import {
   HumanResourceRequestTraceability,
   TaskToManageHumanResourceRequest,
 } from "@ptypes/humanResourcesRequest.types";
+import { getValidEnumValue } from "@utils/enumValidator";
 
 const mapHumanResourceRequestApiToEntity = (
   item: Partial<HumanResourceRequest>,
@@ -16,11 +17,19 @@ const mapHumanResourceRequestApiToEntity = (
     item.humanResourceRequestDescription ?? "",
   ),
   humanResourceRequestDate: String(item.humanResourceRequestDate ?? ""),
-  humanResourceRequestStatus: item.humanResourceRequestStatus as ERequestStatus,
+  humanResourceRequestStatus: getValidEnumValue(
+    ERequestStatus,
+    item.humanResourceRequestStatus,
+    "Estado desconocido",
+  ) as ERequestStatus,
   humanResourceRequestData:
     item.humanResourceRequestData ??
     ({} as HumanResourceRequest["humanResourceRequestData"]),
-  humanResourceRequestType: item.humanResourceRequestType as ERequestType,
+  humanResourceRequestType: getValidEnumValue(
+    ERequestType,
+    item.humanResourceRequestType,
+    "Tipo desconocido",
+  ) as ERequestType,
   employeeId: String(item.employeeId ?? ""),
   employeeName: String(item.employeeName ?? ""),
   humanResourceRequestTraceabilities: Array.isArray(
@@ -57,7 +66,11 @@ const mapTaskManagingHumanResourceRequestApiToEntity = (
   humanResourceRequestId: String(item.humanResourceRequestId ?? ""),
   taskCode: String(item.taskCode ?? ""),
   taskName: String(item.taskName ?? ""),
-  taskStatus: item.taskStatus as ETaskStatus,
+  taskStatus: getValidEnumValue(
+    ETaskStatus,
+    item.taskStatus,
+    "Estado desconocido",
+  ) as ETaskStatus,
   description: String(item.description ?? ""),
 });
 
