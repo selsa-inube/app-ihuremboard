@@ -23,7 +23,17 @@ export const useUseCasesByStaff = ({
 
   useEffect(() => {
     const fetchUseCases = async () => {
+      console.log("🔄 [useUseCasesByStaff] Iniciando fetch...");
+      console.log("➡️ Parámetros recibidos:", {
+        userName,
+        businessManagerCode,
+        businessUnitCode,
+      });
+
       if (!userName || !businessManagerCode || !businessUnitCode) {
+        console.warn(
+          "⚠️ [useUseCasesByStaff] Faltan parámetros. No se hará la consulta",
+        );
         setHasError(400);
         setUseCases({ listOfUseCasesByRoles: [] });
         setLoading(false);
@@ -40,18 +50,40 @@ export const useUseCasesByStaff = ({
           businessUnitCode,
         );
 
+        console.log("✅ [useUseCasesByStaff] Datos recibidos:", data);
+
         setUseCases(data);
-        onUseCasesLoaded?.(data);
+
+        if (onUseCasesLoaded) {
+          console.log(
+            "📩 [useUseCasesByStaff] Ejecutando callback onUseCasesLoaded",
+          );
+          onUseCasesLoaded(data);
+        }
       } catch (error) {
-        console.error("❌ Error al obtener casos de uso:", error);
+        console.error(
+          "❌ [useUseCasesByStaff] Error al obtener casos de uso:",
+          error,
+        );
         setHasError(500);
       } finally {
         setLoading(false);
+        console.log("🏁 [useUseCasesByStaff] Estado final:", {
+          useCases,
+          loading: false,
+          hasError,
+        });
       }
     };
 
     fetchUseCases();
   }, [userName, businessManagerCode, businessUnitCode]);
+
+  console.log("📊 [useUseCasesByStaff] Render hook ->", {
+    useCases,
+    loading,
+    hasError,
+  });
 
   return { useCases, loading, hasError };
 };
