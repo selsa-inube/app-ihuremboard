@@ -20,13 +20,11 @@ export const protectedRouter = createBrowserRouter(
         errorElement={<ErrorPage />}
       />
       <Route path="/login/*" element={<LoginRoutes />} />
-      <Route
-        path="/"
-        element={<ProtectedAppPage />}
-        errorElement={<ErrorPage errorCode={404} />}
-      >
-        {RequestsRoutes}
+
+      <Route path="/*" element={<ProtectedAppPage />}>
+        <Route path="requests/*" element={<RequestsRoutes />} />
       </Route>
+
       <Route path="/logout" element={<LogOut />} />
     </>,
   ),

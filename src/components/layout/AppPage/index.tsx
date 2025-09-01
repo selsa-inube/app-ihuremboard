@@ -1,9 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-import { Outlet } from "react-router-dom";
-import { Grid, Header, useMediaQuery, Icon } from "@inubekit/inubekit";
+import { Outlet, useNavigate } from "react-router-dom";
+import { Nav, Grid, Header, useMediaQuery, Icon } from "@inubekit/inubekit";
 import { MdOutlineChevronRight } from "react-icons/md";
 
-import { userMenu } from "@config/nav.config";
+import {
+  useNavConfig,
+  userMenu,
+  actions,
+  useConfigHeader,
+} from "@config/nav.config";
 import { useAppContext } from "@context/AppContext/useAppContext";
 import { BusinessUnitChange } from "@components/inputs/BusinessUnitChange";
 import { useValidatePortalAccess } from "@hooks/useValidatePortalAccess";
@@ -15,13 +20,19 @@ import { IBusinessUnit } from "./types";
 
 import {
   StyledAppPage,
+  StyledContainer,
   StyledContentImg,
   StyledLogo,
+  StyledMain,
   StyledCollapseIcon,
   StyledCollapse,
-  StyledMain,
-  StyledScrollableContainer,
+  StyledMainScroll,
 } from "./styles";
+
+interface AppPageProps {
+  withNav?: boolean;
+  fullWidth?: boolean;
+}
 
 const renderLogo = (imgUrl: string, clientName: string) => {
   return imgUrl ? (
@@ -33,7 +44,9 @@ const renderLogo = (imgUrl: string, clientName: string) => {
   );
 };
 
-function AppPage() {
+function AppPage(props: AppPageProps) {
+  const { withNav = true, fullWidth = false } = props;
+
   const {
     user,
     logoUrl,
@@ -41,12 +54,18 @@ function AppPage() {
     businessUnits,
     setSelectedClient,
     businessManagers,
+    optionForCustomerPortal,
   } = useAppContext();
+
+  const isTablet = useMediaQuery("(max-width: 944px)");
+  const navigate = useNavigate();
+
+  const navConfig = useNavConfig(optionForCustomerPortal ?? []);
+  const configHeader = useConfigHeader(optionForCustomerPortal ?? []);
 
   const [collapse, setCollapse] = useState(false);
   const collapseMenuRef = useRef<HTMLDivElement>(null);
   const businessUnitChangeRef = useRef<HTMLDivElement>(null);
-  const isTablet = useMediaQuery("(max-width: 944px)");
 
   const [validateTrigger, setValidateTrigger] = useState(!!selectedClient);
   const { loading } = useValidatePortalAccess(validateTrigger);
@@ -75,6 +94,7 @@ function AppPage() {
 
         setValidateTrigger(true);
         setCollapse(false);
+        navigate("/");
       } else {
         setClientWithoutPrivileges(businessUnit);
         setLocalModalVisible(true);
@@ -92,6 +112,24 @@ function AppPage() {
       return () => clearTimeout(timeout);
     }
   }, [validateTrigger]);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      collapseMenuRef.current &&
+      !collapseMenuRef.current.contains(event.target as Node) &&
+      businessUnitChangeRef.current &&
+      !businessUnitChangeRef.current.contains(event.target as Node)
+    ) {
+      setCollapse(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   if (loading || validateTrigger) {
     return <LoadingAppUI />;
@@ -116,6 +154,7 @@ function AppPage() {
 
       <Grid templateRows="auto 1fr" height="100vh" justifyContent="unset">
         <Header
+          navigation={{ nav: configHeader, breakpoint: "800px" }}
           logoURL={renderLogo(
             selectedClient?.logo ?? logoUrl,
             selectedClient?.name ?? "Sin unidad seleccionada",
@@ -154,11 +193,22 @@ function AppPage() {
           </StyledCollapse>
         )}
 
-        <StyledScrollableContainer>
-          <StyledMain>
-            <Outlet />
-          </StyledMain>
-        </StyledScrollableContainer>
+        <StyledContainer>
+          <Grid
+            templateColumns={withNav && !isTablet ? "auto 1fr" : "1fr"}
+            alignContent="unset"
+            height="95vh"
+          >
+            {withNav && !isTablet && (
+              <Nav navigation={navConfig} actions={actions} collapse={true} />
+            )}
+            <StyledMainScroll>
+              <StyledMain $fullWidth={fullWidth}>
+                <Outlet />
+              </StyledMain>
+            </StyledMainScroll>
+          </Grid>
+        </StyledContainer>
       </Grid>
     </StyledAppPage>
   );

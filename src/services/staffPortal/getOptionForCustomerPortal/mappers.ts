@@ -9,12 +9,14 @@ const mapOptionForCustomerPortalApiToEntity = (
     optionStaffId: resend.optionStaffId as string,
     parentOptionId: resend.parentOptionId as string,
     publicCode: resend.publicCode as string,
+    iconReference: resend.iconReference as string,
     subOption: Array.isArray(resend.subOption)
       ? resend.subOption.map((subOption) => ({
           abbreviatedName: subOption.abbreviatedName as string,
           descriptionUse: subOption.descriptionUse as string,
           optionStaffId: subOption.optionStaffId as string,
           publicCode: subOption.publicCode as string,
+          iconReference: subOption.iconReference as string,
           subOption: subOption.subOption as string[],
           useCaseName: subOption.useCaseName as string,
         }))
