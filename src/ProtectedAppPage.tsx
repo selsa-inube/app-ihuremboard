@@ -1,20 +1,40 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { AppPage } from "@components/layout/AppPage";
-import { useValidatePortalAccess } from "@hooks/useValidatePortalAccess";
 
-import { LoadingAppUI } from "./pages/login/outlets/LoadingApp/interface";
+import { useAppContext } from "@context/AppContext/useAppContext";
+import { useOptionsMenu } from "@hooks/useOptionsMenu";
 
-function ProtectedAppPage() {
-  const { loading, isAuthorized } = useValidatePortalAccess(true);
+interface ProtectedAppPageProps {
+  withNav?: boolean;
+  withBanner?: boolean;
+  fullWidth?: boolean;
+}
 
-  if (loading || isAuthorized === null) {
-    return <LoadingAppUI />;
-  }
+function ProtectedAppPage(props: ProtectedAppPageProps) {
+  const { withNav = true, fullWidth = false } = props;
+  const { selectedClient, provisionedPortal, setOptionForCustomerPortal } =
+    useAppContext();
+  const navigate = useNavigate();
 
-  if (isAuthorized === false) {
-    return null;
-  }
+  const publicCode = provisionedPortal.publicCode ?? "";
+  const clientId = selectedClient?.id ?? "";
+  const { optionData } = useOptionsMenu(publicCode, clientId);
 
-  return <AppPage />;
+  useEffect(() => {
+    if (optionData) {
+      setOptionForCustomerPortal(optionData);
+    }
+  }, [optionData, setOptionForCustomerPortal]);
+
+  useEffect(() => {
+    if (!selectedClient) {
+      navigate("/login", { replace: true });
+    }
+  }, [selectedClient, navigate]);
+
+  return <AppPage withNav={withNav} fullWidth={fullWidth} />;
 }
 
 export { ProtectedAppPage };

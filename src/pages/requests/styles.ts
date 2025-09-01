@@ -27,21 +27,12 @@ interface ISearchContainer {
   $isTablet: boolean;
 }
 
-const StyledLayoutContainer = styled.div`
-  width: 100%;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
 const StyledBoardContainer = styled.div<IBoardContainer>`
+  flex-direction: ${({ $isTablet }) => ($isTablet ? "row" : "column")};
   display: grid;
   grid-template-columns: ${({ $isTablet }) =>
     $isTablet ? "1fr" : "repeat(auto-fit, minmax(200px, 1fr))"};
   width: 100%;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
   border-top: 1px solid
     ${({ theme }) =>
       theme?.palette?.neutral?.N900 || inube.palette.neutral.N900};
@@ -83,7 +74,7 @@ const StyledMenuContainer = styled.div<IMenuContainer>`
   width: ${({ $isTablet }) => ($isTablet ? "162px" : "120px")};
 
   top: ${({ $isMobile, $isTablet }) => {
-    if ($isMobile) return "90px";
+    if ($isMobile) return "150px";
     return $isTablet ? "195px" : "216px";
   }};
 
@@ -117,5 +108,4 @@ export {
   StyledMenuContainer,
   StyledMenuButton,
   StyledMenuIconContainer,
-  StyledLayoutContainer,
 };
