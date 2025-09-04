@@ -11,7 +11,7 @@ const mapBusinessManagerApiToEntity = (
   };
 
   const business: IBusinessManager = {
-    id: toStringSafe(businessManager.businessManagerId),
+    businessManagerCode: toStringSafe(businessManager.businessManagerCode),
     publicCode: toStringSafe(businessManager.publicCode),
     language: toStringSafe(businessManager.languageId),
     abbreviatedName: toStringSafe(businessManager.abbreviatedName),
@@ -19,7 +19,10 @@ const mapBusinessManagerApiToEntity = (
     urlBrand: toStringSafe(businessManager.urlBrand),
     urlLogo: toStringSafe(businessManager.urlLogo),
     customerId: toStringSafe(businessManager.customerId),
+    clientId: toStringSafe(businessManager.clientId),
+    clientSecret: toStringSafe(businessManager.clientSecret),
   };
+
   return business;
 };
 
