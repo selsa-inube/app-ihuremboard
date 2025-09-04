@@ -13,9 +13,7 @@ export function useOptionsMenu(
   staffPortalPublicCode: string,
   businessUnit: string,
 ) {
-  const [optionData, setOptionData] = useState<IOptionWithSubOptions[]>(
-    [] as IOptionWithSubOptions[],
-  );
+  const [optionData, setOptionData] = useState<IOptionWithSubOptions[]>([]);
   const [hasError, setHasError] = useState<number | null>(1005);
   const [isFetching, setIsFetching] = useState(true);
   const [flagShown, setFlagShown] = useState(false);
@@ -24,29 +22,40 @@ export function useOptionsMenu(
   useErrorFlag({ flagShown });
 
   useEffect(() => {
-    const fetchoptionData = async () => {
+    const fetchOptionData = async () => {
       setIsFetching(true);
+
       if (!provisionedPortal || !selectedClient) {
         setHasError(1005);
         setFlagShown(true);
+        setIsFetching(false);
         return;
       }
+
       try {
-        const staffoptionData =
-          environment.IVITE_VERCEL === "Y"
-            ? mapOptionForCustomerPortalApiToEntities(optionDescriptionStaff)
-            : await getOptionForCustomerPortal(
-                staffPortalPublicCode,
-                businessUnit,
-              );
-        if (staffoptionData.length === 0) {
+        let staffOptionData: IOptionWithSubOptions[] = [];
+
+        if (environment.IVITE_VERCEL === "Y") {
+          staffOptionData = mapOptionForCustomerPortalApiToEntities(
+            optionDescriptionStaff,
+          );
+        } else {
+          staffOptionData = await getOptionForCustomerPortal(
+            staffPortalPublicCode,
+            businessUnit,
+          );
+        }
+
+        if (staffOptionData.length === 0) {
           setHasError(1005);
           setFlagShown(true);
           return;
         }
+
+        setOptionData(staffOptionData);
         setHasError(null);
-        setOptionData(staffoptionData);
-      } catch {
+      } catch (error) {
+        console.error("Error en useOptionsMenu:", error);
         setHasError(500);
         setFlagShown(true);
       } finally {
@@ -54,8 +63,8 @@ export function useOptionsMenu(
       }
     };
 
-    void fetchoptionData();
-  }, [provisionedPortal, selectedClient]);
+    void fetchOptionData();
+  }, [provisionedPortal, selectedClient, staffPortalPublicCode, businessUnit]);
 
   return { optionData, hasError, isFetching };
 }

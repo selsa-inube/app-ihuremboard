@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { spacing } from "@design/tokens/spacing";
-
 interface IStyledCollapseIcon {
   $collapse: boolean;
   $isTablet: boolean;
+}
+
+interface IStyledMain {
+  $fullWidth: boolean;
 }
 
 const StyledAppPage = styled.div`
@@ -27,9 +29,10 @@ const StyledContainer = styled.div`
   }
 `;
 
-const StyledMain = styled.main`
+const StyledMain = styled.main<IStyledMain>`
   box-sizing: border-box;
-  padding-bottom: ${spacing.s100};
+  width: 100%;
+  max-width: ${({ $fullWidth }) => ($fullWidth ? "100%" : "1192px")};
 `;
 
 const StyledMainScroll = styled.main`
