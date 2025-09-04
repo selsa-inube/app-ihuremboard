@@ -17,13 +17,7 @@ import {
   IBusinessUnit,
 } from "@ptypes/employeePortalBusiness.types";
 import { Employee } from "@ptypes/employeePortalConsultation.types";
-import {
-  IAppContextType,
-  IPreferences,
-  IClient,
-  IUser,
-  BusinessManager,
-} from "./types";
+import { IAppContextType, IPreferences, IClient, IUser } from "./types";
 
 const AppContext = createContext<IAppContextType | undefined>(undefined);
 
@@ -90,7 +84,7 @@ function AppProvider(props: AppProviderProps) {
     useState<IStaffPortalByBusinessManager>(dataPortal);
 
   const [businessManagers, setBusinessManagers] =
-    useState<BusinessManager | null>(businessManagersData);
+    useState<IBusinessManager>(businessManagersData);
 
   const [businessUnits, setBusinessUnits] =
     useState<IBusinessUnit[]>(businessUnitsData);

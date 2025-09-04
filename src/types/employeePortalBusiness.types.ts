@@ -15,7 +15,7 @@ interface IOptionsByEmployeePortalBusinessManager {
 
 interface IEmployeePortalByBusinessManager {
   abbreviatedName: string;
-  businessManagerId: string;
+  businessManagerCode: string;
   businessUnit: string;
   descriptionUse: string;
   portalCode: string;
@@ -25,7 +25,7 @@ interface IEmployeePortalByBusinessManager {
 }
 
 interface IBusinessManager {
-  id: string;
+  businessManagerCode: string;
   publicCode: string;
   language: string;
   abbreviatedName: string;
@@ -33,7 +33,10 @@ interface IBusinessManager {
   urlBrand: string;
   urlLogo: string;
   customerId: string;
+  clientId: string;
+  clientSecret: string;
 }
+
 export enum EContractStatus {
   in_the_process_of_formalization = "in_the_process_of_formalization",
   formalized = "formalized",

@@ -6,9 +6,9 @@ const mapStaffPortalByBusinessManagerApiToEntity = (
   const buildResend: IStaffPortalByBusinessManager = {
     abbreviatedName:
       typeof resend.abbreviatedName === "string" ? resend.abbreviatedName : "",
-    businessManagerId:
-      typeof resend.businessManagerId === "string"
-        ? resend.businessManagerId
+    businessManagerCode:
+      typeof resend.businessManagerCode === "string"
+        ? resend.businessManagerCode
         : "",
     descriptionUse:
       typeof resend.descriptionUse === "string" ? resend.descriptionUse : "",
