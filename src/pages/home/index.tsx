@@ -12,10 +12,12 @@ import {
 
 import { AppCard } from "@components/feedback/AppCard";
 import { spacing } from "@design/tokens/spacing";
-import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
 import { BusinessUnitChange } from "@components/inputs/BusinessUnitChange";
 import { userMenu, useConfigHeader, navConfig } from "@config/nav.config";
 import { useAppContext } from "@context/AppContext";
+import { InfoModal } from "@components/modals/InfoModal";
+import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
+import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
 
 import {
   StyledAppPage,
@@ -27,6 +29,14 @@ import {
   StyledCollapseIcon,
   StyledCollapse,
 } from "./styles";
+
+// 🔧 Definición temporal para evitar error de tipo
+interface IBusinessUnitFixed {
+  businessUnitPublicCode: string;
+  descriptionUse: string;
+  abbreviatedName: string;
+  urlLogo: string;
+}
 
 const renderLogo = (imgUrl: string, altText: string) => {
   return (
@@ -44,6 +54,7 @@ function Home() {
     businessUnits,
     setSelectedClient,
     optionForCustomerPortal,
+    businessManagers,
   } = useAppContext();
 
   const configHeader = useConfigHeader(optionForCustomerPortal ?? []);
@@ -53,16 +64,14 @@ function Home() {
   const [collapse, setCollapse] = useState(false);
   const collapseMenuRef = useRef<HTMLDivElement>(null);
   const businessUnitChangeRef = useRef<HTMLDivElement>(null);
-  const [dataOptions, setDataOptions] = useState<
-    {
-      isEnabled: boolean;
-      id: string;
-      label: string;
-      icon: React.ReactNode;
-      path: string;
-      description: string;
-    }[]
-  >();
+
+  const [localModalVisible, setLocalModalVisible] = useState(false);
+  const [, setClientWithoutPrivileges] = useState<IBusinessUnitFixed | null>(
+    null,
+  );
+
+  const [validateTrigger, setValidateTrigger] = useState(!!selectedClient);
+  const [loading, setLoading] = useState(false);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -82,33 +91,77 @@ function Home() {
   }, [selectedClient, navigate]);
 
   useEffect(() => {
-    if (optionForCustomerPortal) {
-      setDataOptions(navConfig(optionForCustomerPortal));
-    }
-  }, [optionForCustomerPortal]);
-
-  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  const handleLogoClick = (businessUnit: IBusinessUnit) => {
-    setSelectedClient({
-      id: businessUnit.businessUnitPublicCode,
-      name: businessUnit.descriptionUse,
-      sigla: businessUnit.abbreviatedName,
-      logo: businessUnit.urlLogo,
-    });
+  useEffect(() => {
+    if (validateTrigger) {
+      const timeout = setTimeout(() => setValidateTrigger(false), 100);
+      return () => clearTimeout(timeout);
+    }
+  }, [validateTrigger]);
 
-    setCollapse(false);
-    navigate("/employees/select-employee");
+  const handleLogoClick = async (businessUnit: IBusinessUnitFixed) => {
+    try {
+      setLoading(true);
+
+      const useCases = await getUseCasesByStaff(
+        user?.id ?? "",
+        businessManagers?.publicCode ?? "",
+        businessUnit.businessUnitPublicCode,
+      );
+
+      const roles = useCases.listOfUseCasesByRoles ?? [];
+      const hasAccess = roles.includes("PortalBoardAccess");
+
+      if (hasAccess) {
+        setSelectedClient({
+          id: businessUnit.businessUnitPublicCode,
+          name: businessUnit.descriptionUse,
+          sigla: businessUnit.abbreviatedName,
+          logo: businessUnit.urlLogo,
+        });
+
+        setValidateTrigger(true);
+        setCollapse(false);
+        navigate("/");
+      } else {
+        setClientWithoutPrivileges(businessUnit);
+        setLocalModalVisible(true);
+      }
+    } catch (error) {
+      console.error("Error al obtener privilegios del portal:", error);
+      setClientWithoutPrivileges(businessUnit);
+      setLocalModalVisible(true);
+    } finally {
+      setLoading(false);
+    }
   };
+
   const showBusinessUnitSelector = businessUnits.length > 1;
+
+  if (loading || validateTrigger) {
+    return <LoadingAppUI />;
+  }
 
   return (
     <StyledAppPage>
+      {localModalVisible && (
+        <InfoModal
+          title="Acceso no autorizado"
+          titleDescription="No tienes privilegios en esta unidad de negocio"
+          description="Por favor, selecciona otra."
+          buttonText="Cerrar"
+          onCloseModal={() => {
+            setLocalModalVisible(false);
+            setClientWithoutPrivileges(null);
+          }}
+        />
+      )}
+
       <Grid templateRows="auto auto" height="100vh" justifyContent="unset">
         <Header
           navigation={{ nav: configHeader, breakpoint: "800px" }}
@@ -123,6 +176,7 @@ function Home() {
           }}
           menu={userMenu}
         />
+
         {showBusinessUnitSelector && (
           <StyledCollapseIcon
             $collapse={collapse}
@@ -138,6 +192,7 @@ function Home() {
             />
           </StyledCollapseIcon>
         )}
+
         {collapse && showBusinessUnitSelector && (
           <StyledCollapse ref={businessUnitChangeRef}>
             <BusinessUnitChange
@@ -147,6 +202,7 @@ function Home() {
             />
           </StyledCollapse>
         )}
+
         <StyledContainer>
           <StyledMain $isTablet={isTablet}>
             <Grid
@@ -165,17 +221,16 @@ function Home() {
                   Aquí tienes las funcionalidades disponibles.
                 </Text>
                 <StyledQuickAccessContainer $isTablet={isTablet}>
-                  {dataOptions?.map(
-                    (link, index) =>
-                      link.isEnabled && (
-                        <AppCard
-                          key={index}
-                          title={link.label}
-                          description={link.description}
-                          icon={link.icon}
-                          url={link.path}
-                        />
-                      ),
+                  {navConfig(optionForCustomerPortal ?? []).map(
+                    (link, index) => (
+                      <AppCard
+                        key={index}
+                        title={link.label}
+                        description={link.description}
+                        icon={link.icon}
+                        url={link.path}
+                      />
+                    ),
                   )}
                 </StyledQuickAccessContainer>
               </Stack>
