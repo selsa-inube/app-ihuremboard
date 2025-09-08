@@ -4,7 +4,7 @@ import {
   IBusinessManager,
   IEmployeePortalByBusinessManager,
 } from "@ptypes/employeePortalBusiness.types";
-import { getBusinessManagerById } from "@services/businessManagers/getBusinessManagerById";
+import { getBusinessManagerByCode } from "@services/businessManagers/getBusinessManagerById";
 
 import { useErrorFlag } from "./useErrorFlag";
 
@@ -22,12 +22,12 @@ export const useBusinessManagers = (
 
   useEffect(() => {
     const fetchBusinessManagers = async () => {
-      if (!portalPublicCode?.businessManagerId) return;
+      if (!portalPublicCode?.businessManagerCode) return;
 
       setIsFetching(true);
       try {
-        const fetchedBusinessManagers = await getBusinessManagerById(
-          portalPublicCode.businessManagerId,
+        const fetchedBusinessManagers = await getBusinessManagerByCode(
+          portalPublicCode.businessManagerCode,
         );
 
         if (
