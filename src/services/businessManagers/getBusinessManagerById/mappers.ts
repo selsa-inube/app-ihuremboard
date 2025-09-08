@@ -1,4 +1,5 @@
 import { IBusinessManager } from "@ptypes/employeePortalBusiness.types";
+import { encrypt } from "@utils/encrypt";
 
 const mapBusinessManagerApiToEntity = (
   businessManager: Record<string, unknown>,
@@ -19,8 +20,8 @@ const mapBusinessManagerApiToEntity = (
     urlBrand: toStringSafe(businessManager.urlBrand),
     urlLogo: toStringSafe(businessManager.urlLogo),
     customerId: toStringSafe(businessManager.customerId),
-    clientId: toStringSafe(businessManager.clientId),
-    clientSecret: toStringSafe(businessManager.clientSecret),
+    clientId: encrypt(toStringSafe(businessManager.clientId)),
+    clientSecret: encrypt(toStringSafe(businessManager.clientSecret)),
   };
 
   return business;
