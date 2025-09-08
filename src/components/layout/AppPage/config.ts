@@ -3,7 +3,7 @@ import { IBusinessManager } from "@ptypes/employeePortalBusiness.types";
 
 export const mockDataPortal: IStaffPortalByBusinessManager = {
   abbreviatedName: "Test Name",
-  businessManagerId: "12345",
+  businessManagerCode: "12345",
   descriptionUse: "Test description",
   optionsByStaffPortalBusinessManager: [],
   publicCode: "ABC123",
@@ -14,8 +14,9 @@ export const mockDataPortal: IStaffPortalByBusinessManager = {
   employeePortalId: "EP123",
   staffPortalId: "SP123",
 };
+
 export const mockBusinessManagersData: IBusinessManager = {
-  id: "1",
+  businessManagerCode: "BM001",
   publicCode: "BM001",
   language: "es",
   abbreviatedName: "Gerente 1",
@@ -23,6 +24,8 @@ export const mockBusinessManagersData: IBusinessManager = {
   urlBrand: "https://example.com/brand.png",
   urlLogo: "https://example.com/logo.png",
   customerId: "C001",
+  clientId: "CL001",
+  clientSecret: "SECRET1",
 };
 
 export const mockBusinessUnitsData = [
