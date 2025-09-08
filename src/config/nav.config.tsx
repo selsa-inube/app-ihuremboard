@@ -85,18 +85,22 @@ const getIcon = (iconReference?: string): ReactNode => {
 };
 
 const navConfig = (optionForCustomerPortal: IOptionWithSubOptions[]) => {
-  return baseNavLinks.map((link) => {
-    const option = optionForCustomerPortal.find(
-      (option) => option.publicCode === link.id,
-    );
-
-    return {
+  if (!optionForCustomerPortal.length) {
+    return baseNavLinks.map((link) => ({
       ...link,
-      label: option?.abbreviatedName ?? link.label,
-      icon: getIcon(option?.iconReference),
-      isEnabled: !!option,
-    };
-  });
+      isEnabled: false,
+      icon: <div style={{ width: 24, height: 24 }} />,
+    }));
+  }
+
+  return optionForCustomerPortal.map((option) => ({
+    id: option.publicCode,
+    label: option.abbreviatedName,
+    path: `/${option.useCaseName}`,
+    description: option.descriptionUse ?? "",
+    icon: getIcon(option.iconReference),
+    isEnabled: true,
+  }));
 };
 
 const useNavConfig = (optionForCustomerPortal: IOptionWithSubOptions[]) => {

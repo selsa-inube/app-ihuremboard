@@ -8,29 +8,38 @@ import { environment } from "@config/environment";
 import { optionDescriptionStaff } from "@mocks/staff/staff.mock";
 
 import { useErrorFlag } from "./useErrorFlag";
+import { useSignOut } from "@hooks/useSignOut";
 
 export function useOptionsMenu(
   staffPortalPublicCode: string,
   businessUnit: string,
 ) {
-  const [optionData, setOptionData] = useState<IOptionWithSubOptions[]>(
-    [] as IOptionWithSubOptions[],
-  );
-  const [hasError, setHasError] = useState<number | null>(1005);
+  const [optionData, setOptionData] = useState<IOptionWithSubOptions[]>([]);
+  const [hasError, setHasError] = useState<number | null>(null);
   const [isFetching, setIsFetching] = useState(true);
   const [flagShown, setFlagShown] = useState(false);
 
   const { provisionedPortal, selectedClient } = useAppContext();
+  const { signOut } = useSignOut();
+
   useErrorFlag({ flagShown });
+
+  useEffect(() => {
+    if (hasError) {
+      signOut(`/error?code=${hasError}`);
+    }
+  }, [hasError, signOut]);
 
   useEffect(() => {
     const fetchoptionData = async () => {
       setIsFetching(true);
+
       if (!provisionedPortal || !selectedClient) {
         setHasError(1005);
         setFlagShown(true);
         return;
       }
+
       try {
         const staffoptionData =
           environment.IVITE_VERCEL === "Y"
@@ -39,11 +48,13 @@ export function useOptionsMenu(
                 staffPortalPublicCode,
                 businessUnit,
               );
+
         if (staffoptionData.length === 0) {
           setHasError(1005);
           setFlagShown(true);
           return;
         }
+
         setHasError(null);
         setOptionData(staffoptionData);
       } catch {
@@ -55,7 +66,7 @@ export function useOptionsMenu(
     };
 
     void fetchoptionData();
-  }, [provisionedPortal, selectedClient]);
+  }, [provisionedPortal, selectedClient, staffPortalPublicCode, businessUnit]);
 
   return { optionData, hasError, isFetching };
 }
