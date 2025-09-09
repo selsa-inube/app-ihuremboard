@@ -9,49 +9,7 @@ import { IOptionWithSubOptions } from "@ptypes/staffPortalBusiness.types";
 
 const baseNavLinks = [
   {
-    id: "vacacionesPortalErm",
-    label: "Vacaciones",
-    path: "/holidays",
-    description:
-      "Son los días de descanso remunerado que le corresponden al empleado por cada año trabajado.",
-  },
-  {
-    id: "incapacidadesPortalErm",
-    label: "Incapacidades",
-    path: "/disability",
-    description:
-      "Son períodos en los que el trabajador no puede laborar debido a una enfermedad o accidente, y está respaldado por un certificado médico.",
-  },
-  {
-    id: "ausenciasPortalErm",
-    label: "Ausencias",
-    path: "/absences",
-    description:
-      "Son períodos en los que el trabajador no se presenta a laborar, ya sea de forma justificada o injustificada.",
-  },
-  {
-    id: "certificacionPortalErm",
-    label: "Certificaciones",
-    path: "/certifications",
-    description:
-      "Son documentos que acreditan la formación o experiencia laboral de un empleado.",
-  },
-  {
-    id: "contratoPortalErm",
-    label: "Contratos",
-    path: "/contracts",
-    description:
-      "Son acuerdos legales entre el empleador y el empleado que establecen los términos de trabajo.",
-  },
-  {
-    id: "cargoPortalErm",
-    label: "Cargos",
-    path: "/charges",
-    description:
-      "Se refiere a las posiciones o roles que ocupan los empleados dentro de la estructura organizacional de la empresa.",
-  },
-  {
-    id: "solTramitePortalErm",
+    id: "solTramitePortalIhurem",
     label: "Solicitudes en tramite",
     path: "/requests",
     description:
@@ -85,22 +43,25 @@ const getIcon = (iconReference?: string): ReactNode => {
 };
 
 const navConfig = (optionForCustomerPortal: IOptionWithSubOptions[]) => {
-  if (!optionForCustomerPortal.length) {
-    return baseNavLinks.map((link) => ({
-      ...link,
-      isEnabled: false,
-      icon: <div style={{ width: 24, height: 24 }} />,
-    }));
-  }
+  const filteredLinks = baseNavLinks.filter((link) =>
+    optionForCustomerPortal.some((option) => option.publicCode === link.id),
+  );
 
-  return optionForCustomerPortal.map((option) => ({
-    id: option.publicCode,
-    label: option.abbreviatedName,
-    path: `/${option.useCaseName}`,
-    description: option.descriptionUse ?? "",
-    icon: getIcon(option.iconReference),
-    isEnabled: true,
-  }));
+  return filteredLinks.map((link) => {
+    const option = optionForCustomerPortal.find(
+      (o) => o.publicCode === link.id,
+    );
+
+    return {
+      ...link,
+      icon: option ? (
+        getIcon(option.iconReference)
+      ) : (
+        <div style={{ width: 24, height: 24 }} />
+      ),
+      isEnabled: true,
+    };
+  });
 };
 
 const useNavConfig = (optionForCustomerPortal: IOptionWithSubOptions[]) => {
