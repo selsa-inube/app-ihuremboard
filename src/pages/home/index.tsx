@@ -17,6 +17,7 @@ import { userMenu, useConfigHeader, navConfig } from "@config/nav.config";
 import { useAppContext } from "@context/AppContext";
 import { InfoModal } from "@components/modals/InfoModal";
 import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
+import { getOptionForCustomerPortal } from "@services/staffPortal/getOptionForCustomerPortal"; // Asegúrate de importar la función correcta
 import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
 
 import {
@@ -30,7 +31,6 @@ import {
   StyledCollapse,
 } from "./styles";
 
-// 🔧 Definición temporal para evitar error de tipo
 interface IBusinessUnitFixed {
   businessUnitPublicCode: string;
   descriptionUse: string;
@@ -54,6 +54,7 @@ function Home() {
     businessUnits,
     setSelectedClient,
     optionForCustomerPortal,
+    setOptionForCustomerPortal,
     businessManagers,
   } = useAppContext();
 
@@ -73,6 +74,32 @@ function Home() {
   const [validateTrigger, setValidateTrigger] = useState(!!selectedClient);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const fetchOptions = async () => {
+      if (
+        user?.id &&
+        (!optionForCustomerPortal || optionForCustomerPortal.length === 0)
+      ) {
+        try {
+          setLoading(true);
+          const options = await getOptionForCustomerPortal(user.id, "");
+          setOptionForCustomerPortal(options);
+        } catch (error) {
+          console.error("Error obteniendo opciones:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchOptions();
+  }, [user, optionForCustomerPortal, setOptionForCustomerPortal]);
+
+  useEffect(() => {
+    if (!selectedClient) {
+      navigate("/login", { replace: true });
+    }
+  }, [selectedClient, navigate]);
+
   const handleClickOutside = (event: MouseEvent) => {
     if (
       collapseMenuRef.current &&
@@ -83,12 +110,6 @@ function Home() {
       setCollapse(false);
     }
   };
-
-  useEffect(() => {
-    if (!selectedClient) {
-      navigate("/login", { replace: true });
-    }
-  }, [selectedClient, navigate]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -143,7 +164,7 @@ function Home() {
 
   const showBusinessUnitSelector = businessUnits.length > 1;
 
-  if (loading || validateTrigger) {
+  if (loading || validateTrigger || !optionForCustomerPortal) {
     return <LoadingAppUI />;
   }
 
@@ -221,17 +242,15 @@ function Home() {
                   Aquí tienes las funcionalidades disponibles.
                 </Text>
                 <StyledQuickAccessContainer $isTablet={isTablet}>
-                  {navConfig(optionForCustomerPortal ?? []).map(
-                    (link, index) => (
-                      <AppCard
-                        key={index}
-                        title={link.label}
-                        description={link.description}
-                        icon={link.icon}
-                        url={link.path}
-                      />
-                    ),
-                  )}
+                  {navConfig(optionForCustomerPortal).map((link, index) => (
+                    <AppCard
+                      key={index}
+                      title={link.label}
+                      description={link.description}
+                      icon={link.icon}
+                      url={link.path}
+                    />
+                  ))}
                 </StyledQuickAccessContainer>
               </Stack>
             </Grid>
