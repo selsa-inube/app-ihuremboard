@@ -167,7 +167,7 @@ const optionDescriptionStaff = [
   },
   {
     optionStaffId: "2573cf2a-0b0d-4558-a275-dd5eed87c0e5",
-    publicCode: "solTramitePortalErm",
+    publicCode: "solTramitePortalIhurem",
     abbreviatedName: "Solicitudes en Trámite",
     descriptionUse: "Solicitudes en Trámite",
   },

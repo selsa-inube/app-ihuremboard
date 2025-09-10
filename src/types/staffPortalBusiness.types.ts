@@ -49,6 +49,7 @@ interface ISubOption {
 interface IOptionWithSubOptions {
   abbreviatedName: string;
   descriptionUse: string;
+  iconReference: string;
   optionStaffId: string;
   parentOptionId: string;
   publicCode: string;

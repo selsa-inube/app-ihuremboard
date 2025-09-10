@@ -1,14 +1,15 @@
-import { Route, Outlet } from "react-router-dom";
-import { Requests } from "@pages/requests";
-import { ApprovalsRoutes } from "./vacation";
+import { Route, Routes } from "react-router-dom";
 
-const RequestsRoutes = (
-  <Route path="/" element={<Outlet />}>
-    <Route index element={<Requests />} />
-    <Route path="holiday-request" element={<Outlet />}>
-      {ApprovalsRoutes}
-    </Route>
-  </Route>
-);
+import { Requests } from "@pages/requests";
+import { ErrorPage } from "@components/layout/ErrorPage";
+
+function RequestsRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<Requests />} />
+      <Route path="*" element={<ErrorPage errorCode={404} />} />
+    </Routes>
+  );
+}
 
 export { RequestsRoutes };
