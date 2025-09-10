@@ -9,7 +9,6 @@ import { optionDescriptionStaff } from "@mocks/staff/staff.mock";
 import { useSignOut } from "@hooks/useSignOut";
 
 import { useErrorFlag } from "./useErrorFlag";
-import { useSignOut } from "@hooks/useSignOut";
 
 export function useOptionsMenu(
   staffPortalPublicCode: string,
