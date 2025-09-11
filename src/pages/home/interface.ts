@@ -132,7 +132,7 @@ export const useHome = () => {
     logoUrl,
     selectedClient,
     businessUnits,
-    optionForCustomerPortal,
+    optionForCustomerPortal: optionForCustomerPortal ?? [],
     collapse,
     collapseMenuRef,
     businessUnitChangeRef,
