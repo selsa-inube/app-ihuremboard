@@ -15,6 +15,7 @@ import { useValidatePortalAccess } from "@hooks/useValidatePortalAccess";
 import { InfoModal } from "@components/modals/InfoModal";
 import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
 import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
+import { ErrorPage } from "@components/layout/ErrorPage";
 
 import { IBusinessUnit } from "./types";
 
@@ -133,6 +134,16 @@ function AppPage(props: AppPageProps) {
 
   if (loading || validateTrigger) {
     return <LoadingAppUI />;
+  }
+
+  const isMenuEmpty =
+    !navConfig?.sections ||
+    Object.values(navConfig.sections).every(
+      (section) => !section.links || Object.keys(section.links).length === 0,
+    );
+
+  if (isMenuEmpty) {
+    return <ErrorPage errorCode={1005} />;
   }
 
   const showBusinessUnitSelector = businessUnits.length > 1;

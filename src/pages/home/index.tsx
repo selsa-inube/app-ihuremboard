@@ -15,6 +15,7 @@ import { BusinessUnitChange } from "@components/inputs/BusinessUnitChange";
 import { userMenu, useConfigHeader, navConfig } from "@config/nav.config";
 import { InfoModal } from "@components/modals/InfoModal";
 import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
+import { ErrorPage } from "@components/layout/ErrorPage";
 
 import {
   StyledAppPage,
@@ -27,6 +28,7 @@ import {
   StyledCollapse,
 } from "./styles";
 import { useHome } from "./interface";
+import { useOptionsMenu } from "@hooks/useOptionsMenu";
 
 const renderLogo = (imgUrl: string, altText: string) => {
   return (
@@ -55,11 +57,20 @@ function Home() {
     handleLogoClick,
   } = useHome();
 
+  const { hasError, isFetching } = useOptionsMenu(
+    selectedClient?.id ?? "",
+    businessUnits[0]?.businessUnitPublicCode ?? "",
+  );
+
   const configHeader = useConfigHeader(optionForCustomerPortal ?? []);
   const isTablet = useMediaQuery("(max-width: 944px)");
 
-  if (loading || validateTrigger || !optionForCustomerPortal) {
+  if (loading || validateTrigger || isFetching) {
     return <LoadingAppUI />;
+  }
+
+  if (hasError) {
+    return <ErrorPage errorCode={hasError} />;
   }
 
   return (

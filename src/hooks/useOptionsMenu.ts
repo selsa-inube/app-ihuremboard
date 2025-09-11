@@ -25,7 +25,7 @@ export function useOptionsMenu(
   useErrorFlag({ flagShown });
 
   useEffect(() => {
-    if (hasError) {
+    if (hasError === 500 || hasError === 1001) {
       signOut(`/error?code=${hasError}`);
     }
   }, [hasError, signOut]);
@@ -35,7 +35,7 @@ export function useOptionsMenu(
       setIsFetching(true);
 
       if (!provisionedPortal || !selectedClient) {
-        setHasError(1005);
+        setHasError(1001);
         setFlagShown(true);
         return;
       }
