@@ -117,34 +117,29 @@ function Home() {
 
         <StyledContainer>
           <StyledMain $isTablet={isTablet}>
-            <Grid
-              templateColumns={isTablet ? "1fr" : "auto 1fr"}
-              alignItems="start"
-            >
-              <Stack gap={spacing.s300} direction="column">
-                <Text size={isTablet ? "medium" : "large"} type="headline">
-                  Bienvenido(a), {user?.username ?? "Usuario"}
-                </Text>
-                <Text
-                  type="title"
-                  appearance="gray"
-                  size={isTablet ? "medium" : "large"}
-                >
-                  Aquí tienes las funcionalidades disponibles.
-                </Text>
-                <StyledQuickAccessContainer $isTablet={isTablet}>
-                  {navConfig(optionForCustomerPortal).map((link, index) => (
-                    <AppCard
-                      key={index}
-                      title={link.label}
-                      description={link.description}
-                      icon={link.icon}
-                      url={link.path}
-                    />
-                  ))}
-                </StyledQuickAccessContainer>
-              </Stack>
-            </Grid>
+            <Stack gap={spacing.s300} direction="column">
+              <Text size={isTablet ? "medium" : "large"} type="headline">
+                Bienvenido(a), {user?.username ?? "Usuario"}
+              </Text>
+              <Text
+                type="title"
+                appearance="gray"
+                size={isTablet ? "medium" : "large"}
+              >
+                Aquí tienes las funcionalidades disponibles.
+              </Text>
+              <StyledQuickAccessContainer $isTablet={isTablet}>
+                {navConfig(optionForCustomerPortal).map((link, index) => (
+                  <AppCard
+                    key={index}
+                    title={link.label}
+                    description={link.description}
+                    icon={link.icon}
+                    url={link.path}
+                  />
+                ))}
+              </StyledQuickAccessContainer>
+            </Stack>
             <Outlet />
           </StyledMain>
         </StyledContainer>

@@ -20,8 +20,10 @@ const StyledAppPage = styled.div`
 `;
 
 const StyledContainer = styled.div`
-  display: inherit;
-  overflow: hidden;
+  display: flex;
+  justify-content: center; /* centra horizontalmente */
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const StyledMain = styled.main<StyledMainProps>`
@@ -32,14 +34,15 @@ const StyledMain = styled.main<StyledMainProps>`
     $isTablet
       ? `0 ${spacing.s250} ${spacing.s0}`
       : `0 ${spacing.s800} ${spacing.s0}`};
-  max-width: 1312px;
-  width: auto;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 1300px; /* límite global */
+  margin: ${spacing.s450} auto 0 auto;
+  box-sizing: border-box;
 `;
 
 const StyledContentImg = styled(Link)`
   text-decoration: none;
-  color: inheri;
+  color: inherit;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -63,6 +66,11 @@ const StyledQuickAccessContainer = styled.div<StyledMainProps>`
   flex-wrap: wrap;
   border-radius: ${spacing.s100};
   justify-content: ${({ $isTablet }) => ($isTablet ? "center" : "flex-start")};
+
+  width: 100%;
+  max-width: 1300px; /* mismo límite que StyledMain */
+  margin: 0 auto;
+  box-sizing: border-box;
 `;
 
 const StyledCollapseIcon = styled.div<IStyledCollapseIcon>`
