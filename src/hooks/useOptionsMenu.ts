@@ -6,9 +6,9 @@ import { IOptionWithSubOptions } from "@ptypes/staffPortalBusiness.types";
 import { mapOptionForCustomerPortalApiToEntities } from "@services/staffPortal/getOptionForCustomerPortal/mappers";
 import { environment } from "@config/environment";
 import { optionDescriptionStaff } from "@mocks/staff/staff.mock";
+import { useSignOut } from "@hooks/useSignOut";
 
 import { useErrorFlag } from "./useErrorFlag";
-import { useSignOut } from "@hooks/useSignOut";
 
 export function useOptionsMenu(
   staffPortalPublicCode: string,

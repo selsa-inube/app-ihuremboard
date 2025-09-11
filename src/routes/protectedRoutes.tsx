@@ -10,6 +10,7 @@ import { ProtectedAppPage } from "src/ProtectedAppPage";
 import { RequestsRoutes } from "@routes/requests";
 import { FirstPage } from "@src/pages/firstPage";
 import { LogOut } from "@src/pages/logOut";
+import { Home } from "@pages/home";
 
 export const protectedRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +20,7 @@ export const protectedRouter = createBrowserRouter(
         element={<FirstPage />}
         errorElement={<ErrorPage />}
       />
+      <Route path="/" element={<Home />} />
       <Route path="/login/*" element={<LoginRoutes />} />
 
       <Route path="/*" element={<ProtectedAppPage />}>
