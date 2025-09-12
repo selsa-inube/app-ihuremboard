@@ -5,6 +5,7 @@ import {
   HumanResourceRequest,
   HumanResourceRequestTraceability,
   TaskToManageHumanResourceRequest,
+  HumanResourceRequestBlockingPerTask,
 } from "@ptypes/humanResourcesRequest.types";
 import { getValidEnumValue } from "@utils/enumValidator";
 
@@ -30,8 +31,22 @@ const mapHumanResourceRequestApiToEntity = (
     item.humanResourceRequestType,
     "Tipo desconocido",
   ) as ERequestType,
+
   employeeId: String(item.employeeId ?? ""),
-  employeeName: String(item.employeeName ?? ""),
+  employeeName: String(item.employeeName ?? item.names ?? ""),
+  employeeStatus: String(item.employeeStatus ?? ""),
+  identificationDocumentNumber: String(item.identificationDocumentNumber ?? ""),
+  identificationType: String(item.identificationType ?? ""),
+  names: String(item.names ?? ""),
+  surnames: String(item.surnames ?? ""),
+  positionName: String(item.positionName ?? ""),
+
+  staffIdentificationDocumentNumber: String(
+    item.staffIdentificationDocumentNumber ?? "",
+  ),
+  staffLastName: String(item.staffLastName ?? ""),
+  staffName: String(item.staffName ?? ""),
+
   humanResourceRequestTraceabilities: Array.isArray(
     item.humanResourceRequestTraceabilities,
   )
@@ -39,12 +54,19 @@ const mapHumanResourceRequestApiToEntity = (
         mapHumanResourceRequestTraceabilityApiToEntity,
       )
     : [],
+
   tasksToManageTheHumanResourcesRequests: Array.isArray(
     item.tasksToManageTheHumanResourcesRequests,
   )
     ? item.tasksToManageTheHumanResourcesRequests.map(
         mapTaskManagingHumanResourceRequestApiToEntity,
       )
+    : [],
+
+  humanResourceRequestBlockingPerTasks: Array.isArray(
+    item.humanResourceRequestBlockingPerTasks,
+  )
+    ? item.humanResourceRequestBlockingPerTasks.map(mapBlockingTaskApiToEntity)
     : [],
 });
 
@@ -74,8 +96,19 @@ const mapTaskManagingHumanResourceRequestApiToEntity = (
   description: String(item.description ?? ""),
 });
 
+const mapBlockingTaskApiToEntity = (
+  item: Partial<HumanResourceRequestBlockingPerTask>,
+): HumanResourceRequestBlockingPerTask => ({
+  blockType: String(item.blockType ?? ""),
+  description: String(item.description ?? ""),
+  errorId: String(item.errorId ?? ""),
+  registrationDate: String(item.registrationDate ?? ""),
+  taskManagingId: String(item.taskManagingId ?? ""),
+});
+
 export {
   mapHumanResourceRequestApiToEntity,
   mapHumanResourceRequestTraceabilityApiToEntity,
   mapTaskManagingHumanResourceRequestApiToEntity,
+  mapBlockingTaskApiToEntity,
 };

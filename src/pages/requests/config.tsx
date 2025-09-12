@@ -10,7 +10,8 @@ export const assignmentOptions: IOption[] = Object.entries(ERequestType).map(
 );
 
 export const statusOptions: IOption[] = [
-  { id: "pending", label: "Por evaluar", value: "pending" },
+  { id: "noResponsible", label: "Sin responsable", value: "noResponsible" },
+  { id: "blocked", label: "Con pendientes", value: "blocked" },
   { id: "inProgress", label: "En progreso", value: "inProgress" },
   { id: "completed", label: "Terminada", value: "completed" },
 ];

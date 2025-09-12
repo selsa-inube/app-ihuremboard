@@ -360,26 +360,35 @@ function RequestsUI(props: RequestsUIProps) {
                 isLoading={isLoadingRequests}
               >
                 {filteredRequests.length > 0 ? (
-                  filteredRequests.map(({ id, title, requestDate }) => (
-                    <RequestCard
-                      key={id}
-                      id={id}
-                      title={getRequestTypeTitle(title)}
-                      requestDate={requestDate}
-                      hasEmployeeName={true}
-                      onclick={() => {
-                        const requestTypeTitle = getRequestTypeTitle(title);
-                        if (RequestsNav[requestTypeTitle]) {
-                          navigate(
-                            `${RequestsNav[requestTypeTitle].path}/${id}`,
-                            {
-                              state: { section: value },
-                            },
-                          );
-                        }
-                      }}
-                    />
-                  ))
+                  filteredRequests.map(
+                    ({ id, title, requestDate, employeeName, status }) => {
+                      const requestTypeTitle = getRequestTypeTitle(title);
+
+                      return (
+                        <RequestCard
+                          key={id}
+                          id={id}
+                          title={requestTypeTitle}
+                          requestDate={requestDate}
+                          employeeName={employeeName}
+                          status={
+                            statusOptions.find((opt) => opt.value === status)
+                              ?.label ?? status
+                          }
+                          responsible="Sin responsable"
+                          onclick={() => {
+                            if (RequestsNav[requestTypeTitle]) {
+                              navigate(
+                                `${RequestsNav[requestTypeTitle].path}/${id}`,
+                                { state: { section: value } },
+                              );
+                            }
+                          }}
+                          showExtraIcon={sectionTitle === "Con pendientes"}
+                        />
+                      );
+                    },
+                  )
                 ) : (
                   <Text>
                     No hay solicitudes que coincidan con los filtros
