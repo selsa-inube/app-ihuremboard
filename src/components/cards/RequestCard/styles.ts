@@ -12,11 +12,10 @@ interface IStyledTitle {
 }
 
 const StyledRequestCard = styled.div<IStyledRequestCard>`
-  width: 280px;
-  height: 207px;
+  width: 242px;
+  height: 312px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   gap: ${spacing.s100};
   padding: ${spacing.s150};
   border-radius: 8px;

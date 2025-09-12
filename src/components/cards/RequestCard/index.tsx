@@ -1,4 +1,5 @@
-import { Stack, Text, Divider } from "@inubekit/inubekit";
+import { Stack, Text, Divider, Icon } from "@inubekit/inubekit";
+import { MdOutlinePerson, MdOutlineReportProblem } from "react-icons/md";
 import { spacing } from "@design/tokens/spacing";
 import { StyledRequestCard, StyledTitle } from "./styles";
 
@@ -6,9 +7,11 @@ interface RequestCardProps {
   id: string;
   title: string;
   requestDate: string;
-  employeeName?: string;
-  hasEmployeeName?: boolean;
+  employeeName: string;
+  status: string;
+  responsible: string;
   onclick?: () => void;
+  showExtraIcon?: boolean;
 }
 
 const RequestCard = (props: RequestCardProps) => {
@@ -16,38 +19,47 @@ const RequestCard = (props: RequestCardProps) => {
     id,
     title,
     requestDate,
-    employeeName = "Sin nombre de empleado",
-    hasEmployeeName = false,
+    employeeName,
+    status,
+    responsible,
     onclick,
+    showExtraIcon,
   } = props;
 
   return (
     <Stack direction="column" width="280px">
       <StyledRequestCard onClick={onclick}>
         <StyledTitle>
-          <Stack justifyContent="center">
-            <Text
-              type="label"
-              size="small"
-              appearance="primary"
-              textAlign="center"
-              weight="bold"
-              padding={spacing.s050}
-            >
-              {title}
-            </Text>
-          </Stack>
+          <Text
+            type="label"
+            size="small"
+            appearance="primary"
+            textAlign="center"
+            weight="bold"
+          >
+            {title}
+          </Text>
         </StyledTitle>
+
+        <Stack justifyContent="center">
+          <Icon icon={<MdOutlinePerson />} size="16px" appearance="primary" />
+          <Text size="small">
+            {employeeName?.trim() ? employeeName : "Sin nombre de empleado"}
+          </Text>
+        </Stack>
+
         <Divider dashed />
+
         <Stack direction="column" gap={spacing.s100}>
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">
-              ID.
+              Número
             </Text>
             <Text size="medium" appearance="gray">
               {id}
             </Text>
           </Stack>
+
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">
               Fecha de solicitud
@@ -56,15 +68,35 @@ const RequestCard = (props: RequestCardProps) => {
               {requestDate}
             </Text>
           </Stack>
+
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">
-              Nombre de empleado
+              Estado
             </Text>
             <Text size="medium" appearance="gray">
-              {hasEmployeeName ? employeeName : "Sin nombre de empleado"}
+              {status}
+            </Text>
+          </Stack>
+
+          <Stack direction="column" gap={spacing.s050}>
+            <Text type="title" weight="bold" size="small">
+              Responsable
+            </Text>
+            <Text size="medium" appearance="gray">
+              {responsible}
             </Text>
           </Stack>
         </Stack>
+
+        {showExtraIcon && (
+          <Stack justifyContent="flex-end">
+            <Icon
+              icon={<MdOutlineReportProblem />}
+              size="20px"
+              appearance="primary"
+            />
+          </Stack>
+        )}
       </StyledRequestCard>
     </Stack>
   );

@@ -1,35 +1,51 @@
-export interface HumanResourceRequestTraceability {
-  actionExecuted: string;
-  description: string;
-  executionDate: string;
+export interface HumanResourceRequest {
   humanResourceRequestId: string;
+  humanResourceRequestNumber: string;
+  humanResourceRequestDescription: string;
+  humanResourceRequestDate: string;
+  humanResourceRequestStatus: ERequestStatus;
+  humanResourceRequestType: ERequestType;
+  humanResourceRequestData: HumanResourceRequestData;
+  employeeId: string;
+  employeeName: string;
+  employeeStatus: string;
+  identificationDocumentNumber: string;
+  identificationType: string;
+  names: string;
+  surnames: string;
+  positionName: string;
+  staffIdentificationDocumentNumber: string;
+  staffLastName: string;
+  staffName: string;
+  humanResourceRequestTraceabilities: HumanResourceRequestTraceability[];
+  tasksToManageTheHumanResourcesRequests: TaskToManageHumanResourceRequest[];
+  humanResourceRequestBlockingPerTasks: HumanResourceRequestBlockingPerTask[];
+}
+export interface HumanResourceRequestTraceability {
   traceabilityId: string;
+  humanResourceRequestId: string;
+  actionExecuted: string;
   userWhoExecutedAction: string;
+  executionDate: string;
+  description: string;
 }
 
 export interface TaskToManageHumanResourceRequest {
-  description: string;
+  taskManagingId: string;
   humanResourceRequestId: string;
   taskCode: string;
-  taskManagingId: string;
   taskName: string;
   taskStatus: ETaskStatus;
+  description: string;
 }
 
-export interface HumanResourceRequest {
-  employeeId: string;
-  employeeName: string;
-  humanResourceRequestData: HumanResourceRequestData;
-  humanResourceRequestDate: string;
-  humanResourceRequestDescription: string;
-  humanResourceRequestId: string;
-  humanResourceRequestNumber: string;
-  humanResourceRequestStatus: ERequestStatus;
-  humanResourceRequestTraceabilities: HumanResourceRequestTraceability[];
-  humanResourceRequestType: ERequestType;
-  tasksToManageTheHumanResourcesRequests: TaskToManageHumanResourceRequest[];
+export interface HumanResourceRequestBlockingPerTask {
+  blockType: string;
+  description: string;
+  errorId: string;
+  registrationDate: string;
+  taskManagingId: string;
 }
-
 export interface IVacationGeneralInformationEntry {
   id: string;
   daysOff: string;
@@ -78,6 +94,8 @@ export enum ERequestType {
 export enum ETaskStatus {
   assigned = "Asignada",
   executed = "Ejecutada",
+  manually_locked = "Bloqueada Manualmente",
+  system_locked = "Bloqueada por Sistema",
 }
 
 export enum ERequestStatus {
