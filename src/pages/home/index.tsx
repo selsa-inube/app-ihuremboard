@@ -20,23 +20,21 @@ import { ErrorPage } from "@components/layout/ErrorPage";
 import {
   StyledAppPage,
   StyledContainer,
-  StyledContentImg,
-  StyledLogo,
   StyledMain,
   StyledQuickAccessContainer,
   StyledCollapseIcon,
   StyledCollapse,
+  StyledContentImg,
+  StyledLogo,
 } from "./styles";
 import { useHome } from "./interface";
 import { useOptionsMenu } from "@hooks/useOptionsMenu";
 
-const renderLogo = (imgUrl: string, altText: string) => {
-  return (
-    <StyledContentImg to="/">
-      <StyledLogo src={imgUrl} alt={altText} />
-    </StyledContentImg>
-  );
-};
+const renderLogo = (imgUrl: string, altText: string) => (
+  <StyledContentImg to="/">
+    <StyledLogo src={imgUrl} alt={altText} />
+  </StyledContentImg>
+);
 
 function Home() {
   const {
@@ -44,7 +42,6 @@ function Home() {
     logoUrl,
     selectedClient,
     businessUnits,
-    optionForCustomerPortal,
     collapse,
     collapseMenuRef,
     businessUnitChangeRef,
@@ -55,14 +52,15 @@ function Home() {
     showBusinessUnitSelector,
     setCollapse,
     handleLogoClick,
+    staffPortalPublicCode,
   } = useHome();
 
-  const { hasError, isFetching } = useOptionsMenu(
+  const { optionData, hasError, isFetching } = useOptionsMenu(
+    staffPortalPublicCode,
     selectedClient?.id ?? "",
-    businessUnits[0]?.businessUnitPublicCode ?? "",
   );
 
-  const configHeader = useConfigHeader(optionForCustomerPortal ?? []);
+  const configHeader = useConfigHeader(optionData ?? []);
   const isTablet = useMediaQuery("(max-width: 944px)");
 
   if (loading || validateTrigger || isFetching) {
@@ -140,7 +138,7 @@ function Home() {
                 Aquí tienes las funcionalidades disponibles.
               </Text>
               <StyledQuickAccessContainer $isTablet={isTablet}>
-                {navConfig(optionForCustomerPortal).map((link, index) => (
+                {navConfig(optionData).map((link, index) => (
                   <AppCard
                     key={index}
                     title={link.label}

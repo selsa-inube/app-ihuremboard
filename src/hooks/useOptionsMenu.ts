@@ -12,7 +12,7 @@ import { useErrorFlag } from "./useErrorFlag";
 
 export function useOptionsMenu(
   staffPortalPublicCode: string,
-  businessUnit: string,
+  businessUnitPublicCode: string,
 ) {
   const [optionData, setOptionData] = useState<IOptionWithSubOptions[]>([]);
   const [hasError, setHasError] = useState<number | null>(null);
@@ -31,33 +31,35 @@ export function useOptionsMenu(
   }, [hasError, signOut]);
 
   useEffect(() => {
-    const fetchoptionData = async () => {
+    const fetchOptionData = async () => {
       setIsFetching(true);
 
       if (!provisionedPortal || !selectedClient) {
         setHasError(1001);
         setFlagShown(true);
+        setIsFetching(false);
         return;
       }
 
       try {
-        const staffoptionData =
+        const staffOptionData =
           environment.IVITE_VERCEL === "Y"
             ? mapOptionForCustomerPortalApiToEntities(optionDescriptionStaff)
             : await getOptionForCustomerPortal(
                 staffPortalPublicCode,
-                businessUnit,
+                businessUnitPublicCode,
               );
 
-        if (staffoptionData.length === 0) {
+        if (staffOptionData.length === 0) {
           setHasError(1005);
           setFlagShown(true);
           return;
         }
 
         setHasError(null);
-        setOptionData(staffoptionData);
-      } catch {
+        setOptionData(staffOptionData);
+      } catch (err) {
+        console.error("❌ Error en fetchOptionData:", err);
         setHasError(500);
         setFlagShown(true);
       } finally {
@@ -65,8 +67,13 @@ export function useOptionsMenu(
       }
     };
 
-    void fetchoptionData();
-  }, [provisionedPortal, selectedClient, staffPortalPublicCode, businessUnit]);
+    void fetchOptionData();
+  }, [
+    provisionedPortal,
+    selectedClient,
+    staffPortalPublicCode,
+    businessUnitPublicCode,
+  ]);
 
   return { optionData, hasError, isFetching };
 }

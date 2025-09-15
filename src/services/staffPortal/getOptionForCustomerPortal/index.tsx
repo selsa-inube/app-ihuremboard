@@ -18,16 +18,17 @@ const getOptionForCustomerPortal = async (
     try {
       const queryParams = new URLSearchParams({
         staffPortalPublicCode,
-        businessUnit,
+        businessUnitPublicCode: businessUnit,
       });
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
 
       const options: RequestInit = {
         method: "GET",
         headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          "X-Action": "SearchOptionsStaffPortalByBusinessUnit",
+          "Content-Type": "application/json; charset=UTF-8",
+          "x-action": "SearchOptionsStaffPortalByBusinessUnit",
         },
         signal: controller.signal,
       };
@@ -38,6 +39,7 @@ const getOptionForCustomerPortal = async (
       );
 
       clearTimeout(timeoutId);
+
       if (res.status === 204) {
         return [] as IOptionWithSubOptions[];
       }
@@ -51,6 +53,7 @@ const getOptionForCustomerPortal = async (
           data,
         };
       }
+
       return Array.isArray(data)
         ? mapOptionForCustomerPortalApiToEntities(data)
         : [];
