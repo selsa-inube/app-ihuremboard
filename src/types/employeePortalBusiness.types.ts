@@ -27,7 +27,6 @@ interface IEmployeePortalByBusinessManager {
 interface IBusinessManager {
   businessManagerCode: string;
   publicCode: string;
-  publicCode: string;
   language: string;
   abbreviatedName: string;
   description: string;
