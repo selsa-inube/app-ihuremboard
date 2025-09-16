@@ -54,22 +54,29 @@ function Requests() {
   useOutsideClick(menuRef, isMenuOpen, () => setIsMenuOpen(false));
 
   const boardSections = useMemo(() => {
-    const statusMap: Record<Status, string> = {
-      pending: "Por evaluar",
+    const sectionTitles = {
+      noResponsible: "Sin responsable",
+      blocked: "Con pendientes",
       inProgress: "En progreso",
       completed: "Terminada",
     };
 
-    const backgroundMap: Record<Status, "gray" | "light"> = {
-      pending: "gray",
-      inProgress: "light",
-      completed: "gray",
-    };
+    const backgroundMap = {
+      noResponsible: "gray",
+      blocked: "light",
+      inProgress: "gray",
+      completed: "light",
+    } as const;
 
-    const statuses: Status[] = ["pending", "inProgress", "completed"];
+    const statuses: Status[] = [
+      "noResponsible",
+      "blocked",
+      "inProgress",
+      "completed",
+    ];
 
     return statuses.map((status) => ({
-      sectionTitle: statusMap[status],
+      sectionTitle: sectionTitles[status],
       value: status,
       sectionBackground: backgroundMap[status],
       sectionInformation: data.filter((req) => req.status === status),

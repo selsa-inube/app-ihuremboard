@@ -17,7 +17,7 @@ const getHumanResourceRequests = async (headers: Record<string, string>) => {
 
       const queryParameters = new URLSearchParams({
         page: "1",
-        per_page: "500",
+        per_page: "50",
         sort: "desc.humanResourceRequestDate",
       });
 
@@ -26,7 +26,7 @@ const getHumanResourceRequests = async (headers: Record<string, string>) => {
         {
           method: "GET",
           headers: {
-            "X-Action": "SearchAllHumanResourcesRequest",
+            "X-Action": "SearchAllEmployeeHumanResourcesRequest",
             ...headers,
           },
           signal: controller.signal,
