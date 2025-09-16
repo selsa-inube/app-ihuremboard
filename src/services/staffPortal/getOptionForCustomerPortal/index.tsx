@@ -9,7 +9,7 @@ import { mapOptionForCustomerPortalApiToEntities } from "./mappers";
 
 const getOptionForCustomerPortal = async (
   staffPortalPublicCode: string,
-  businessUnit: string,
+  businessUnitPublicCode: string,
 ): Promise<IOptionWithSubOptions[]> => {
   const maxRetries = maxRetriesServices;
   const fetchTimeout = fetchTimeoutServices;
@@ -18,8 +18,9 @@ const getOptionForCustomerPortal = async (
     try {
       const queryParams = new URLSearchParams({
         staffPortalPublicCode,
-        businessUnit,
+        businessUnitPublicCode,
       });
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
 
@@ -38,6 +39,7 @@ const getOptionForCustomerPortal = async (
       );
 
       clearTimeout(timeoutId);
+
       if (res.status === 204) {
         return [] as IOptionWithSubOptions[];
       }
@@ -51,6 +53,7 @@ const getOptionForCustomerPortal = async (
           data,
         };
       }
+
       return Array.isArray(data)
         ? mapOptionForCustomerPortalApiToEntities(data)
         : [];
