@@ -1,0 +1,36 @@
+import styled from "styled-components";
+import { inube } from "@inubekit/inubekit";
+import { spacing } from "@design/tokens/spacing";
+
+interface StyledRequestSummaryContainerProps {
+  $isMobile: boolean;
+  theme?: typeof inube;
+}
+
+interface IVerticalDividerProps {
+  theme: typeof inube;
+}
+
+const StyledRequestSummaryContainer = styled.div<StyledRequestSummaryContainerProps>`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacing.s200};
+  border-radius: ${spacing.s100};
+  border: 1px solid
+    ${({ theme }) =>
+      theme && theme.palette?.neutral?.N30
+        ? theme.palette.neutral.N30
+        : inube.palette.neutral.N30};
+  padding: ${spacing.s100};
+  margin-bottom: ${spacing.s300};
+`;
+
+const VerticalDivider = styled.div<IVerticalDividerProps>`
+  width: 2px;
+  height: 24px;
+  background-color: ${({ theme }) =>
+    theme?.palette?.neutral?.N30 || inube.palette.neutral.N30};
+  margin: 0 ${spacing.s100};
+`;
+
+export { StyledRequestSummaryContainer, VerticalDivider };

@@ -4,8 +4,8 @@ const breadcrumbs = {
 };
 
 const RequestsNav: Record<string, { path: string }> = {
-  "Vacaciones Pagadas": { path: "/holiday-request" },
-  "Vacaciones Disfrutadas": { path: "/holiday-request" },
+  "Vacaciones Pagadas": { path: "/requests/holiday-request" },
+  "Vacaciones Disfrutadas": { path: "/requests/holiday-request" },
 };
 
 export { breadcrumbs, RequestsNav };
