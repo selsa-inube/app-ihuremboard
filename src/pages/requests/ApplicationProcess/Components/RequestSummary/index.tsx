@@ -7,11 +7,9 @@ import {
   IOption,
 } from "@inubekit/inubekit";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { spacing } from "@design/tokens/spacing";
-import { InfoModal } from "@components/modals/InfoModal";
 import { StyledRequestSummaryContainer } from "./styles";
 import { formatDate } from "@utils/date";
 
@@ -27,7 +25,6 @@ export interface RequestSummaryProps {
 
 function RequestSummary(props: RequestSummaryProps) {
   const location = useLocation();
-
   const state = location.state as RequestSummaryProps;
 
   const requestNumber = props.requestNumber ?? state?.requestNumber;
@@ -37,13 +34,6 @@ function RequestSummary(props: RequestSummaryProps) {
   const staffName = props.staffName ?? state?.staffName;
   const statusOptions = props.statusOptions ?? state?.statusOptions ?? [];
   const isLoading = props.isLoading ?? false;
-
-  const [infoModal, setInfoModal] = useState({
-    open: false,
-    title: "Información",
-    description: "",
-  });
-
   const isMobile = useMediaQuery("(max-width: 710px)");
 
   const statusLabel =
@@ -67,89 +57,138 @@ function RequestSummary(props: RequestSummaryProps) {
       </Stack>
 
       <StyledRequestSummaryContainer $isMobile={isMobile}>
-        <Stack
-          direction={isMobile ? "column" : "row"}
-          justifyContent="space-between"
-          alignItems={isMobile ? "flex-start" : "center"}
-          width="100%"
-          gap={spacing.s100}
-        >
-          <Stack direction="column" gap={spacing.s050}>
-            <Stack gap={spacing.s050}>
-              <Text type="label" weight="bold">
-                No. de solicitud
+        {isMobile ? (
+          <Stack direction="column" gap={spacing.s150} width="100%">
+            <Stack justifyContent="center">
+              <Text size="large" weight="bold">
+                {staffName ?? "Sin responsable"}
               </Text>
-              {isLoading ? (
-                <SkeletonLine animated width="80px" />
-              ) : (
-                <Text appearance="gray" type="label">
-                  {requestNumber ?? "XXXXXX"}
+            </Stack>
+
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              width="100%"
+            >
+              <Stack direction="column" gap={spacing.s075}>
+                <Stack gap={spacing.s050}>
+                  <Text type="label" weight="bold">
+                    No. de solicitud
+                  </Text>
+                  {isLoading ? (
+                    <SkeletonLine animated width="80px" />
+                  ) : (
+                    <Text appearance="gray" type="label">
+                      {requestNumber ?? "XXXXXX"}
+                    </Text>
+                  )}
+                </Stack>
+
+                <Stack gap={spacing.s050}>
+                  <Text type="label" weight="bold">
+                    Tiempo de solicitud
+                  </Text>
+                  {isLoading ? (
+                    <SkeletonLine animated width="100px" />
+                  ) : (
+                    <Text appearance="gray" type="label">
+                      {requestDate ? formatDate(requestDate) : "Sin fecha"}
+                    </Text>
+                  )}
+                </Stack>
+
+                <Stack gap={spacing.s050}>
+                  <Text type="label" weight="bold">
+                    Tipo de solicitud
+                  </Text>
+                  {isLoading ? (
+                    <SkeletonLine animated width="140px" />
+                  ) : (
+                    <Text appearance="gray" type="label">
+                      {title ?? "Tipo desconocido"}
+                    </Text>
+                  )}
+                </Stack>
+              </Stack>
+
+              <Icon
+                icon={<MdKeyboardArrowDown />}
+                appearance="primary"
+                size="24px"
+                cursorHover
+                onClick={() => console.log("Mostrar más información")}
+              />
+            </Stack>
+          </Stack>
+        ) : (
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+            gap={spacing.s100}
+          >
+            <Stack direction="column" gap={spacing.s050}>
+              <Stack gap={spacing.s050}>
+                <Text type="label" weight="bold">
+                  No. de solicitud
                 </Text>
+                {isLoading ? (
+                  <SkeletonLine animated width="80px" />
+                ) : (
+                  <Text appearance="gray" type="label">
+                    {requestNumber ?? "XXXXXX"}
+                  </Text>
+                )}
+              </Stack>
+
+              <Stack gap={spacing.s050}>
+                <Text type="label" weight="bold">
+                  Fecha de solicitud
+                </Text>
+                {isLoading ? (
+                  <SkeletonLine animated width="100px" />
+                ) : (
+                  <Text appearance="gray" type="label">
+                    {requestDate ? formatDate(requestDate) : "Sin fecha"}
+                  </Text>
+                )}
+              </Stack>
+              <Stack gap={spacing.s050}>
+                <Text type="label" weight="bold">
+                  Tipo de solicitud
+                </Text>
+                {isLoading ? (
+                  <SkeletonLine animated width="140px" />
+                ) : (
+                  <Text appearance="gray" type="label">
+                    {title ?? "Tipo desconocido"}
+                  </Text>
+                )}
+              </Stack>
+            </Stack>
+
+            <Stack alignItems="center" gap={spacing.s050}>
+              {isLoading ? (
+                <SkeletonLine animated width="120px" />
+              ) : (
+                <Text size="large">{staffName ?? "Sin responsable"}</Text>
               )}
             </Stack>
 
-            <Stack gap={spacing.s050}>
-              <Text type="label" weight="bold">
-                Fecha de solicitud
-              </Text>
-              {isLoading ? (
-                <SkeletonLine animated width="100px" />
-              ) : (
-                <Text appearance="gray" type="label">
-                  {requestDate ? formatDate(requestDate) : "Sin fecha"}
-                </Text>
-              )}
-            </Stack>
-            <Stack gap={spacing.s050}>
-              <Text type="label" weight="bold">
-                Tipo de solicitud
-              </Text>
-              {isLoading ? (
-                <SkeletonLine animated width="140px" />
-              ) : (
-                <Text appearance="gray" type="label">
-                  {title ?? "Tipo desconocido"}
-                </Text>
-              )}
+            <Stack>
+              <Icon
+                icon={<MdKeyboardArrowDown />}
+                appearance="primary"
+                size="24px"
+                cursorHover
+                onClick={() => console.log("Mostrar más información")}
+              />
             </Stack>
           </Stack>
-
-          <Stack alignItems="center" gap={spacing.s050}>
-            {isLoading ? (
-              <SkeletonLine animated width="120px" />
-            ) : (
-              <Text size="large">{staffName ?? "Sin responsable"}</Text>
-            )}
-          </Stack>
-
-          <Stack>
-            <Icon
-              icon={<MdKeyboardArrowDown />}
-              appearance="primary"
-              size="24px"
-              cursorHover
-              onClick={() =>
-                setInfoModal({
-                  open: true,
-                  title: "Detalle de solicitud",
-                  description: `Solicitud #${requestNumber}`,
-                })
-              }
-            />
-          </Stack>
-        </Stack>
+        )}
       </StyledRequestSummaryContainer>
-
-      {infoModal.open && (
-        <InfoModal
-          title={infoModal.title}
-          titleDescription="Información adicional"
-          description={infoModal.description}
-          onCloseModal={() =>
-            setInfoModal({ open: false, title: "", description: "" })
-          }
-        />
-      )}
     </Stack>
   );
 }

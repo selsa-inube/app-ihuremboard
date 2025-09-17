@@ -18,9 +18,9 @@ const StyledRequestSummaryContainer = styled.div<StyledRequestSummaryContainerPr
   border-radius: ${spacing.s100};
   border: 1px solid
     ${({ theme }) =>
-      theme && theme.palette?.neutral?.N30
-        ? theme.palette.neutral.N30
-        : inube.palette.neutral.N30};
+      theme && theme.palette?.neutral?.N40
+        ? theme.palette.neutral.N40
+        : inube.palette.neutral.N40};
   padding: ${spacing.s100};
   margin-bottom: ${spacing.s300};
 `;

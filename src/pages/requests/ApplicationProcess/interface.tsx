@@ -1,16 +1,20 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Stack, Button } from "@inubekit/inubekit";
+import { Stack, Button, Icon, useMediaQuery } from "@inubekit/inubekit";
 import {
   MdKeyboardArrowLeft,
   MdAutorenew,
   MdOutlineCancel,
+  MdMoreVert,
 } from "react-icons/md";
+import { useState } from "react";
 
 import { AppMenu } from "@components/layout/AppMenu";
 import { IRoute } from "@components/layout/AppMenu/types";
 import { RequestSummary } from "./Components/RequestSummary";
 import { VerticalDivider } from "./Components/RequestSummary/styles";
 import { spacing } from "@design/tokens/spacing";
+
+import { ActionModal } from "./Components/Actions";
 
 interface ApplicationProcessUIProps {
   appName: string;
@@ -31,6 +35,9 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       status: string;
     };
   };
+
+  const isMobile = useMediaQuery("(max-width: 710px)");
+  const [showActions, setShowActions] = useState(false);
 
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
@@ -56,36 +63,66 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
             Volver
           </Button>
 
-          <Stack direction="row" gap={spacing.s075} alignItems="center">
-            <Button
-              appearance="primary"
-              onClick={handleExecute}
-              iconBefore={<MdAutorenew />}
-              spacing="compact"
-            >
-              Ejecutar
-            </Button>
-            <Button
-              appearance="danger"
-              onClick={handleDiscard}
-              iconBefore={<MdOutlineCancel />}
-              spacing="compact"
-            >
-              Descartar
-            </Button>
-            <VerticalDivider />
-            <Button variant="outlined" onClick={handleAttach} spacing="compact">
-              Adjuntar
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={handleSeeAttachments}
-              spacing="compact"
-            >
-              Ver adjuntos
-            </Button>
-          </Stack>
+          {isMobile ? (
+            <Icon
+              icon={<MdMoreVert />}
+              appearance="dark"
+              size="24px"
+              cursorHover
+              onClick={() => setShowActions(true)}
+            />
+          ) : (
+            <Stack direction="row" gap={spacing.s075} alignItems="center">
+              <Button
+                appearance="primary"
+                onClick={handleExecute}
+                iconBefore={<MdAutorenew />}
+                spacing="compact"
+              >
+                Ejecutar
+              </Button>
+              <Button
+                appearance="danger"
+                onClick={handleDiscard}
+                iconBefore={<MdOutlineCancel />}
+                spacing="compact"
+              >
+                Descartar
+              </Button>
+              <VerticalDivider />
+              <Button
+                variant="outlined"
+                onClick={handleAttach}
+                spacing="compact"
+              >
+                Adjuntar
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleSeeAttachments}
+                spacing="compact"
+              >
+                Ver adjuntos
+              </Button>
+            </Stack>
+          )}
         </Stack>
+
+        {isMobile && showActions && (
+          <ActionModal
+            onExecute={handleExecute}
+            onDiscard={handleDiscard}
+            onAttach={handleAttach}
+            onSeeAttachments={handleSeeAttachments}
+            onClose={() => setShowActions(false)}
+            actionDescriptions={{
+              execute: "No puedes ejecutar esta acción ahora",
+              discard: "No puedes descartar esta acción ahora",
+              attach: "No puedes adjuntar archivos en este momento",
+              seeAttachments: "No puedes ver los adjuntos en este momento",
+            }}
+          />
+        )}
 
         <RequestSummary
           requestNumber={state?.requestNumber ?? id}

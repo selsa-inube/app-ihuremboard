@@ -1,10 +1,18 @@
 import { Meta, StoryFn } from "@storybook/react";
+import { MemoryRouter } from "react-router-dom";
 
 import { RequestSummary, RequestSummaryProps } from ".";
 
 const meta: Meta<typeof RequestSummary> = {
   title: "components/RequestSummary",
   component: RequestSummary,
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
   argTypes: {
     staffName: { control: "text" },
     requestNumber: { control: "text" },

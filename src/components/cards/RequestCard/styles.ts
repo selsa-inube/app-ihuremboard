@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { inube } from "@inubekit/inubekit";
-
 import { spacing } from "@design/tokens/spacing";
 
 interface IStyledRequestCard {
   theme: typeof inube;
+  $isMobile: boolean;
 }
 
 interface IStyledTitle {
@@ -12,8 +12,8 @@ interface IStyledTitle {
 }
 
 const StyledRequestCard = styled.div<IStyledRequestCard>`
-  width: 242px;
-  height: 312px;
+  width: ${({ $isMobile }) => ($isMobile ? "280px" : "242px")};
+  height: ${({ $isMobile }) => ($isMobile ? "280px" : "312px")};
   display: flex;
   flex-direction: column;
   gap: ${spacing.s100};

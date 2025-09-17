@@ -1,4 +1,4 @@
-import { Stack, Text, Divider, Icon } from "@inubekit/inubekit";
+import { Stack, Text, Divider, Icon, useMediaQuery } from "@inubekit/inubekit";
 import { MdOutlinePerson, MdOutlineReportProblem } from "react-icons/md";
 import { spacing } from "@design/tokens/spacing";
 import { StyledRequestCard, StyledTitle } from "./styles";
@@ -26,9 +26,11 @@ const RequestCard = (props: RequestCardProps) => {
     showExtraIcon,
   } = props;
 
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
   return (
-    <Stack direction="column" width="280px">
-      <StyledRequestCard onClick={onclick}>
+    <Stack direction="column" width={isMobile ? "100%" : "280px"}>
+      <StyledRequestCard onClick={onclick} $isMobile={isMobile}>
         <StyledTitle>
           <Text
             type="label"
