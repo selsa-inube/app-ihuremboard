@@ -9,9 +9,9 @@ function ApplicationProcess() {
       appName=""
       appRoute={[
         {
-          path: `/requests/holiday-request/${id}`,
+          path: `/requests/${id}`,
           label: "",
-          id: `/requests/holiday-request/${id}`,
+          id: `/requests/${id}`,
           isActive: true,
         },
       ]}

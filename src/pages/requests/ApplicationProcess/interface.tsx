@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Stack, Button } from "@inubekit/inubekit";
 import {
   MdKeyboardArrowLeft,
@@ -22,12 +22,17 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const { appName, appRoute, navigatePage } = props;
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
-  const requestDate = new Date().toISOString();
+  const { state } = useLocation() as {
+    state: {
+      requestNumber: string;
+      requestDate: string;
+      staffName: string;
+      title: string;
+      status: string;
+    };
+  };
 
   const handleDiscard = () => console.log("Descartar solicitud");
-  const handleSeeRequirements = () => console.log("Ver requisitos");
-  const handleEditStaff = () => console.log("Editar responsable");
   const handleExecute = () => console.log("Ejecutar solicitud");
   const handleAttach = () => console.log("Adjuntar archivos");
   const handleSeeAttachments = () => console.log("Ver adjuntos");
@@ -83,12 +88,11 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
         </Stack>
 
         <RequestSummary
-          requestNumber={id}
-          staffName={"Nombre Responsable"}
-          requestDate={requestDate}
-          onDiscard={handleDiscard}
-          onSeeRequirements={handleSeeRequirements}
-          onEditStaff={handleEditStaff}
+          requestNumber={state?.requestNumber ?? id}
+          staffName={state?.staffName}
+          requestDate={state?.requestDate}
+          title={state?.title}
+          status={state?.status}
         />
       </Stack>
     </AppMenu>

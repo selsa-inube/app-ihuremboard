@@ -4,62 +4,66 @@ import {
   Icon,
   Stack,
   SkeletonLine,
+  IOption,
 } from "@inubekit/inubekit";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { spacing } from "@design/tokens/spacing";
 import { InfoModal } from "@components/modals/InfoModal";
 import { StyledRequestSummaryContainer } from "./styles";
-import { ERequestType } from "@ptypes/humanResourcesRequest.types";
 import { formatDate } from "@utils/date";
 
 export interface RequestSummaryProps {
-  canSeeRequirements?: boolean;
   isLoading?: boolean;
-  staffName?: string;
-  requestNumber?: string;
+  requestNumber?: string | number;
   requestDate?: string;
   title?: string;
-  onDiscard?: () => void;
-  onSeeRequirements?: () => void;
-  onEditStaff?: () => void;
+  status?: string;
+  staffName?: string;
+  statusOptions?: IOption[];
 }
 
 function RequestSummary(props: RequestSummaryProps) {
-  const {
-    isLoading = false,
-    staffName = "",
-    requestNumber,
-    requestDate,
-    title,
-  } = props;
+  const location = useLocation();
 
-  const [infoModal, setInfoModal] = useState<{
-    open: boolean;
-    title: string;
-    description: string;
-  }>({ open: false, title: "Información", description: "" });
+  const state = location.state as RequestSummaryProps;
+
+  const requestNumber = props.requestNumber ?? state?.requestNumber;
+  const requestDate = props.requestDate ?? state?.requestDate;
+  const title = props.title ?? state?.title;
+  const status = props.status ?? state?.status;
+  const staffName = props.staffName ?? state?.staffName;
+  const statusOptions = props.statusOptions ?? state?.statusOptions ?? [];
+  const isLoading = props.isLoading ?? false;
+
+  const [infoModal, setInfoModal] = useState({
+    open: false,
+    title: "Información",
+    description: "",
+  });
 
   const isMobile = useMediaQuery("(max-width: 710px)");
 
-  function getRequestTypeTitle(type: string): string {
-    if (type in ERequestType) {
-      return ERequestType[type as keyof typeof ERequestType];
-    }
-    return "Tipo desconocido";
-  }
+  const statusLabel =
+    statusOptions.find((opt) => opt.value === status)?.label ??
+    status ??
+    "Sin estado";
 
   return (
     <Stack direction="column" gap={spacing.s100}>
-      {/* Estado */}
       <Stack gap={spacing.s075}>
         <Text type="title" size="medium" weight="bold">
           Estado:
         </Text>
-        <Text type="title" size="medium" appearance="gray">
-          Verificación en gestión humana
-        </Text>
+        {isLoading ? (
+          <SkeletonLine animated width="120px" />
+        ) : (
+          <Text type="title" size="medium" appearance="gray">
+            {statusLabel}
+          </Text>
+        )}
       </Stack>
 
       <StyledRequestSummaryContainer $isMobile={isMobile}>
@@ -75,27 +79,38 @@ function RequestSummary(props: RequestSummaryProps) {
               <Text type="label" weight="bold">
                 No. de solicitud
               </Text>
-              <Text appearance="gray" type="label">
-                {requestNumber ?? "XXXXXX"}
-              </Text>
+              {isLoading ? (
+                <SkeletonLine animated width="80px" />
+              ) : (
+                <Text appearance="gray" type="label">
+                  {requestNumber ?? "XXXXXX"}
+                </Text>
+              )}
             </Stack>
 
             <Stack gap={spacing.s050}>
               <Text type="label" weight="bold">
                 Fecha de solicitud
               </Text>
-              <Text appearance="gray" type="label">
-                {requestDate ? formatDate(requestDate) : "Sin fecha"}
-              </Text>
+              {isLoading ? (
+                <SkeletonLine animated width="100px" />
+              ) : (
+                <Text appearance="gray" type="label">
+                  {requestDate ? formatDate(requestDate) : "Sin fecha"}
+                </Text>
+              )}
             </Stack>
-
             <Stack gap={spacing.s050}>
               <Text type="label" weight="bold">
                 Tipo de solicitud
               </Text>
-              <Text appearance="gray" type="label">
-                {getRequestTypeTitle(title ?? "")}
-              </Text>
+              {isLoading ? (
+                <SkeletonLine animated width="140px" />
+              ) : (
+                <Text appearance="gray" type="label">
+                  {title ?? "Tipo desconocido"}
+                </Text>
+              )}
             </Stack>
           </Stack>
 
@@ -103,7 +118,7 @@ function RequestSummary(props: RequestSummaryProps) {
             {isLoading ? (
               <SkeletonLine animated width="120px" />
             ) : (
-              <Text size="large">{staffName || "Sin responsable"}</Text>
+              <Text size="large">{staffName ?? "Sin responsable"}</Text>
             )}
           </Stack>
 
@@ -113,6 +128,13 @@ function RequestSummary(props: RequestSummaryProps) {
               appearance="primary"
               size="24px"
               cursorHover
+              onClick={() =>
+                setInfoModal({
+                  open: true,
+                  title: "Detalle de solicitud",
+                  description: `Solicitud #${requestNumber}`,
+                })
+              }
             />
           </Stack>
         </Stack>
@@ -121,7 +143,7 @@ function RequestSummary(props: RequestSummaryProps) {
       {infoModal.open && (
         <InfoModal
           title={infoModal.title}
-          titleDescription="¿Por qué está inhabilitado?"
+          titleDescription="Información adicional"
           description={infoModal.description}
           onCloseModal={() =>
             setInfoModal({ open: false, title: "", description: "" })

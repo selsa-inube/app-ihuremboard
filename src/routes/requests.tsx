@@ -8,7 +8,7 @@ function RequestsRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Requests />} />
-      <Route path="/holiday-request/:id" element={<ApplicationProcess />} />
+      <Route path="/:id" element={<ApplicationProcess />} />
       <Route path="*" element={<ErrorPage errorCode={404} />} />
     </Routes>
   );

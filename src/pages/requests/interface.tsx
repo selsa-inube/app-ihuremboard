@@ -380,11 +380,23 @@ function RequestsUI(props: RequestsUIProps) {
                             if (RequestsNav[requestTypeTitle]) {
                               navigate(
                                 `${RequestsNav[requestTypeTitle].path}/${id}`,
-                                { state: { section: value } },
+                                {
+                                  state: {
+                                    requestNumber: id,
+                                    requestDate,
+                                    staffName: employeeName,
+                                    title: requestTypeTitle,
+                                    status,
+                                    statusOptions,
+                                  },
+                                },
                               );
                             }
                           }}
-                          showExtraIcon={sectionTitle === "Con pendientes"}
+                          showExtraIcon={
+                            sectionTitle === "Con pendientes" &&
+                            requestTypeTitle !== ERequestType.onboarding
+                          }
                         />
                       );
                     },
