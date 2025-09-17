@@ -15,26 +15,26 @@ import { BusinessUnitChange } from "@components/inputs/BusinessUnitChange";
 import { userMenu, useConfigHeader, navConfig } from "@config/nav.config";
 import { InfoModal } from "@components/modals/InfoModal";
 import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
+import { ErrorPage } from "@components/layout/ErrorPage";
 
 import {
   StyledAppPage,
   StyledContainer,
-  StyledContentImg,
-  StyledLogo,
   StyledMain,
   StyledQuickAccessContainer,
   StyledCollapseIcon,
   StyledCollapse,
+  StyledContentImg,
+  StyledLogo,
 } from "./styles";
 import { useHome } from "./interface";
+import { useOptionsMenu } from "@hooks/useOptionsMenu";
 
-const renderLogo = (imgUrl: string, altText: string) => {
-  return (
-    <StyledContentImg to="/">
-      <StyledLogo src={imgUrl} alt={altText} />
-    </StyledContentImg>
-  );
-};
+const renderLogo = (imgUrl: string, altText: string) => (
+  <StyledContentImg to="/">
+    <StyledLogo src={imgUrl} alt={altText} />
+  </StyledContentImg>
+);
 
 function Home() {
   const {
@@ -42,7 +42,6 @@ function Home() {
     logoUrl,
     selectedClient,
     businessUnits,
-    optionForCustomerPortal,
     collapse,
     collapseMenuRef,
     businessUnitChangeRef,
@@ -53,13 +52,23 @@ function Home() {
     showBusinessUnitSelector,
     setCollapse,
     handleLogoClick,
+    staffPortalPublicCode,
   } = useHome();
 
-  const configHeader = useConfigHeader(optionForCustomerPortal ?? []);
+  const { optionData, hasError, isFetching } = useOptionsMenu(
+    staffPortalPublicCode,
+    selectedClient?.id ?? "",
+  );
+
+  const configHeader = useConfigHeader(optionData ?? []);
   const isTablet = useMediaQuery("(max-width: 944px)");
 
-  if (loading || validateTrigger || !optionForCustomerPortal) {
+  if (loading || validateTrigger || isFetching) {
     return <LoadingAppUI />;
+  }
+
+  if (hasError) {
+    return <ErrorPage errorCode={hasError} />;
   }
 
   return (
@@ -129,7 +138,7 @@ function Home() {
                 Aquí tienes las funcionalidades disponibles.
               </Text>
               <StyledQuickAccessContainer $isTablet={isTablet}>
-                {navConfig(optionForCustomerPortal).map((link, index) => (
+                {navConfig(optionData).map((link, index) => (
                   <AppCard
                     key={index}
                     title={link.label}

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
-import { getOptionForCustomerPortal } from "@services/staffPortal/getOptionForCustomerPortal";
 import { useAppContext } from "@context/AppContext";
 
 export interface IBusinessUnitFixed {
@@ -18,9 +18,7 @@ export const useHome = () => {
     selectedClient,
     businessUnits,
     setSelectedClient,
-    optionForCustomerPortal,
-    setOptionForCustomerPortal,
-    businessManagers,
+    provisionedPortal,
   } = useAppContext();
 
   const navigate = useNavigate();
@@ -37,25 +35,7 @@ export const useHome = () => {
   const [validateTrigger, setValidateTrigger] = useState(!!selectedClient);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchOptions = async () => {
-      if (
-        user?.id &&
-        (!optionForCustomerPortal || optionForCustomerPortal.length === 0)
-      ) {
-        try {
-          setLoading(true);
-          const options = await getOptionForCustomerPortal(user.id, "");
-          setOptionForCustomerPortal(options);
-        } catch (error) {
-          console.error("Error obteniendo opciones:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    fetchOptions();
-  }, [user, optionForCustomerPortal, setOptionForCustomerPortal]);
+  const staffPortalPublicCode = provisionedPortal?.publicCode ?? "";
 
   useEffect(() => {
     if (!selectedClient) {
@@ -94,7 +74,7 @@ export const useHome = () => {
 
       const useCases = await getUseCasesByStaff(
         user?.id ?? "",
-        businessManagers?.publicCode ?? "",
+        staffPortalPublicCode,
         businessUnit.businessUnitPublicCode,
       );
 
@@ -132,7 +112,6 @@ export const useHome = () => {
     logoUrl,
     selectedClient,
     businessUnits,
-    optionForCustomerPortal,
     collapse,
     collapseMenuRef,
     businessUnitChangeRef,
@@ -143,5 +122,6 @@ export const useHome = () => {
     showBusinessUnitSelector,
     setCollapse,
     handleLogoClick,
+    staffPortalPublicCode,
   };
 };
