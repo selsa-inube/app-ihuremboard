@@ -20,7 +20,7 @@ export const useHome = () => {
     setSelectedClient,
     optionForCustomerPortal,
     setOptionForCustomerPortal,
-    businessManagers,
+    provisionedPortal,
   } = useAppContext();
 
   const navigate = useNavigate();
@@ -39,13 +39,23 @@ export const useHome = () => {
 
   useEffect(() => {
     const fetchOptions = async () => {
+      if (!selectedClient) {
+        return;
+      }
+
       if (
         user?.id &&
         (!optionForCustomerPortal || optionForCustomerPortal.length === 0)
       ) {
         try {
           setLoading(true);
-          const options = await getOptionForCustomerPortal(user.id, "");
+          const staffPortalPublicCode = provisionedPortal?.publicCode ?? "";
+          const businessUnitPublicCode = selectedClient.id;
+          const options = await getOptionForCustomerPortal(
+            staffPortalPublicCode,
+            businessUnitPublicCode,
+          );
+
           setOptionForCustomerPortal(options);
         } catch (error) {
           console.error("Error obteniendo opciones:", error);
@@ -54,8 +64,15 @@ export const useHome = () => {
         }
       }
     };
+
     fetchOptions();
-  }, [user, optionForCustomerPortal, setOptionForCustomerPortal]);
+  }, [
+    user,
+    optionForCustomerPortal,
+    setOptionForCustomerPortal,
+    provisionedPortal,
+    selectedClient,
+  ]);
 
   useEffect(() => {
     if (!selectedClient) {
@@ -89,13 +106,20 @@ export const useHome = () => {
   }, [validateTrigger]);
 
   const handleLogoClick = async (businessUnit: IBusinessUnitFixed) => {
+    if (!businessUnit.businessUnitPublicCode) {
+      setClientWithoutPrivileges(businessUnit);
+      setLocalModalVisible(true);
+      return;
+    }
+
     try {
       setLoading(true);
-
+      const staffPortalPublicCode = provisionedPortal?.publicCode ?? "";
+      const businessUnitPublicCode = businessUnit.businessUnitPublicCode;
       const useCases = await getUseCasesByStaff(
         user?.id ?? "",
-        businessManagers?.publicCode ?? "",
-        businessUnit.businessUnitPublicCode,
+        staffPortalPublicCode,
+        businessUnitPublicCode,
       );
 
       const roles = useCases.listOfUseCasesByRoles ?? [];
