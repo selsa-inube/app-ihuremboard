@@ -1,17 +1,16 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useIAuth } from "@inube/iauth-react";
 
 import { ErrorPage } from "@components/layout/ErrorPage";
 import { useStaffUserAccount } from "@hooks/useStaffUserAccount";
-
 import { Login } from "@pages/login";
 import { useAppContext } from "@context/AppContext/useAppContext";
 import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
 
 export function FirstPage() {
   const { user, setStaffUser } = useAppContext();
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated } = useIAuth();
   const navigate = useNavigate();
 
   const {

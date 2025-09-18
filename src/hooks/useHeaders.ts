@@ -1,8 +1,9 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import { useIAuth } from "@inube/iauth-react";
+
 import { useAppContext } from "@context/AppContext/useAppContext";
 
 export const useHeaders = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useIAuth();
   const { selectedClient } = useAppContext();
 
   const getHeaders = async () => {

@@ -2,9 +2,6 @@ import { useState, useEffect } from "react";
 
 import { staffUserAccountById } from "@services/StaffUser/StaffUserAccountIportalStaff";
 import { IStaffUserAccount } from "@ptypes/staffPortalBusiness.types";
-import { mapStaffUserAccountApiToEntity } from "@services/StaffUser/StaffUserAccountIportalStaff/mappers";
-import { dataStaff } from "@mocks/staff/staff.mock";
-import { environment } from "@config/environment";
 
 import { useErrorFlag } from "./useErrorFlag";
 
@@ -36,10 +33,7 @@ export const useStaffUserAccount = ({
       setHasError(null);
 
       try {
-        const data =
-          environment.IVITE_VERCEL === "Y"
-            ? mapStaffUserAccountApiToEntity(dataStaff)
-            : await staffUserAccountById(userAccountId);
+        const data = await staffUserAccountById(userAccountId);
         setUserAccount(data);
         if (onUserAccountLoaded) {
           onUserAccountLoaded(data);
