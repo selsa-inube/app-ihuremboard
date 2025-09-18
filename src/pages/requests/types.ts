@@ -35,6 +35,7 @@ interface RequestItem {
   title: string;
   requestDate: string;
   employeeName: string;
+  surnames?: string;
   hasEmployeeName?: boolean;
   status: Status;
   employeeId?: string;
