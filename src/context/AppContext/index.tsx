@@ -41,7 +41,7 @@ function AppProvider(props: AppProviderProps) {
     if (IAuthUser) {
       setUser({
         username: IAuthUser.username,
-        id: "1062905485",
+        id: IAuthUser.id,
         company: IAuthUser.company,
         urlImgPerfil: IAuthUser.urlImgPerfil ?? "",
       });
