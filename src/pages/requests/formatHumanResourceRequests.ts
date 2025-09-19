@@ -49,7 +49,6 @@ export const formatHumanResourceRequests = (
       status = "noResponsible";
     }
 
-    // ✅ Convertir taskName en español usando el enum
     const taskNameKey = req.taskName as keyof typeof TaskNameMapping;
     const taskName =
       TaskNameMapping[taskNameKey] || req.taskName || "Sin tarea";
@@ -62,7 +61,7 @@ export const formatHumanResourceRequests = (
         ? `${req.staffName} ${req.staffLastName}`.trim()
         : "Sin responsable",
       status,
-      taskName, // ya queda en español ✅
+      taskName,
       employeeName: req.names?.trim() || "",
       surnames: req.surnames || "",
     };
