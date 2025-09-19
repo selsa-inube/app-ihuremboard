@@ -5,7 +5,8 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useIAuth } from "@inube/iauth-react";
+
 import selsaLogo from "@assets/images/selsa.png";
 import {
   IStaffPortalByBusinessManager,
@@ -17,6 +18,7 @@ import {
   IBusinessUnit,
 } from "@ptypes/employeePortalBusiness.types";
 import { Employee } from "@ptypes/employeePortalConsultation.types";
+
 import { IAppContextType, IPreferences, IClient, IUser } from "./types";
 
 const AppContext = createContext<IAppContextType | undefined>(undefined);
@@ -31,18 +33,22 @@ interface AppProviderProps {
 function AppProvider(props: AppProviderProps) {
   const { children, dataPortal, businessManagersData, businessUnitsData } =
     props;
-  const { user: auth0User } = useAuth0();
+  const { user: IAuthUser } = useIAuth();
 
-  const [user, setUser] = useState<IUser | null>(
-    auth0User
-      ? {
-          username: auth0User.name ?? "",
-          id: "1234567890",
-          company: "Company Name",
-          urlImgPerfil: auth0User.picture ?? "",
-        }
-      : null,
-  );
+  const [user, setUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    if (IAuthUser) {
+      setUser({
+        username: IAuthUser.username,
+        id: IAuthUser.id,
+        company: IAuthUser.company,
+        urlImgPerfil: IAuthUser.urlImgPerfil ?? "",
+      });
+    } else {
+      setUser(null);
+    }
+  }, [IAuthUser]);
 
   const initialLogo = localStorage.getItem("logoUrl") ?? selsaLogo;
   const [logoUrl, setLogoUrl] = useState<string>(initialLogo);

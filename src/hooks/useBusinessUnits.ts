@@ -3,9 +3,6 @@ import { useState, useEffect } from "react";
 import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
 import { getBusinessUnitsForOfficer } from "@services/businessUnits/getBusinessUnits";
 import { useHeaders } from "@hooks/useHeaders";
-import { mapBusinessUnitsApiToEntity } from "@services/businessUnits/getBusinessUnits/mappers";
-import { businessUnitStaff } from "@mocks/staff/staff.mock";
-import { environment } from "@config/environment";
 
 import { useErrorFlag } from "./useErrorFlag";
 
@@ -45,14 +42,11 @@ export const useBusinessUnits = (
       try {
         const headers = await getHeaders();
 
-        const fetchedBusinessUnits =
-          environment.IVITE_VERCEL === "Y"
-            ? businessUnitStaff.map(mapBusinessUnitsApiToEntity)
-            : await getBusinessUnitsForOfficer(
-                userAccount,
-                portalPublicCode,
-                headers,
-              );
+        const fetchedBusinessUnits = await getBusinessUnitsForOfficer(
+          userAccount,
+          portalPublicCode,
+          headers,
+        );
 
         if (isMounted) {
           if (!fetchedBusinessUnits || fetchedBusinessUnits.length === 0) {
