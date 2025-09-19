@@ -39,6 +39,11 @@ const mapHumanResourceRequestApiToEntity = (
   identificationDocumentNumber: String(item.identificationDocumentNumber ?? ""),
   identificationType: String(item.identificationType ?? ""),
   names: String(item.names ?? ""),
+  taskName: (
+    Object.keys(TaskNameMapping) as (keyof typeof TaskNameMapping)[]
+  ).includes(item.taskName as keyof typeof TaskNameMapping)
+    ? (item.taskName as keyof typeof TaskNameMapping)
+    : "update_personal_details",
   surnames: String(item.surnames ?? ""),
   positionName: String(item.positionName ?? ""),
 

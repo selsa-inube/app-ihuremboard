@@ -11,6 +11,7 @@ interface RequestCardProps {
   employeeSurnames?: string;
   status: string;
   responsible: string;
+  taskName?: string;
   onclick?: () => void;
   showExtraIcon?: boolean;
 }
@@ -22,7 +23,7 @@ const RequestCard = (props: RequestCardProps) => {
     requestDate,
     employeeName,
     employeeSurnames,
-    status,
+    taskName,
     responsible,
     onclick,
     showExtraIcon,
@@ -76,7 +77,7 @@ const RequestCard = (props: RequestCardProps) => {
               Estado
             </Text>
             <Text size="medium" appearance="gray">
-              {status}
+              {taskName ?? "Sin tareas"}
             </Text>
           </Stack>
 

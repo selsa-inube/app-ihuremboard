@@ -17,6 +17,7 @@ export interface HumanResourceRequest {
   staffIdentificationDocumentNumber: string;
   staffLastName: string;
   staffName: string;
+  taskName: keyof typeof TaskNameMapping;
   humanResourceRequestTraceabilities: HumanResourceRequestTraceability[];
   tasksToManageTheHumanResourcesRequests: TaskToManageHumanResourceRequest[];
   humanResourceRequestBlockingPerTasks: HumanResourceRequestBlockingPerTask[];

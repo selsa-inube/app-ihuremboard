@@ -397,7 +397,8 @@ function RequestsUI(props: RequestsUIProps) {
                           requestDate={requestDate}
                           employeeName={employeeName}
                           employeeSurnames={surnames}
-                          status={taskName ?? "Sin tareas"}
+                          taskName={taskName}
+                          status={status}
                           responsible={responsible ?? ""}
                           onclick={() => {
                             if (RequestsNav[requestTypeTitle]) {

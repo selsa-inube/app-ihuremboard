@@ -1,6 +1,7 @@
 import {
   HumanResourceRequest,
   ETaskStatus,
+  TaskNameMapping,
 } from "@ptypes/humanResourcesRequest.types";
 import { formatDate } from "@utils/date";
 import { Status } from "./types";
@@ -48,6 +49,11 @@ export const formatHumanResourceRequests = (
       status = "noResponsible";
     }
 
+    // ✅ Convertir taskName en español usando el enum
+    const taskNameKey = req.taskName as keyof typeof TaskNameMapping;
+    const taskName =
+      TaskNameMapping[taskNameKey] || req.taskName || "Sin tarea";
+
     return {
       id: req.humanResourceRequestNumber,
       title: req.humanResourceRequestType,
@@ -56,7 +62,7 @@ export const formatHumanResourceRequests = (
         ? `${req.staffName} ${req.staffLastName}`.trim()
         : "Sin responsable",
       status,
-      taskName: tasks.map((t) => t.taskName).join(", ") || "Sin tareas",
+      taskName, // ya queda en español ✅
       employeeName: req.names?.trim() || "",
       surnames: req.surnames || "",
     };
