@@ -2,6 +2,7 @@ import {
   ERequestStatus,
   ERequestType,
   ETaskStatus,
+  TaskNameMapping,
   HumanResourceRequest,
   HumanResourceRequestTraceability,
   TaskToManageHumanResourceRequest,
@@ -87,7 +88,11 @@ const mapTaskManagingHumanResourceRequestApiToEntity = (
   taskManagingId: String(item.taskManagingId ?? ""),
   humanResourceRequestId: String(item.humanResourceRequestId ?? ""),
   taskCode: String(item.taskCode ?? ""),
-  taskName: String(item.taskName ?? ""),
+  taskName: getValidEnumValue(
+    TaskNameMapping,
+    item.taskName,
+    "Tarea desconocida",
+  ) as TaskNameMapping,
   taskStatus: getValidEnumValue(
     ETaskStatus,
     item.taskStatus,
