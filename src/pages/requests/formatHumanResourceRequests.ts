@@ -1,13 +1,10 @@
-import {
-  HumanResourceRequest,
-  ETaskStatus,
-  TaskNameMapping,
-} from "@ptypes/humanResourcesRequest.types";
+import { TaskNameMapping } from "@ptypes/humanResourcesRequest.types";
 import { formatDate } from "@utils/date";
 import { Status } from "./types";
+import { HumanEmployeeResourceRequest } from "@src/types/humanEmployeeResourcesRequest.types";
 
 export const formatHumanResourceRequests = (
-  requests: HumanResourceRequest[],
+  requests: HumanEmployeeResourceRequest[],
   employeeId?: string,
   referenceDate: Date = new Date(),
 ) => {
@@ -16,42 +13,29 @@ export const formatHumanResourceRequests = (
     : requests;
 
   return filtered.map((req) => {
-    const tasks = req.tasksToManageTheHumanResourcesRequests || [];
-    const hasTasks = tasks.length > 0;
-
-    const allExecuted =
-      hasTasks && tasks.every((t) => t.taskStatus === ETaskStatus.executed);
-
-    const hasUnassignedTask = tasks.some(
-      (t) =>
-        t.taskStatus === ETaskStatus.assigned &&
-        !req.staffName &&
-        !req.staffLastName &&
-        !req.staffIdentificationDocumentNumber,
-    );
-
-    const hasResponsible = !!(req.staffName || req.staffLastName);
+    const allExecuted = req.taskStatus.toString() === "executed";
+    const hasUnassignedTask =
+      req.taskStatus.toString() === "assigned" &&
+      !req.staffName &&
+      !req.staffLastName &&
+      !req.staffIdentificationDocumentNumber;
+    const hasResponsible = req.staffName && req.staffLastName;
 
     const requestDate = new Date(req.humanResourceRequestDate);
     const sameMonthAndYear =
       requestDate.getMonth() === referenceDate.getMonth() &&
       requestDate.getFullYear() === referenceDate.getFullYear();
 
-    let status: Status;
-
+    let status: Status = "noResponsible";
     if (allExecuted && sameMonthAndYear) {
       status = "completed";
     } else if (hasUnassignedTask) {
       status = "noResponsible";
+    } else if (req.humanResourceRequestBlockingPerTasks.length > 0) {
+      status = "blocked";
     } else if (hasResponsible) {
       status = "inProgress";
-    } else {
-      status = "noResponsible";
     }
-
-    const taskNameKey = req.taskName as keyof typeof TaskNameMapping;
-    const taskName =
-      TaskNameMapping[taskNameKey] || req.taskName || "Sin tarea";
 
     return {
       id: req.humanResourceRequestNumber,
@@ -61,7 +45,10 @@ export const formatHumanResourceRequests = (
         ? `${req.staffName} ${req.staffLastName}`.trim()
         : "Sin responsable",
       status,
-      taskName,
+      taskName:
+        TaskNameMapping[req.taskName as keyof typeof TaskNameMapping] ||
+        req.taskName ||
+        "Sin tarea",
       employeeName: req.names?.trim() || "",
       surnames: req.surnames || "",
     };

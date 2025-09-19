@@ -339,11 +339,6 @@ function RequestsUI(props: RequestsUIProps) {
       <StyledBoardContainer $isTablet={isTablet}>
         {boardSections.map(
           ({ value, sectionTitle, sectionBackground, sectionInformation }) => {
-            console.log("=== Sección ===");
-            console.log("value:", value);
-            console.log("sectionTitle:", sectionTitle);
-            console.log("sectionInformation:", sectionInformation);
-
             const filteredRequests = filterRequests(
               sectionInformation,
               value,
@@ -351,8 +346,6 @@ function RequestsUI(props: RequestsUIProps) {
               selectedAssignmentFilters,
               selectedStatusFilters,
             );
-
-            console.log("filteredRequests:", filteredRequests);
 
             return (
               <BoardSection
@@ -378,16 +371,6 @@ function RequestsUI(props: RequestsUIProps) {
                       taskName,
                     }) => {
                       const requestTypeTitle = getRequestTypeTitle(title);
-
-                      console.log("RequestCard data:", {
-                        id,
-                        requestTypeTitle,
-                        requestDate,
-                        employeeName,
-                        surnames,
-                        responsible,
-                        taskName,
-                      });
 
                       return (
                         <RequestCard
