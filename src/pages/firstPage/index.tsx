@@ -18,7 +18,8 @@ export function FirstPage() {
     hasError: userAccountError,
     loading: userAccountLoading,
   } = useStaffUserAccount({
-    userAccountId: user?.id ?? "",
+    userAccountId: user?.id,
+    enabled: !!user?.id,
   });
 
   useEffect(() => {
