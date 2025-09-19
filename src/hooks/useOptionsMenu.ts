@@ -3,9 +3,6 @@ import { useState, useEffect } from "react";
 import { useAppContext } from "@context/AppContext/useAppContext";
 import { getOptionForCustomerPortal } from "@services/staffPortal/getOptionForCustomerPortal";
 import { IOptionWithSubOptions } from "@ptypes/staffPortalBusiness.types";
-import { mapOptionForCustomerPortalApiToEntities } from "@services/staffPortal/getOptionForCustomerPortal/mappers";
-import { environment } from "@config/environment";
-import { optionDescriptionStaff } from "@mocks/staff/staff.mock";
 import { useSignOut } from "@hooks/useSignOut";
 
 import { useErrorFlag } from "./useErrorFlag";
@@ -42,13 +39,10 @@ export function useOptionsMenu(
       }
 
       try {
-        const staffOptionData =
-          environment.IVITE_VERCEL === "Y"
-            ? mapOptionForCustomerPortalApiToEntities(optionDescriptionStaff)
-            : await getOptionForCustomerPortal(
-                staffPortalPublicCode,
-                businessUnitPublicCode,
-              );
+        const staffOptionData = await getOptionForCustomerPortal(
+          staffPortalPublicCode,
+          businessUnitPublicCode,
+        );
 
         if (staffOptionData.length === 0) {
           setHasError(1005);
