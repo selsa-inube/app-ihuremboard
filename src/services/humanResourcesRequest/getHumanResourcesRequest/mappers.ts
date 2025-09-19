@@ -2,6 +2,7 @@ import {
   ERequestStatus,
   ERequestType,
   ETaskStatus,
+  TaskNameMapping,
   HumanResourceRequest,
   HumanResourceRequestTraceability,
   TaskToManageHumanResourceRequest,
@@ -38,6 +39,11 @@ const mapHumanResourceRequestApiToEntity = (
   identificationDocumentNumber: String(item.identificationDocumentNumber ?? ""),
   identificationType: String(item.identificationType ?? ""),
   names: String(item.names ?? ""),
+  taskName: (
+    Object.keys(TaskNameMapping) as (keyof typeof TaskNameMapping)[]
+  ).includes(item.taskName as keyof typeof TaskNameMapping)
+    ? (item.taskName as keyof typeof TaskNameMapping)
+    : "update_personal_details",
   surnames: String(item.surnames ?? ""),
   positionName: String(item.positionName ?? ""),
 
@@ -87,7 +93,11 @@ const mapTaskManagingHumanResourceRequestApiToEntity = (
   taskManagingId: String(item.taskManagingId ?? ""),
   humanResourceRequestId: String(item.humanResourceRequestId ?? ""),
   taskCode: String(item.taskCode ?? ""),
-  taskName: String(item.taskName ?? ""),
+  taskName: getValidEnumValue(
+    TaskNameMapping,
+    item.taskName,
+    "Tarea desconocida",
+  ) as TaskNameMapping,
   taskStatus: getValidEnumValue(
     ETaskStatus,
     item.taskStatus,

@@ -1,13 +1,11 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useMediaQuery, IOption } from "@inubekit/inubekit";
-
-import { useHumanResourceRequests } from "@hooks/useHumanResourceRequests";
-
 import { formatHumanResourceRequests } from "./formatHumanResourceRequests";
 import { RequestsUI } from "./interface";
 import { assignmentOptions, statusOptions } from "./config";
 import { IRequest, Status } from "./types";
 import { breadcrumbs } from "./config/nav.config";
+import { useHumanEmployeeResourceRequests } from "@src/hooks/useHumanEmployeeResourceRequests";
 
 const useDebouncedSearch = (value: string, delay = 500) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -46,7 +44,7 @@ function Requests() {
   const isTablet = useMediaQuery("(max-width: 1280px)");
   const isMobile = useMediaQuery("(max-width: 490px)");
 
-  const { data, isLoading } = useHumanResourceRequests<IRequest>(
+  const { data, isLoading } = useHumanEmployeeResourceRequests<IRequest>(
     formatHumanResourceRequests,
   );
 
@@ -82,7 +80,6 @@ function Requests() {
       sectionInformation: data.filter((req) => req.status === status),
     }));
   }, [data]);
-
   const openFilterModal = useCallback(() => {
     setIsFilterModalOpen(true);
     setIsMenuOpen(false);

@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 
 import ErrorPageContainer from "@pages/error";
-import { ProtectedRoutes } from "@src/pages/protectedRoutes";
+import { ProtectedRoutes } from "@pages/protectedRoutes";
 
 export const publicRouter = createBrowserRouter(
   createRoutesFromElements(

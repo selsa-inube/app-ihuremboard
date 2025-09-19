@@ -8,8 +8,10 @@ interface RequestCardProps {
   title: string;
   requestDate: string;
   employeeName: string;
+  employeeSurnames?: string;
   status: string;
   responsible: string;
+  taskName?: string;
   onclick?: () => void;
   showExtraIcon?: boolean;
 }
@@ -20,7 +22,8 @@ const RequestCard = (props: RequestCardProps) => {
     title,
     requestDate,
     employeeName,
-    status,
+    employeeSurnames,
+    taskName,
     responsible,
     onclick,
     showExtraIcon,
@@ -43,15 +46,15 @@ const RequestCard = (props: RequestCardProps) => {
           </Text>
         </StyledTitle>
 
+        <Divider dashed />
         <Stack justifyContent="center">
           <Icon icon={<MdOutlinePerson />} size="16px" appearance="primary" />
-          <Text size="small">
-            {employeeName?.trim() ? employeeName : "Sin nombre de empleado"}
+          <Text size="small" type="label">
+            {employeeName?.trim()
+              ? `${employeeName} ${employeeSurnames ?? ""}`.trim()
+              : "Sin nombre de empleado"}
           </Text>
         </Stack>
-
-        <Divider dashed />
-
         <Stack direction="column" gap={spacing.s100}>
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">
@@ -76,7 +79,7 @@ const RequestCard = (props: RequestCardProps) => {
               Estado
             </Text>
             <Text size="medium" appearance="gray">
-              {status}
+              {taskName ?? "Sin tareas"}
             </Text>
           </Stack>
 

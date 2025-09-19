@@ -35,10 +35,12 @@ interface RequestItem {
   title: string;
   requestDate: string;
   employeeName: string;
+  surnames?: string;
   hasEmployeeName?: boolean;
   status: Status;
   employeeId?: string;
   responsible?: string;
+  taskName?: string;
 }
 
 type Status = "noResponsible" | "blocked" | "inProgress" | "completed";

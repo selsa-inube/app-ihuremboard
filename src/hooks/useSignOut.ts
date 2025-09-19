@@ -1,8 +1,9 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import { useIAuth } from "@inube/iauth-react";
+
 import { environment } from "@config/environment";
 
 export const useSignOut = () => {
-  const { logout } = useAuth0();
+  const { logout } = useIAuth();
 
   const signOut = (redirect?: string) => {
     localStorage.clear();

@@ -6,11 +6,12 @@ import {
 
 import { ErrorPage } from "@components/layout/ErrorPage";
 import { LoginRoutes } from "@routes/login";
-import { ProtectedAppPage } from "src/ProtectedAppPage";
 import { RequestsRoutes } from "@routes/requests";
-import { FirstPage } from "@src/pages/firstPage";
-import { LogOut } from "@src/pages/logOut";
+import { FirstPage } from "@pages/firstPage";
+import { LogOut } from "@pages/logOut";
 import { Home } from "@pages/home";
+
+import { ProtectedAppPage } from "src/ProtectedAppPage";
 
 export const protectedRouter = createBrowserRouter(
   createRoutesFromElements(

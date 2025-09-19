@@ -2,58 +2,65 @@ import { useState, useEffect } from "react";
 
 import { staffUserAccountById } from "@services/StaffUser/StaffUserAccountIportalStaff";
 import { IStaffUserAccount } from "@ptypes/staffPortalBusiness.types";
-import { mapStaffUserAccountApiToEntity } from "@services/StaffUser/StaffUserAccountIportalStaff/mappers";
-import { dataStaff } from "@mocks/staff/staff.mock";
-import { environment } from "@config/environment";
 
 import { useErrorFlag } from "./useErrorFlag";
 
 interface UseStaffUserAccountProps {
-  userAccountId: string;
+  userAccountId?: string;
+  enabled?: boolean;
   onUserAccountLoaded?: (userAccount: IStaffUserAccount) => void;
 }
 
 export const useStaffUserAccount = ({
   userAccountId,
+  enabled = true,
   onUserAccountLoaded,
 }: UseStaffUserAccountProps) => {
   const [userAccount, setUserAccount] = useState<IStaffUserAccount>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [hasError, setHasError] = useState<number | null>(1001);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<number | null>(null);
   const [flagShown, setFlagShown] = useState(false);
 
   useErrorFlag({ flagShown });
 
   useEffect(() => {
+    let mounted = true;
+
     const fetchUserAccount = async () => {
-      if (!userAccountId) {
+      if (!enabled || !userAccountId) {
+        if (!mounted) return;
         setHasError(null);
-        setUserAccount(undefined);
+        setLoading(false);
         return;
       }
 
+      if (!mounted) return;
       setLoading(true);
       setHasError(null);
+      setFlagShown(false);
 
       try {
-        const data =
-          environment.IVITE_VERCEL === "Y"
-            ? mapStaffUserAccountApiToEntity(dataStaff)
-            : await staffUserAccountById(userAccountId);
+        const data = await staffUserAccountById(userAccountId);
+        if (!mounted) return;
         setUserAccount(data);
-        if (onUserAccountLoaded) {
-          onUserAccountLoaded(data);
-        }
+        if (onUserAccountLoaded) onUserAccountLoaded(data);
       } catch {
+        if (!mounted) return;
         setHasError(500);
         setFlagShown(true);
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchUserAccount();
-  }, [userAccountId, onUserAccountLoaded]);
+
+    return () => {
+      mounted = false;
+    };
+  }, [userAccountId, enabled, onUserAccountLoaded]);
 
   return { userAccount, loading, hasError };
 };

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
+
 import { getOptionForCustomerPortal } from "@services/staffPortal/getOptionForCustomerPortal";
+import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
 import { useAppContext } from "@context/AppContext";
 
 export interface IBusinessUnitFixed {
@@ -37,11 +38,11 @@ export const useHome = () => {
   const [validateTrigger, setValidateTrigger] = useState(!!selectedClient);
   const [loading, setLoading] = useState(false);
 
+  const staffPortalPublicCode = provisionedPortal?.publicCode ?? "";
+
   useEffect(() => {
     const fetchOptions = async () => {
-      if (!selectedClient) {
-        return;
-      }
+      if (!selectedClient) return;
 
       if (
         user?.id &&
@@ -49,7 +50,6 @@ export const useHome = () => {
       ) {
         try {
           setLoading(true);
-          const staffPortalPublicCode = provisionedPortal?.publicCode ?? "";
           const businessUnitPublicCode = selectedClient.id;
           const options = await getOptionForCustomerPortal(
             staffPortalPublicCode,
@@ -70,7 +70,7 @@ export const useHome = () => {
     user,
     optionForCustomerPortal,
     setOptionForCustomerPortal,
-    provisionedPortal,
+    staffPortalPublicCode,
     selectedClient,
   ]);
 
@@ -114,7 +114,6 @@ export const useHome = () => {
 
     try {
       setLoading(true);
-      const staffPortalPublicCode = provisionedPortal?.publicCode ?? "";
       const businessUnitPublicCode = businessUnit.businessUnitPublicCode;
       const useCases = await getUseCasesByStaff(
         user?.id ?? "",
@@ -156,7 +155,6 @@ export const useHome = () => {
     logoUrl,
     selectedClient,
     businessUnits,
-    optionForCustomerPortal,
     collapse,
     collapseMenuRef,
     businessUnitChangeRef,
@@ -167,5 +165,6 @@ export const useHome = () => {
     showBusinessUnitSelector,
     setCollapse,
     handleLogoClick,
+    staffPortalPublicCode,
   };
 };

@@ -27,8 +27,8 @@ const getOptionForCustomerPortal = async (
       const options: RequestInit = {
         method: "GET",
         headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          "X-Action": "SearchOptionsStaffPortalByBusinessUnit",
+          "Content-Type": "application/json; charset=UTF-8",
+          "x-action": "SearchOptionsStaffPortalByBusinessUnit",
         },
         signal: controller.signal,
       };

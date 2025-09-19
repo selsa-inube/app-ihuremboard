@@ -114,6 +114,16 @@ const errorCodes: Record<number, ErrorDetail> = {
       "Contacta al administrador si crees que esto es un error.",
     ],
   },
+  1009: {
+    whatWentWrong: [
+      "Error al obtener los datos del usuario.",
+      "No fue posible recuperar la información necesaria.",
+    ],
+    howToFix: [
+      "Intenta nuevamente más tarde.",
+      "Si el problema persiste, contacta al soporte.",
+    ],
+  },
 };
 
 export { errorCodes };

@@ -1,47 +1,39 @@
-import {
-  HumanResourceRequest,
-  ETaskStatus,
-} from "@ptypes/humanResourcesRequest.types";
+import { TaskNameMapping } from "@ptypes/humanResourcesRequest.types";
 import { formatDate } from "@utils/date";
-
-export type Status = "noResponsible" | "blocked" | "inProgress" | "completed";
+import { Status } from "./types";
+import { HumanEmployeeResourceRequest } from "@src/types/humanEmployeeResourcesRequest.types";
 
 export const formatHumanResourceRequests = (
-  requests: HumanResourceRequest[],
-  currentDate: Date = new Date(),
+  requests: HumanEmployeeResourceRequest[],
+  employeeId?: string,
+  referenceDate: Date = new Date(),
 ) => {
-  return requests.map((req) => {
-    const tasks = req.tasksToManageTheHumanResourcesRequests;
+  const filtered = employeeId
+    ? requests.filter((req) => req.employeeId === employeeId)
+    : requests;
 
-    const isNoResponsible =
+  return filtered.map((req) => {
+    const allExecuted = req.taskStatus.toString() === "executed";
+    const hasUnassignedTask =
+      req.taskStatus.toString() === "assigned" &&
       !req.staffName &&
       !req.staffLastName &&
-      !req.identificationDocumentNumber &&
-      tasks.some((task) => task.taskStatus === ETaskStatus.assigned);
+      !req.staffIdentificationDocumentNumber;
+    const hasResponsible = req.staffName && req.staffLastName;
 
-    const isBlocked = tasks.some(
-      (task) =>
-        task.taskStatus === ETaskStatus.manually_locked ||
-        task.taskStatus === ETaskStatus.system_locked,
-    );
+    const requestDate = new Date(req.humanResourceRequestDate);
+    const sameMonthAndYear =
+      requestDate.getMonth() === referenceDate.getMonth() &&
+      requestDate.getFullYear() === referenceDate.getFullYear();
 
-    const allExecuted =
-      tasks.length > 0 &&
-      tasks.every((task) => task.taskStatus === ETaskStatus.executed);
-
-    const isCompleted =
-      allExecuted &&
-      isSameMonth(new Date(req.humanResourceRequestDate), currentDate);
-
-    let status: Status;
-
-    if (isNoResponsible) {
-      status = "noResponsible";
-    } else if (isBlocked) {
-      status = "blocked";
-    } else if (isCompleted) {
+    let status: Status = "noResponsible";
+    if (allExecuted && sameMonthAndYear) {
       status = "completed";
-    } else {
+    } else if (hasUnassignedTask) {
+      status = "noResponsible";
+    } else if (req.humanResourceRequestBlockingPerTasks.length > 0) {
+      status = "blocked";
+    } else if (hasResponsible) {
       status = "inProgress";
     }
 
@@ -49,17 +41,16 @@ export const formatHumanResourceRequests = (
       id: req.humanResourceRequestNumber,
       title: req.humanResourceRequestType,
       requestDate: formatDate(req.humanResourceRequestDate),
-      responsible: req.employeeName || "Sin responsable",
+      responsible: hasResponsible
+        ? `${req.staffName} ${req.staffLastName}`.trim()
+        : "Sin responsable",
       status,
-      employeeName: req.employeeName,
-      tasks,
+      taskName:
+        TaskNameMapping[req.taskName as keyof typeof TaskNameMapping] ||
+        req.taskName ||
+        "Sin tarea",
+      employeeName: req.names?.trim() || "",
+      surnames: req.surnames || "",
     };
   });
 };
-
-function isSameMonth(date1: Date, date2: Date): boolean {
-  return (
-    date1.getUTCFullYear() === date2.getUTCFullYear() &&
-    date1.getUTCMonth() === date2.getUTCMonth()
-  );
-}

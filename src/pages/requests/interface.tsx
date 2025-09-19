@@ -361,7 +361,15 @@ function RequestsUI(props: RequestsUIProps) {
               >
                 {filteredRequests.length > 0 ? (
                   filteredRequests.map(
-                    ({ id, title, requestDate, employeeName, status }) => {
+                    ({
+                      id,
+                      title,
+                      requestDate,
+                      employeeName,
+                      surnames,
+                      responsible,
+                      taskName,
+                    }) => {
                       const requestTypeTitle = getRequestTypeTitle(title);
 
                       return (
@@ -371,11 +379,10 @@ function RequestsUI(props: RequestsUIProps) {
                           title={requestTypeTitle}
                           requestDate={requestDate}
                           employeeName={employeeName}
-                          status={
-                            statusOptions.find((opt) => opt.value === status)
-                              ?.label ?? status
-                          }
-                          responsible="Sin responsable"
+                          employeeSurnames={surnames}
+                          taskName={taskName}
+                          status={status}
+                          responsible={responsible ?? ""}
                           onclick={() => {
                             if (RequestsNav[requestTypeTitle]) {
                               navigate(
