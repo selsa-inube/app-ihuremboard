@@ -26,11 +26,12 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const { appName, appRoute, navigatePage } = props;
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
   const { state } = useLocation() as {
     state: {
       requestNumber: string;
       requestDate: string;
-      staffName: string;
+      fullStaffName: string;
       title: string;
       status: string;
     };
@@ -56,7 +57,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           <Button
             appearance="primary"
             variant="outlined"
-            onClick={() => navigate("/requests")}
+            onClick={() => void navigate("/requests")}
             iconBefore={<MdKeyboardArrowLeft />}
             spacing="compact"
           >
@@ -126,10 +127,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
 
         <RequestSummary
           requestNumber={state?.requestNumber ?? id}
-          staffName={state?.staffName}
           requestDate={state?.requestDate}
           title={state?.title}
           status={state?.status}
+          fullStaffName={state?.fullStaffName}
         />
       </Stack>
     </AppMenu>

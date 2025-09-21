@@ -381,7 +381,6 @@ function RequestsUI(props: RequestsUIProps) {
                           employeeName={employeeName}
                           employeeSurnames={surnames}
                           taskName={taskName}
-                          status={status}
                           responsible={responsible ?? ""}
                           onclick={() => {
                             if (RequestsNav[requestTypeTitle]) {
@@ -391,9 +390,9 @@ function RequestsUI(props: RequestsUIProps) {
                                   state: {
                                     requestNumber: id,
                                     requestDate,
-                                    staffName: employeeName,
+                                    fullStaffName: `${employeeName} ${surnames}`,
                                     title: requestTypeTitle,
-                                    status,
+                                    status: taskName,
                                     statusOptions,
                                   },
                                 },

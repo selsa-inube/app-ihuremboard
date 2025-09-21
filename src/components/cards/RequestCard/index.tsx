@@ -9,7 +9,7 @@ interface RequestCardProps {
   requestDate: string;
   employeeName: string;
   employeeSurnames?: string;
-  status: string;
+  status?: string;
   responsible: string;
   taskName?: string;
   onclick?: () => void;

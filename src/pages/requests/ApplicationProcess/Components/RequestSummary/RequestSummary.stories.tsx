@@ -14,7 +14,7 @@ const meta: Meta<typeof RequestSummary> = {
     ),
   ],
   argTypes: {
-    staffName: { control: "text" },
+    fullStaffName: { control: "text" },
     requestNumber: { control: "text" },
     requestDate: { control: "text" },
     title: { control: "text" },
@@ -28,7 +28,7 @@ export const Default: StoryFn<RequestSummaryProps> = (args) => (
 );
 
 Default.args = {
-  staffName: "Juan Pérez",
+  fullStaffName: "Juan Pérez",
   requestNumber: "REQ-12345",
   requestDate: "2025-09-17T10:30:00.000Z",
   title: "Vacaciones Pagadas",

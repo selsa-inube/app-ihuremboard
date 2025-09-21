@@ -19,22 +19,24 @@ export interface RequestSummaryProps {
   requestDate?: string;
   title?: string;
   status?: string;
-  staffName?: string;
+  fullStaffName?: string;
   statusOptions?: IOption[];
 }
 
 function RequestSummary(props: RequestSummaryProps) {
   const location = useLocation();
-  const state = location.state as RequestSummaryProps;
+  const state = location.state as RequestSummaryProps | undefined;
 
   const requestNumber = props.requestNumber ?? state?.requestNumber;
   const requestDate = props.requestDate ?? state?.requestDate;
   const title = props.title ?? state?.title;
   const status = props.status ?? state?.status;
-  const staffName = props.staffName ?? state?.staffName;
+  const fullStaffName = props.fullStaffName ?? state?.fullStaffName;
   const statusOptions = props.statusOptions ?? state?.statusOptions ?? [];
   const isLoading = props.isLoading ?? false;
   const isMobile = useMediaQuery("(max-width: 710px)");
+
+  const staffDisplayName = fullStaffName ?? "Sin responsable";
 
   const statusLabel =
     statusOptions.find((opt) => opt.value === status)?.label ??
@@ -61,7 +63,7 @@ function RequestSummary(props: RequestSummaryProps) {
           <Stack direction="column" gap={spacing.s150} width="100%">
             <Stack justifyContent="center">
               <Text size="large" weight="bold">
-                {staffName ?? "Sin responsable"}
+                {staffDisplayName}
               </Text>
             </Stack>
 
@@ -87,7 +89,7 @@ function RequestSummary(props: RequestSummaryProps) {
 
                 <Stack gap={spacing.s050}>
                   <Text type="label" weight="bold">
-                    Tiempo de solicitud
+                    Fecha de solicitud
                   </Text>
                   {isLoading ? (
                     <SkeletonLine animated width="100px" />
@@ -173,7 +175,7 @@ function RequestSummary(props: RequestSummaryProps) {
               {isLoading ? (
                 <SkeletonLine animated width="120px" />
               ) : (
-                <Text size="large">{staffName ?? "Sin responsable"}</Text>
+                <Text size="large">{staffDisplayName}</Text>
               )}
             </Stack>
 
