@@ -12,11 +12,10 @@ interface IStyledTitle {
 }
 
 const StyledRequestCard = styled.div<IStyledRequestCard>`
-  width: 280px;
-  height: 207px;
+  width: 242px;
+  height: 312px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   gap: ${spacing.s100};
   padding: ${spacing.s150};
   border-radius: 8px;
@@ -33,16 +32,16 @@ const StyledRequestCard = styled.div<IStyledRequestCard>`
 `;
 
 const StyledTitle = styled.div<IStyledTitle>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: ${({ theme }) =>
     theme?.palette?.blue?.B50 ?? inube.palette.blue.B50};
-  text-align: center;
   font-weight: bold;
   border-radius: 4px;
   gap: ${spacing.s100};
   height: 20px;
-  justify-content: center;
-  padding-left: ${spacing.s075};
-  padding-right: ${spacing.s075};
+  text-align: center;
 `;
 
 export { StyledRequestCard, StyledTitle };

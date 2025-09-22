@@ -12,18 +12,20 @@ interface IRequest {
   requestDate: string;
   employeeName: string;
   hasEmployeeName?: boolean;
-  status: "pending" | "inProgress" | "completed";
+  status: Status;
+  responsible?: string;
 }
 
 interface IMockRequests {
-  pending: IRequest[];
+  noResponsible: IRequest[];
+  blocked: IRequest[];
   inProgress: IRequest[];
   completed: IRequest[];
 }
 
 interface BoardSections {
   sectionTitle: string;
-  value: string;
+  value: Status;
   sectionBackground: "gray" | "light";
   sectionInformation: IRequest[];
 }
@@ -33,12 +35,15 @@ interface RequestItem {
   title: string;
   requestDate: string;
   employeeName: string;
+  surnames?: string;
   hasEmployeeName?: boolean;
-  status: string;
+  status: Status;
   employeeId?: string;
+  responsible?: string;
+  taskName?: string;
 }
 
-type Status = "pending" | "inProgress" | "completed";
+type Status = "noResponsible" | "blocked" | "inProgress" | "completed";
 
 export type {
   IRoute,

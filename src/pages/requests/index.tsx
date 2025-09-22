@@ -1,13 +1,11 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useMediaQuery, IOption } from "@inubekit/inubekit";
-
-import { useHumanResourceRequests } from "@hooks/useHumanResourceRequests";
-
 import { formatHumanResourceRequests } from "./formatHumanResourceRequests";
 import { RequestsUI } from "./interface";
 import { assignmentOptions, statusOptions } from "./config";
 import { IRequest, Status } from "./types";
 import { breadcrumbs } from "./config/nav.config";
+import { useHumanEmployeeResourceRequests } from "@src/hooks/useHumanEmployeeResourceRequests";
 
 const useDebouncedSearch = (value: string, delay = 500) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -46,7 +44,7 @@ function Requests() {
   const isTablet = useMediaQuery("(max-width: 1280px)");
   const isMobile = useMediaQuery("(max-width: 490px)");
 
-  const { data, isLoading } = useHumanResourceRequests<IRequest>(
+  const { data, isLoading } = useHumanEmployeeResourceRequests<IRequest>(
     formatHumanResourceRequests,
   );
 
@@ -54,28 +52,34 @@ function Requests() {
   useOutsideClick(menuRef, isMenuOpen, () => setIsMenuOpen(false));
 
   const boardSections = useMemo(() => {
-    const statusMap: Record<Status, string> = {
-      pending: "Por evaluar",
+    const sectionTitles = {
+      noResponsible: "Sin responsable",
+      blocked: "Con pendientes",
       inProgress: "En progreso",
       completed: "Terminada",
     };
 
-    const backgroundMap: Record<Status, "gray" | "light"> = {
-      pending: "gray",
-      inProgress: "light",
-      completed: "gray",
-    };
+    const backgroundMap = {
+      noResponsible: "gray",
+      blocked: "light",
+      inProgress: "gray",
+      completed: "light",
+    } as const;
 
-    const statuses: Status[] = ["pending", "inProgress", "completed"];
+    const statuses: Status[] = [
+      "noResponsible",
+      "blocked",
+      "inProgress",
+      "completed",
+    ];
 
     return statuses.map((status) => ({
-      sectionTitle: statusMap[status],
+      sectionTitle: sectionTitles[status],
       value: status,
       sectionBackground: backgroundMap[status],
       sectionInformation: data.filter((req) => req.status === status),
     }));
   }, [data]);
-
   const openFilterModal = useCallback(() => {
     setIsFilterModalOpen(true);
     setIsMenuOpen(false);

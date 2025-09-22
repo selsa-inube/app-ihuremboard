@@ -4,9 +4,11 @@ import {
   environment,
 } from "@config/environment";
 
-import { mapHumanResourceRequestApiToEntity } from "./mappers";
+import { mapHumanEmployeeResourceRequestApiToEntity } from "./mappers";
 
-const getHumanResourceRequests = async (headers: Record<string, string>) => {
+const getHumanEmployeeResourceRequests = async (
+  headers: Record<string, string>,
+) => {
   const maxRetries = maxRetriesServices;
   const fetchTimeout = fetchTimeoutServices;
 
@@ -17,7 +19,7 @@ const getHumanResourceRequests = async (headers: Record<string, string>) => {
 
       const queryParameters = new URLSearchParams({
         page: "1",
-        per_page: "50",
+        per_page: "100",
         sort: "desc.humanResourceRequestDate",
       });
 
@@ -48,7 +50,7 @@ const getHumanResourceRequests = async (headers: Record<string, string>) => {
       const data = await res.json();
 
       return Array.isArray(data)
-        ? data.map((item) => mapHumanResourceRequestApiToEntity(item))
+        ? data.map((item) => mapHumanEmployeeResourceRequestApiToEntity(item))
         : [];
     } catch (error) {
       if (attempt === maxRetries) {
@@ -66,4 +68,4 @@ const getHumanResourceRequests = async (headers: Record<string, string>) => {
   return [];
 };
 
-export { getHumanResourceRequests };
+export { getHumanEmployeeResourceRequests };

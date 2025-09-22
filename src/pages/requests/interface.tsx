@@ -360,26 +360,42 @@ function RequestsUI(props: RequestsUIProps) {
                 isLoading={isLoadingRequests}
               >
                 {filteredRequests.length > 0 ? (
-                  filteredRequests.map(({ id, title, requestDate }) => (
-                    <RequestCard
-                      key={id}
-                      id={id}
-                      title={getRequestTypeTitle(title)}
-                      requestDate={requestDate}
-                      hasEmployeeName={true}
-                      onclick={() => {
-                        const requestTypeTitle = getRequestTypeTitle(title);
-                        if (RequestsNav[requestTypeTitle]) {
-                          navigate(
-                            `${RequestsNav[requestTypeTitle].path}/${id}`,
-                            {
-                              state: { section: value },
-                            },
-                          );
-                        }
-                      }}
-                    />
-                  ))
+                  filteredRequests.map(
+                    ({
+                      id,
+                      title,
+                      requestDate,
+                      employeeName,
+                      surnames,
+                      responsible,
+                      taskName,
+                    }) => {
+                      const requestTypeTitle = getRequestTypeTitle(title);
+
+                      return (
+                        <RequestCard
+                          key={id}
+                          id={id}
+                          title={requestTypeTitle}
+                          requestDate={requestDate}
+                          employeeName={employeeName}
+                          employeeSurnames={surnames}
+                          taskName={taskName}
+                          status={status}
+                          responsible={responsible ?? ""}
+                          onclick={() => {
+                            if (RequestsNav[requestTypeTitle]) {
+                              navigate(
+                                `${RequestsNav[requestTypeTitle].path}/${id}`,
+                                { state: { section: value } },
+                              );
+                            }
+                          }}
+                          showExtraIcon={sectionTitle === "Con pendientes"}
+                        />
+                      );
+                    },
+                  )
                 ) : (
                   <Text>
                     No hay solicitudes que coincidan con los filtros

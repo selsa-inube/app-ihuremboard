@@ -9,7 +9,7 @@ import { mapOptionForCustomerPortalApiToEntities } from "./mappers";
 
 const getOptionForCustomerPortal = async (
   staffPortalPublicCode: string,
-  businessUnit: string,
+  businessUnitPublicCode: string,
 ): Promise<IOptionWithSubOptions[]> => {
   const maxRetries = maxRetriesServices;
   const fetchTimeout = fetchTimeoutServices;
@@ -18,7 +18,7 @@ const getOptionForCustomerPortal = async (
     try {
       const queryParams = new URLSearchParams({
         staffPortalPublicCode,
-        businessUnitPublicCode: businessUnit,
+        businessUnitPublicCode,
       });
 
       const controller = new AbortController();

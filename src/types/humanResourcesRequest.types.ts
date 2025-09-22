@@ -1,35 +1,52 @@
-export interface HumanResourceRequestTraceability {
-  actionExecuted: string;
-  description: string;
-  executionDate: string;
+export interface HumanResourceRequest {
   humanResourceRequestId: string;
+  humanResourceRequestNumber: string;
+  humanResourceRequestDescription: string;
+  humanResourceRequestDate: string;
+  humanResourceRequestStatus: ERequestStatus;
+  humanResourceRequestType: ERequestType;
+  humanResourceRequestData: HumanResourceRequestData;
+  employeeId: string;
+  employeeName: string;
+  employeeStatus: string;
+  identificationDocumentNumber: string;
+  identificationType: string;
+  names: string;
+  surnames: string;
+  positionName: string;
+  staffIdentificationDocumentNumber: string;
+  staffLastName: string;
+  staffName: string;
+  taskName: keyof typeof TaskNameMapping;
+  humanResourceRequestTraceabilities: HumanResourceRequestTraceability[];
+  tasksToManageTheHumanResourcesRequests: TaskToManageHumanResourceRequest[];
+  humanResourceRequestBlockingPerTasks: HumanResourceRequestBlockingPerTask[];
+}
+export interface HumanResourceRequestTraceability {
   traceabilityId: string;
+  humanResourceRequestId: string;
+  actionExecuted: string;
   userWhoExecutedAction: string;
+  executionDate: string;
+  description: string;
 }
 
 export interface TaskToManageHumanResourceRequest {
-  description: string;
+  taskManagingId: string;
   humanResourceRequestId: string;
   taskCode: string;
-  taskManagingId: string;
-  taskName: string;
+  taskName: TaskNameMapping;
   taskStatus: ETaskStatus;
+  description: string;
 }
 
-export interface HumanResourceRequest {
-  employeeId: string;
-  employeeName: string;
-  humanResourceRequestData: HumanResourceRequestData;
-  humanResourceRequestDate: string;
-  humanResourceRequestDescription: string;
-  humanResourceRequestId: string;
-  humanResourceRequestNumber: string;
-  humanResourceRequestStatus: ERequestStatus;
-  humanResourceRequestTraceabilities: HumanResourceRequestTraceability[];
-  humanResourceRequestType: ERequestType;
-  tasksToManageTheHumanResourcesRequests: TaskToManageHumanResourceRequest[];
+export interface HumanResourceRequestBlockingPerTask {
+  blockType: string;
+  description: string;
+  errorId: string;
+  registrationDate: string;
+  taskManagingId: string;
 }
-
 export interface IVacationGeneralInformationEntry {
   id: string;
   daysOff: string;
@@ -78,6 +95,8 @@ export enum ERequestType {
 export enum ETaskStatus {
   assigned = "Asignada",
   executed = "Ejecutada",
+  manually_locked = "Bloqueada Manualmente",
+  system_locked = "Bloqueada por Sistema",
 }
 
 export enum ERequestStatus {
@@ -92,6 +111,25 @@ export enum ERequestStatus {
   onboarding_in_progress = "Vinculación en Progreso",
   pending_registration_invitation = "Pendiente de Invitacion para registro",
   pending_to_complete_registration = "Pendiente de completar registro",
+}
+
+export enum TaskNameMapping {
+  update_personal_details = "Actualizar datos generales del Empleado",
+  update_contact_information = "Actualizar datos de contacto del empleado",
+  update_onboarding_information = "Actualizar datos de vinculación",
+  health_screening_management = "Gestionar exámenes médicos",
+  update_employee_references = "Actualizar referencias del empleado",
+  update_compensation_info = "Actualizar asignaciones de la remuneración del empleado",
+  manage_signatures = "Gestionar firmas",
+  manage_user_accounts_for_office_applications = "Gestionar cuentas de usuario para aplicaciones de oficina",
+  manage_social_security_enrollment = "Gestionar Afiliacion a Seguridad Social",
+  confirm_start_date = "Confirmar fecha de inicio laboral",
+  approve_request = "Aprobar Solicitud",
+  verify_viability_of_request = "Verificar viabilidad de la solicitud",
+  confirm_vacation_completion = "Confirmar el disfrute de las vacaciones",
+  generate_certification = "Generar certificación",
+  send_self_registration_invitation_to_email = "Enviar invitacion de autoregistro al correo",
+  monitor_completed_registration = "Monitorear registro completado",
 }
 
 export type HumanResourceRequests = HumanResourceRequest[];

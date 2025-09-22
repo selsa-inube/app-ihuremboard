@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { getOptionForCustomerPortal } from "@services/staffPortal/getOptionForCustomerPortal";
 import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
 import { useAppContext } from "@context/AppContext";
 
@@ -18,6 +19,8 @@ export const useHome = () => {
     selectedClient,
     businessUnits,
     setSelectedClient,
+    optionForCustomerPortal,
+    setOptionForCustomerPortal,
     provisionedPortal,
   } = useAppContext();
 
@@ -36,6 +39,40 @@ export const useHome = () => {
   const [loading, setLoading] = useState(false);
 
   const staffPortalPublicCode = provisionedPortal?.publicCode ?? "";
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      if (!selectedClient) return;
+
+      if (
+        user?.id &&
+        (!optionForCustomerPortal || optionForCustomerPortal.length === 0)
+      ) {
+        try {
+          setLoading(true);
+          const businessUnitPublicCode = selectedClient.id;
+          const options = await getOptionForCustomerPortal(
+            staffPortalPublicCode,
+            businessUnitPublicCode,
+          );
+
+          setOptionForCustomerPortal(options);
+        } catch (error) {
+          console.error("Error obteniendo opciones:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchOptions();
+  }, [
+    user,
+    optionForCustomerPortal,
+    setOptionForCustomerPortal,
+    staffPortalPublicCode,
+    selectedClient,
+  ]);
 
   useEffect(() => {
     if (!selectedClient) {
@@ -69,13 +106,19 @@ export const useHome = () => {
   }, [validateTrigger]);
 
   const handleLogoClick = async (businessUnit: IBusinessUnitFixed) => {
+    if (!businessUnit.businessUnitPublicCode) {
+      setClientWithoutPrivileges(businessUnit);
+      setLocalModalVisible(true);
+      return;
+    }
+
     try {
       setLoading(true);
-
+      const businessUnitPublicCode = businessUnit.businessUnitPublicCode;
       const useCases = await getUseCasesByStaff(
         user?.id ?? "",
         staffPortalPublicCode,
-        businessUnit.businessUnitPublicCode,
+        businessUnitPublicCode,
       );
 
       const roles = useCases.listOfUseCasesByRoles ?? [];
