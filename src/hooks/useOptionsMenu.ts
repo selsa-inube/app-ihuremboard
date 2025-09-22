@@ -13,10 +13,11 @@ export function useOptionsMenu(
 ) {
   const [optionData, setOptionData] = useState<IOptionWithSubOptions[]>([]);
   const [hasError, setHasError] = useState<number | null>(null);
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [flagShown, setFlagShown] = useState(false);
 
   const { provisionedPortal, selectedClient } = useAppContext();
+
   const { signOut } = useSignOut();
 
   useErrorFlag({ flagShown });
@@ -28,9 +29,13 @@ export function useOptionsMenu(
   }, [hasError, signOut]);
 
   useEffect(() => {
+    if (!selectedClient || !businessUnitPublicCode) {
+      setIsFetching(false);
+      return;
+    }
+
     const fetchOptionData = async () => {
       setIsFetching(true);
-
       if (!provisionedPortal || !selectedClient) {
         setHasError(1001);
         setFlagShown(true);
@@ -60,7 +65,6 @@ export function useOptionsMenu(
         setIsFetching(false);
       }
     };
-
     void fetchOptionData();
   }, [
     provisionedPortal,
