@@ -67,7 +67,6 @@ function RequestSummary(props: RequestSummaryProps) {
       </Stack>
 
       <StyledRequestSummaryContainer $isMobile={isMobile}>
-        {/* Cabecera */}
         <Stack
           direction={isMobile ? "column" : "row"}
           justifyContent="space-between"
@@ -116,7 +115,6 @@ function RequestSummary(props: RequestSummaryProps) {
             </Stack>
           </Stack>
 
-          {/* Nombre empleado */}
           <Stack alignItems="center">
             {isLoading ? (
               <SkeletonLine animated width="120px" />
@@ -127,7 +125,6 @@ function RequestSummary(props: RequestSummaryProps) {
             )}
           </Stack>
 
-          {/* Icono flecha */}
           <Stack>
             <Icon
               icon={
@@ -141,7 +138,6 @@ function RequestSummary(props: RequestSummaryProps) {
           </Stack>
         </Stack>
 
-        {/* Divider + Detalles */}
         {showDetails && (
           <>
             <Divider dashed />
