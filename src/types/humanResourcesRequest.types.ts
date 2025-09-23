@@ -47,35 +47,18 @@ export interface HumanResourceRequestBlockingPerTask {
   registrationDate: string;
   taskManagingId: string;
 }
-export interface IVacationGeneralInformationEntry {
-  id: string;
-  daysOff: string;
-  startDate: string;
-  contract: string;
-  observations: string;
+export interface HumanResourceRequestData {
+  daysOff?: string;
+  startDate?: string;
   typeOfRequest?: string;
-}
-
-export interface IVacationPaymentGeneralInformationEntry {
+  daysToPay?: string;
+  certification?: string;
+  addressee?: string;
+  contractDesc?: string;
   id: string;
-  daysToPay: string;
-  contract: string;
-  observations: string;
+  contract?: string;
+  observations?: string;
 }
-
-export interface ICertificationGeneralInformationEntry {
-  id: string;
-  certification: string;
-  addressee: string;
-  contract: string;
-  contractDesc: string;
-  observations: string;
-}
-
-export type HumanResourceRequestData =
-  | IVacationGeneralInformationEntry
-  | ICertificationGeneralInformationEntry
-  | IVacationPaymentGeneralInformationEntry;
 
 export enum ERequestType {
   absence = "Ausencia",

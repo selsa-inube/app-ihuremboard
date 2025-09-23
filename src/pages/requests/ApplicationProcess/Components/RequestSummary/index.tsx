@@ -12,6 +12,7 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { useLocation } from "react-router-dom";
 
 import { spacing } from "@design/tokens/spacing";
+import { HumanResourceRequestData } from "@ptypes/humanResourcesRequest.types";
 import {
   StyledRequestSummaryContainer,
   DetailsGrid,
@@ -27,6 +28,7 @@ export interface RequestSummaryProps {
   status?: string;
   fullStaffName?: string;
   statusOptions?: IOption[];
+  humanResourceRequestData?: HumanResourceRequestData;
 }
 
 function RequestSummary(props: RequestSummaryProps) {
@@ -51,6 +53,9 @@ function RequestSummary(props: RequestSummaryProps) {
 
   const [showDetails, setShowDetails] = useState(false);
 
+  const humanResourceRequestData =
+    props.humanResourceRequestData ?? state?.humanResourceRequestData;
+
   return (
     <Stack direction="column" gap={spacing.s100}>
       <Stack gap={spacing.s075}>
@@ -67,6 +72,7 @@ function RequestSummary(props: RequestSummaryProps) {
       </Stack>
 
       <StyledRequestSummaryContainer $isMobile={isMobile}>
+        {/* Cabecera */}
         <Stack
           direction={isMobile ? "column" : "row"}
           justifyContent="space-between"
@@ -115,6 +121,7 @@ function RequestSummary(props: RequestSummaryProps) {
             </Stack>
           </Stack>
 
+          {/* Nombre empleado */}
           <Stack alignItems="center">
             {isLoading ? (
               <SkeletonLine animated width="120px" />
@@ -125,6 +132,7 @@ function RequestSummary(props: RequestSummaryProps) {
             )}
           </Stack>
 
+          {/* Icono flecha */}
           <Stack>
             <Icon
               icon={
@@ -138,6 +146,7 @@ function RequestSummary(props: RequestSummaryProps) {
           </Stack>
         </Stack>
 
+        {/* Divider + Detalles */}
         {showDetails && (
           <>
             <Divider dashed />
@@ -148,7 +157,7 @@ function RequestSummary(props: RequestSummaryProps) {
                   Días a pagar
                 </Text>
                 <Text appearance="gray" type="label">
-                  5
+                  {humanResourceRequestData?.daysToPay ?? "N/A"}
                 </Text>
               </DetailItem>
 
@@ -157,7 +166,7 @@ function RequestSummary(props: RequestSummaryProps) {
                   Número de contrato
                 </Text>
                 <Text appearance="gray" type="label">
-                  5213456
+                  {humanResourceRequestData?.contract ?? "N/A"}
                 </Text>
               </DetailItem>
 
@@ -166,7 +175,7 @@ function RequestSummary(props: RequestSummaryProps) {
                   Nombre de la empresa
                 </Text>
                 <Text appearance="gray" type="label">
-                  Sistemas enlinea S.A
+                  {humanResourceRequestData?.typeOfRequest ?? "N/A"}
                 </Text>
               </DetailItem>
 
@@ -175,7 +184,7 @@ function RequestSummary(props: RequestSummaryProps) {
                   Tipo de contrato
                 </Text>
                 <Text appearance="gray" type="label">
-                  A término indefinido
+                  {humanResourceRequestData?.contractDesc ?? "N/A"}
                 </Text>
               </DetailItem>
 
@@ -184,18 +193,19 @@ function RequestSummary(props: RequestSummaryProps) {
                   Fecha de desembolso
                 </Text>
                 <Text appearance="gray" type="label">
-                  dd/mmm/yyyy
+                  {humanResourceRequestData?.startDate
+                    ? formatDate(humanResourceRequestData.startDate)
+                    : "N/A"}
                 </Text>
               </DetailItem>
             </DetailsGrid>
 
-            <DetailItem style={{ gridColumn: "1 / -1" }}>
+            <DetailItem>
               <Text type="label" weight="bold">
                 Observaciones del empleado
               </Text>
               <Text appearance="gray" type="label">
-                Solicito a ustedes respetuosamente este pago de vacaciones
-                debido a una emergencia.
+                {humanResourceRequestData?.observations ?? "N/A"}
               </Text>
             </DetailItem>
           </>

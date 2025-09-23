@@ -40,6 +40,8 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const isMobile = useMediaQuery("(max-width: 710px)");
   const [showActions, setShowActions] = useState(false);
 
+  const requestNumber = state?.requestNumber ?? id;
+
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
   const handleAttach = () => console.log("Adjuntar archivos");
@@ -126,7 +128,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
         )}
 
         <RequestSummary
-          requestNumber={state?.requestNumber ?? id}
+          requestNumber={requestNumber}
           requestDate={state?.requestDate}
           title={state?.title}
           status={state?.status}

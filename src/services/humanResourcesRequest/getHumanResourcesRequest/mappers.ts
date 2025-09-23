@@ -24,9 +24,15 @@ const mapHumanResourceRequestApiToEntity = (
     item.humanResourceRequestStatus,
     "Estado desconocido",
   ) as ERequestStatus,
-  humanResourceRequestData:
-    item.humanResourceRequestData ??
-    ({} as HumanResourceRequest["humanResourceRequestData"]),
+  humanResourceRequestData: (() => {
+    try {
+      return typeof item.humanResourceRequestData === "string"
+        ? JSON.parse(item.humanResourceRequestData)
+        : (item.humanResourceRequestData ?? {});
+    } catch {
+      return {};
+    }
+  })() as HumanResourceRequest["humanResourceRequestData"],
   humanResourceRequestType: getValidEnumValue(
     ERequestType,
     item.humanResourceRequestType,
