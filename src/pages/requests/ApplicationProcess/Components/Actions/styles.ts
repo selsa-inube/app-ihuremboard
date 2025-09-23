@@ -40,8 +40,8 @@ const StyledActions = styled.div<IStyledActions>`
   height: 140px;
   position: fixed;
   z-index: 9999;
-  right: ${({ $isMobile }) => ($isMobile ? "28px" : "75px")};
-  top: ${({ $isMobile }) => ($isMobile ? "160px" : "190px")};
+  right: ${({ $isMobile }) => ($isMobile ? "28px" : "70px")};
+  top: ${({ $isMobile }) => ($isMobile ? "190px" : "215px")};
   background-color: ${({ theme }) =>
     theme?.palette?.neutral?.N0 || inube.palette.neutral.N0};
   box-shadow: 0px 2px 6px 1px

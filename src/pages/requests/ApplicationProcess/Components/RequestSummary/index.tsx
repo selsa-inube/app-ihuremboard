@@ -53,7 +53,7 @@ function RequestSummary({
   const statusOptions = propsStatusOptions ?? state?.statusOptions ?? [];
 
   const isLoading = propsIsLoading ?? false;
-  const isMobile = useMediaQuery("(max-width: 710px)");
+  const isMobile = useMediaQuery("(max-width: 1050px)");
   const [showActions, setShowActions] = useState(false);
 
   const staffDisplayName = fullStaffName ?? "Sin responsable";
@@ -63,7 +63,6 @@ function RequestSummary({
     status ??
     "Sin estado";
 
-  // Handlers de acciones
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
   const handleAttach = () => console.log("Adjuntar archivos");
@@ -71,7 +70,6 @@ function RequestSummary({
 
   return (
     <Stack direction="column" gap={spacing.s100}>
-      {/* Estado + Botones */}
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -91,7 +89,6 @@ function RequestSummary({
           )}
         </Stack>
 
-        {/* Botones de acción */}
         {isMobile ? (
           <Icon
             icon={<MdMoreVert />}
@@ -133,7 +130,6 @@ function RequestSummary({
         )}
       </Stack>
 
-      {/* Modal de acciones para móvil */}
       {isMobile && showActions && (
         <ActionModal
           onExecute={handleExecute}
