@@ -1,11 +1,5 @@
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Stack, Button, Icon, useMediaQuery } from "@inubekit/inubekit";
-import {
-  MdKeyboardArrowLeft,
-  MdAutorenew,
-  MdOutlineCancel,
-  MdMoreVert,
-} from "react-icons/md";
+import { useParams, useLocation } from "react-router-dom";
+import { Stack, useMediaQuery } from "@inubekit/inubekit";
 import { useState } from "react";
 
 import { AppMenu } from "@components/layout/AppMenu";
@@ -13,7 +7,6 @@ import { IRoute } from "@components/layout/AppMenu/types";
 import { spacing } from "@design/tokens/spacing";
 
 import { RequestSummary } from "./Components/RequestSummary";
-import { VerticalDivider } from "./Components/RequestSummary/styles";
 import { ActionModal } from "./Components/Actions";
 
 interface ApplicationProcessUIProps {
@@ -26,7 +19,6 @@ interface ApplicationProcessUIProps {
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const { appName, appRoute, navigatePage, description } = props;
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   const { state } = useLocation() as {
     state: {
@@ -54,67 +46,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       appDescription={description}
     >
       <Stack direction="column" gap={spacing.s200}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          width="100%"
-        >
-          <Button
-            appearance="primary"
-            variant="outlined"
-            onClick={() => void navigate("/requests")}
-            iconBefore={<MdKeyboardArrowLeft />}
-            spacing="compact"
-          >
-            Volver
-          </Button>
-
-          {isMobile ? (
-            <Icon
-              icon={<MdMoreVert />}
-              appearance="dark"
-              size="24px"
-              cursorHover
-              onClick={() => setShowActions(true)}
-            />
-          ) : (
-            <Stack direction="row" gap={spacing.s075} alignItems="center">
-              <Button
-                appearance="primary"
-                onClick={handleExecute}
-                iconBefore={<MdAutorenew />}
-                spacing="compact"
-              >
-                Ejecutar
-              </Button>
-              <Button
-                appearance="danger"
-                onClick={handleDiscard}
-                iconBefore={<MdOutlineCancel />}
-                spacing="compact"
-              >
-                Descartar
-              </Button>
-              <VerticalDivider />
-              <Button
-                variant="outlined"
-                onClick={handleAttach}
-                spacing="compact"
-              >
-                Adjuntar
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={handleSeeAttachments}
-                spacing="compact"
-              >
-                Ver adjuntos
-              </Button>
-            </Stack>
-          )}
-        </Stack>
-
         {isMobile && showActions && (
           <ActionModal
             onExecute={handleExecute}

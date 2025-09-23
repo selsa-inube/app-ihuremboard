@@ -5,14 +5,23 @@ import {
   Stack,
   SkeletonLine,
   IOption,
+  Button,
 } from "@inubekit/inubekit";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import {
+  MdKeyboardArrowDown,
+  MdMoreVert,
+  MdAutorenew,
+  MdOutlineCancel,
+} from "react-icons/md";
 import { useLocation } from "react-router-dom";
+import { useState } from "react";
 
 import { spacing } from "@design/tokens/spacing";
 import { formatDate } from "@utils/date";
 
 import { StyledRequestSummaryContainer } from "./styles";
+import { VerticalDivider } from "./styles";
+import { ActionModal } from "../Actions";
 
 export interface RequestSummaryProps {
   isLoading?: boolean;
@@ -35,14 +44,17 @@ function RequestSummary({
 }: RequestSummaryProps) {
   const location = useLocation();
   const state = location.state as RequestSummaryProps | undefined;
+
   const requestNumber = propsRequestNumber ?? state?.requestNumber;
   const requestDate = propsRequestDate ?? state?.requestDate;
   const title = propsTitle ?? state?.title;
   const status = propsStatus ?? state?.status;
   const fullStaffName = propsFullStaffName ?? state?.fullStaffName;
   const statusOptions = propsStatusOptions ?? state?.statusOptions ?? [];
+
   const isLoading = propsIsLoading ?? false;
   const isMobile = useMediaQuery("(max-width: 710px)");
+  const [showActions, setShowActions] = useState(false);
 
   const staffDisplayName = fullStaffName ?? "Sin responsable";
 
@@ -51,21 +63,94 @@ function RequestSummary({
     status ??
     "Sin estado";
 
+  // Handlers de acciones
+  const handleDiscard = () => console.log("Descartar solicitud");
+  const handleExecute = () => console.log("Ejecutar solicitud");
+  const handleAttach = () => console.log("Adjuntar archivos");
+  const handleSeeAttachments = () => console.log("Ver adjuntos");
+
   return (
     <Stack direction="column" gap={spacing.s100}>
-      <Stack gap={spacing.s075}>
-        <Text type="title" size="medium" weight="bold">
-          Estado:
-        </Text>
-        {isLoading ? (
-          <SkeletonLine animated width="120px" />
-        ) : (
-          <Text type="title" size="medium" appearance="gray">
-            {statusLabel}
+      {/* Estado + Botones */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        width="100%"
+      >
+        <Stack gap={spacing.s075}>
+          <Text type="title" size="medium" weight="bold">
+            Estado:
           </Text>
+          {isLoading ? (
+            <SkeletonLine animated width="120px" />
+          ) : (
+            <Text type="title" size="medium" appearance="gray">
+              {statusLabel}
+            </Text>
+          )}
+        </Stack>
+
+        {/* Botones de acción */}
+        {isMobile ? (
+          <Icon
+            icon={<MdMoreVert />}
+            appearance="dark"
+            size="24px"
+            cursorHover
+            onClick={() => setShowActions(true)}
+          />
+        ) : (
+          <Stack direction="row" gap={spacing.s075} alignItems="center">
+            <Button
+              appearance="primary"
+              onClick={handleExecute}
+              iconBefore={<MdAutorenew />}
+              spacing="compact"
+            >
+              Ejecutar
+            </Button>
+            <Button
+              appearance="danger"
+              onClick={handleDiscard}
+              iconBefore={<MdOutlineCancel />}
+              spacing="compact"
+            >
+              Descartar
+            </Button>
+            <VerticalDivider />
+            <Button variant="outlined" onClick={handleAttach} spacing="compact">
+              Adjuntar
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleSeeAttachments}
+              spacing="compact"
+            >
+              Ver adjuntos
+            </Button>
+          </Stack>
         )}
       </Stack>
 
+      {/* Modal de acciones para móvil */}
+      {isMobile && showActions && (
+        <ActionModal
+          onExecute={handleExecute}
+          onDiscard={handleDiscard}
+          onAttach={handleAttach}
+          onSeeAttachments={handleSeeAttachments}
+          onClose={() => setShowActions(false)}
+          actionDescriptions={{
+            execute: "No puedes ejecutar esta acción ahora",
+            discard: "No puedes descartar esta acción ahora",
+            attach: "No puedes adjuntar archivos en este momento",
+            seeAttachments: "No puedes ver los adjuntos en este momento",
+          }}
+        />
+      )}
+
+      {/* Resto de la info */}
       <StyledRequestSummaryContainer $isMobile={isMobile}>
         {isMobile ? (
           <Stack direction="column" gap={spacing.s150} width="100%">
