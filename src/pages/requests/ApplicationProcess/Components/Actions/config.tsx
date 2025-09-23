@@ -1,19 +1,41 @@
 import { MdAutorenew, MdOutlineCancel, MdAttachFile } from "react-icons/md";
 import { FaRegFileLines } from "react-icons/fa6";
 
-import { IAction } from "./type";
+import { IAction } from "./types";
 
-export const Actions = (
-  disableExecute?: boolean,
-  disableDiscard?: boolean,
-  disableAttach?: boolean,
-  disableSeeAttachments?: boolean,
-  onExecute?: () => void,
-  onDiscard?: () => void,
-  onAttach?: () => void,
-  onSeeAttachments?: () => void,
-): IAction[] => {
-  return [
+interface ActionsProps {
+  disableExecute?: boolean;
+  disableDiscard?: boolean;
+  disableAttach?: boolean;
+  disableSeeAttachments?: boolean;
+  onExecute?: () => void;
+  onDiscard?: () => void;
+  onAttach?: () => void;
+  onSeeAttachments?: () => void;
+}
+
+interface ActionItem {
+  id: string;
+  icon: JSX.Element;
+  appearance: "primary" | "danger" | "dark";
+  label: string;
+  onClick?: () => void;
+  isDisabled: boolean;
+}
+
+export const Actions = (props: ActionsProps): IAction[] => {
+  const {
+    disableExecute,
+    disableDiscard,
+    disableAttach,
+    disableSeeAttachments,
+    onExecute,
+    onDiscard,
+    onAttach,
+    onSeeAttachments,
+  } = props;
+
+  const actionItems: ActionItem[] = [
     {
       id: "execute",
       icon: <MdAutorenew />,
@@ -47,4 +69,6 @@ export const Actions = (
       isDisabled: disableSeeAttachments ?? false,
     },
   ];
+
+  return actionItems;
 };

@@ -10,10 +10,10 @@ import { useState } from "react";
 
 import { AppMenu } from "@components/layout/AppMenu";
 import { IRoute } from "@components/layout/AppMenu/types";
-import { RequestSummary } from "./Components/RequestSummary";
-import { VerticalDivider } from "./Components/RequestSummary/styles";
 import { spacing } from "@design/tokens/spacing";
 
+import { RequestSummary } from "./Components/RequestSummary";
+import { VerticalDivider } from "./Components/RequestSummary/styles";
 import { ActionModal } from "./Components/Actions";
 
 interface ApplicationProcessUIProps {
@@ -37,7 +37,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     };
   };
 
-  const isMobile = useMediaQuery("(max-width: 710px)");
+  const isMobile = useMediaQuery("(max-width: 1000px)");
   const [showActions, setShowActions] = useState(false);
 
   const handleDiscard = () => console.log("Descartar solicitud");

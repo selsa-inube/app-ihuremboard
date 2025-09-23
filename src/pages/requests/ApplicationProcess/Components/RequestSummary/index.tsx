@@ -10,8 +10,9 @@ import { MdKeyboardArrowDown } from "react-icons/md";
 import { useLocation } from "react-router-dom";
 
 import { spacing } from "@design/tokens/spacing";
-import { StyledRequestSummaryContainer } from "./styles";
 import { formatDate } from "@utils/date";
+
+import { StyledRequestSummaryContainer } from "./styles";
 
 export interface RequestSummaryProps {
   isLoading?: boolean;
@@ -23,17 +24,24 @@ export interface RequestSummaryProps {
   statusOptions?: IOption[];
 }
 
-function RequestSummary(props: RequestSummaryProps) {
+function RequestSummary({
+  isLoading: propsIsLoading,
+  requestNumber: propsRequestNumber,
+  requestDate: propsRequestDate,
+  title: propsTitle,
+  status: propsStatus,
+  fullStaffName: propsFullStaffName,
+  statusOptions: propsStatusOptions,
+}: RequestSummaryProps) {
   const location = useLocation();
   const state = location.state as RequestSummaryProps | undefined;
-
-  const requestNumber = props.requestNumber ?? state?.requestNumber;
-  const requestDate = props.requestDate ?? state?.requestDate;
-  const title = props.title ?? state?.title;
-  const status = props.status ?? state?.status;
-  const fullStaffName = props.fullStaffName ?? state?.fullStaffName;
-  const statusOptions = props.statusOptions ?? state?.statusOptions ?? [];
-  const isLoading = props.isLoading ?? false;
+  const requestNumber = propsRequestNumber ?? state?.requestNumber;
+  const requestDate = propsRequestDate ?? state?.requestDate;
+  const title = propsTitle ?? state?.title;
+  const status = propsStatus ?? state?.status;
+  const fullStaffName = propsFullStaffName ?? state?.fullStaffName;
+  const statusOptions = propsStatusOptions ?? state?.statusOptions ?? [];
+  const isLoading = propsIsLoading ?? false;
   const isMobile = useMediaQuery("(max-width: 710px)");
 
   const staffDisplayName = fullStaffName ?? "Sin responsable";
@@ -62,13 +70,10 @@ function RequestSummary(props: RequestSummaryProps) {
         {isMobile ? (
           <Stack direction="column" gap={spacing.s150} width="100%">
             <Stack justifyContent="center">
-              <Text size="large" weight="bold">
-                {staffDisplayName}
-              </Text>
+              <Text weight="bold">{staffDisplayName}</Text>
             </Stack>
 
             <Stack
-              direction="row"
               justifyContent="space-between"
               alignItems="center"
               width="100%"
@@ -125,7 +130,6 @@ function RequestSummary(props: RequestSummaryProps) {
           </Stack>
         ) : (
           <Stack
-            direction="row"
             justifyContent="space-between"
             alignItems="center"
             width="100%"
@@ -175,7 +179,7 @@ function RequestSummary(props: RequestSummaryProps) {
               {isLoading ? (
                 <SkeletonLine animated width="120px" />
               ) : (
-                <Text size="large">{staffDisplayName}</Text>
+                <Text>{staffDisplayName}</Text>
               )}
             </Stack>
 
