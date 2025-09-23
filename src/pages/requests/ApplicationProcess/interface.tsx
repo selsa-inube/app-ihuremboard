@@ -20,10 +20,11 @@ interface ApplicationProcessUIProps {
   appName: string;
   appRoute: IRoute[];
   navigatePage: string;
+  description: string;
 }
 
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
-  const { appName, appRoute, navigatePage } = props;
+  const { appName, appRoute, navigatePage, description } = props;
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -46,7 +47,12 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const handleSeeAttachments = () => console.log("Ver adjuntos");
 
   return (
-    <AppMenu appName={appName} appRoute={appRoute} navigatePage={navigatePage}>
+    <AppMenu
+      appName={appName}
+      appRoute={appRoute}
+      navigatePage={navigatePage}
+      appDescription={description}
+    >
       <Stack direction="column" gap={spacing.s200}>
         <Stack
           direction="row"

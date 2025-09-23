@@ -29,14 +29,19 @@ const StyledLi = styled.li<IStyledLi>`
   cursor: pointer;
 `;
 
+interface IStyledActions {
+  theme: typeof inube;
+  $isMobile?: boolean;
+}
+
 const StyledActions = styled.div<IStyledActions>`
   border-radius: 8px;
   width: 180px;
   height: 140px;
   position: fixed;
   z-index: 9999;
-  right: 75px;
-  top: 200px;
+  right: ${({ $isMobile }) => ($isMobile ? "28px" : "75px")};
+  top: ${({ $isMobile }) => ($isMobile ? "160px" : "190px")};
   background-color: ${({ theme }) =>
     theme?.palette?.neutral?.N0 || inube.palette.neutral.N0};
   box-shadow: 0px 2px 6px 1px

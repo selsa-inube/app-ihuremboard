@@ -5,7 +5,6 @@ import { ApplicationProcessUI } from "./interface";
 
 function ApplicationProcess() {
   const { id } = useParams();
-
   const isTablet = useMediaQuery("(max-width: 1100px)");
 
   const breadcrumbs = {
@@ -40,6 +39,7 @@ function ApplicationProcess() {
         },
       ]}
       navigatePage={breadcrumbs.url}
+      description="Descripción (pendiente)"
     />
   );
 }
