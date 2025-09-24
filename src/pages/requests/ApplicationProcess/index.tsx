@@ -2,13 +2,22 @@ import { useParams } from "react-router-dom";
 import { useMediaQuery } from "@inubekit/inubekit";
 
 import { ApplicationProcessUI } from "./interface";
+import { requestConfigs } from "@config/requests.config";
+import { ERequestType } from "@ptypes/humanResourcesRequest.types";
 
 function ApplicationProcess() {
-  const { id } = useParams();
+  const { id } = useParams<{ id: ERequestType }>();
   const isTablet = useMediaQuery("(max-width: 1100px)");
 
+  const config =
+    id && requestConfigs[id as ERequestType]
+      ? requestConfigs[id as ERequestType]
+      : null;
+
+  const description = config?.description ?? "Descripción no disponible";
+
   const breadcrumbs = {
-    label: "Solicitud de vacaciones pagadas",
+    label: "Solicitud",
     crumbs: [
       {
         path: "/",
@@ -33,13 +42,13 @@ function ApplicationProcess() {
         ...breadcrumbs.crumbs,
         {
           path: `/requests/${id}`,
-          label: "Solicitud de vacaciones pagadas",
+          label: breadcrumbs.label,
           id: `/requests/${id}`,
           isActive: true,
         },
       ]}
       navigatePage={breadcrumbs.url}
-      description="Descripción (pendiente)"
+      description={description}
     />
   );
 }

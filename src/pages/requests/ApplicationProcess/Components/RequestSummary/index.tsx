@@ -18,9 +18,13 @@ import { useState } from "react";
 
 import { spacing } from "@design/tokens/spacing";
 import { formatDate } from "@utils/date";
+import { capitalizeFullName } from "@utils/string";
 
-import { StyledRequestSummaryContainer } from "./styles";
-import { VerticalDivider } from "./styles";
+import {
+  StyledRequestSummaryContainer,
+  VerticalDivider,
+  MobileIconContainer,
+} from "./styles";
 import { ActionModal } from "../Actions";
 
 export interface RequestSummaryProps {
@@ -53,10 +57,13 @@ function RequestSummary({
   const statusOptions = propsStatusOptions ?? state?.statusOptions ?? [];
 
   const isLoading = propsIsLoading ?? false;
-  const isMobile = useMediaQuery("(max-width: 1050px)");
+  const isMobile = useMediaQuery("(max-width: 1100px)");
+  const isSmall = useMediaQuery("(max-width: 490px)");
   const [showActions, setShowActions] = useState(false);
 
-  const staffDisplayName = fullStaffName ?? "Sin responsable";
+  const staffDisplayName = fullStaffName
+    ? capitalizeFullName(fullStaffName)
+    : "Sin responsable";
 
   const statusLabel =
     statusOptions.find((opt) => opt.value === status)?.label ??
@@ -88,15 +95,16 @@ function RequestSummary({
             </Text>
           )}
         </Stack>
-
         {isMobile ? (
-          <Icon
-            icon={<MdMoreVert />}
-            appearance="dark"
-            size="24px"
-            cursorHover
-            onClick={() => setShowActions(true)}
-          />
+          <MobileIconContainer $isMobile={isMobile} $isSmall={isSmall}>
+            <Icon
+              icon={<MdMoreVert />}
+              appearance="dark"
+              size="24px"
+              cursorHover
+              onClick={() => setShowActions(true)}
+            />
+          </MobileIconContainer>
         ) : (
           <Stack direction="row" gap={spacing.s075} alignItems="center">
             <Button
@@ -145,8 +153,6 @@ function RequestSummary({
           }}
         />
       )}
-
-      {/* Resto de la info */}
       <StyledRequestSummaryContainer $isMobile={isMobile}>
         {isMobile ? (
           <Stack direction="column" gap={spacing.s150} width="100%">

@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { inube } from "@inubekit/inubekit";
-
 import { spacing } from "@design/tokens/spacing";
 
 interface StyledRequestSummaryContainerProps {
@@ -10,6 +9,11 @@ interface StyledRequestSummaryContainerProps {
 
 interface IVerticalDividerProps {
   theme: typeof inube;
+}
+
+interface MobileIconContainerProps {
+  $isMobile: boolean;
+  $isSmall: boolean;
 }
 
 const StyledRequestSummaryContainer = styled.div<StyledRequestSummaryContainerProps>`
@@ -34,4 +38,13 @@ const VerticalDivider = styled.div<IVerticalDividerProps>`
   margin: 0 ${spacing.s100};
 `;
 
-export { StyledRequestSummaryContainer, VerticalDivider };
+const MobileIconContainer = styled.div<MobileIconContainerProps>`
+  position: absolute;
+  z-index: 10;
+  right: ${({ $isSmall, $isMobile }) =>
+    $isSmall ? "10px" : $isMobile ? "60px" : "90px"};
+  top: ${({ $isSmall, $isMobile }) =>
+    $isSmall ? "100px" : $isMobile ? "123px" : "90px"};
+`;
+
+export { StyledRequestSummaryContainer, VerticalDivider, MobileIconContainer };
