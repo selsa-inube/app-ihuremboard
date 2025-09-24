@@ -1,13 +1,11 @@
-import { useState } from "react";
 import {
-  Text,
-  useMediaQuery,
-  Icon,
   Stack,
-  SkeletonLine,
-  IOption,
+  Text,
   Button,
+  Icon,
+  SkeletonLine,
   Divider,
+  useMediaQuery,
 } from "@inubekit/inubekit";
 import {
   MdKeyboardArrowDown,
@@ -16,8 +14,6 @@ import {
   MdAutorenew,
   MdOutlineCancel,
 } from "react-icons/md";
-import { useLocation } from "react-router-dom";
-
 import { spacing } from "@design/tokens/spacing";
 import { formatDate } from "@utils/date";
 import {
@@ -27,109 +23,36 @@ import {
   VerticalDivider,
 } from "./styles";
 import { ActionModal } from "../Actions";
+import { RequestSummaryProps, useRequestSummaryLogic } from "./interface";
 
-/**
- * Estructura esperada de los datos de la solicitud.
- * Se agregan todos los campos que tu lógica ya usa.
- */
-export interface HumanResourceRequestData {
-  daysToPay?: string | number;
-  daysOff?: string | number;
-  startDate?: string;
-  startDateEnyoment?: string;
-  contractNumber?: string;
-  contractId?: string;
-  businessName?: string;
-  contractType?: string;
-  observationEmployee?: string;
-  addressee?: string;
-  // Puedes agregar más campos según la API
-}
+export function RequestSummary(props: RequestSummaryProps) {
+  const isMobile = useMediaQuery("(max-width:1050px)");
+  const isLoading = props.isLoading ?? false;
 
-export interface RequestSummaryProps {
-  isLoading?: boolean;
-  requestNumber?: string | number;
-  requestDate?: string;
-  title?: string;
-  status?: string;
-  fullStaffName?: string;
-  statusOptions?: IOption[];
-  humanResourceRequestData?: HumanResourceRequestData;
-  requestType?: string;
-}
-
-function RequestSummary({
-  isLoading: propsIsLoading,
-  requestNumber: propsRequestNumber,
-  requestDate: propsRequestDate,
-  title: propsTitle,
-  status: propsStatus,
-  fullStaffName: propsFullStaffName,
-  statusOptions: propsStatusOptions,
-  humanResourceRequestData: propsHumanResourceRequestData,
-  requestType: propsRequestType,
-}: RequestSummaryProps) {
-  const location = useLocation();
-  const state = location.state as RequestSummaryProps | undefined;
-
-  const requestNumber = propsRequestNumber ?? state?.requestNumber;
-  const requestDate = propsRequestDate ?? state?.requestDate;
-  const title = propsTitle ?? state?.title;
-  const status = propsStatus ?? state?.status;
-  const fullStaffName = propsFullStaffName ?? state?.fullStaffName;
-  const statusOptions = propsStatusOptions ?? state?.statusOptions ?? [];
-  const humanResourceRequestData =
-    propsHumanResourceRequestData ?? state?.humanResourceRequestData ?? {};
-  const requestType = propsRequestType ?? state?.requestType;
-
-  const parsedData: HumanResourceRequestData = humanResourceRequestData ?? {};
-
-  // Normalización de campos
-  let daysToPay = "N/A";
-  let startDate: string | undefined = undefined;
-  let contractNumber = "N/A";
-  let businessName = "N/A";
-  let contractType = "N/A";
-  let observationEmployee = "N/A";
-
-  if (requestType === "vacations_enjoyed" || requestType === "paid_vacations") {
-    daysToPay =
-      parsedData.daysToPay?.toString() ??
-      parsedData.daysOff?.toString() ??
-      "N/A";
-    startDate =
-      parsedData.startDate ?? parsedData.startDateEnyoment ?? undefined;
-  } else if (requestType === "certification") {
-    daysToPay = "-";
-    startDate = undefined;
-  }
-
-  contractNumber = parsedData.contractNumber ?? parsedData.contractId ?? "N/A";
-  businessName = parsedData.businessName ?? "N/A";
-  contractType = parsedData.contractType ?? "N/A";
-  observationEmployee =
-    parsedData.observationEmployee ?? parsedData.addressee ?? "N/A";
-
-  const isLoading = propsIsLoading ?? false;
-  const isMobile = useMediaQuery("(max-width: 1050px)");
-  const [showActions, setShowActions] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-
-  const staffDisplayName = fullStaffName ?? "Sin responsable";
-
-  const statusLabel =
-    statusOptions.find((opt) => opt.value === status)?.label ??
-    status ??
-    "Sin estado";
-
-  const handleDiscard = () => console.log("Descartar solicitud");
-  const handleExecute = () => console.log("Ejecutar solicitud");
-  const handleAttach = () => console.log("Adjuntar archivos");
-  const handleSeeAttachments = () => console.log("Ver adjuntos");
+  const {
+    requestNumber,
+    requestDate,
+    title,
+    statusLabel,
+    staffDisplayName,
+    daysToPay,
+    startDate,
+    contractNumber,
+    businessName,
+    contractType,
+    observationEmployee,
+    showActions,
+    setShowActions,
+    showDetails,
+    setShowDetails,
+    handleDiscard,
+    handleExecute,
+    handleAttach,
+    handleSeeAttachments,
+  } = useRequestSummaryLogic(props);
 
   return (
     <Stack direction="column" gap={spacing.s100}>
-      {/* Estado + acciones */}
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -189,8 +112,6 @@ function RequestSummary({
           </Stack>
         )}
       </Stack>
-
-      {/* Modal acciones en móvil */}
       {isMobile && showActions && (
         <ActionModal
           onExecute={handleExecute}
@@ -207,7 +128,6 @@ function RequestSummary({
         />
       )}
 
-      {/* Resumen */}
       <StyledRequestSummaryContainer $isMobile={isMobile}>
         <Stack
           direction={isMobile ? "column" : "row"}
@@ -257,7 +177,6 @@ function RequestSummary({
             </Stack>
           </Stack>
 
-          {/* Responsable */}
           <Stack alignItems="center">
             {isLoading ? (
               <SkeletonLine animated width="120px" />
@@ -268,7 +187,6 @@ function RequestSummary({
             )}
           </Stack>
 
-          {/* Toggle detalles */}
           <Stack>
             <Icon
               icon={
@@ -282,11 +200,9 @@ function RequestSummary({
           </Stack>
         </Stack>
 
-        {/* Detalles */}
         {showDetails && (
           <>
             <Divider dashed />
-
             <DetailsGrid>
               <DetailItem>
                 <Text type="label" weight="bold">
@@ -348,5 +264,3 @@ function RequestSummary({
     </Stack>
   );
 }
-
-export { RequestSummary };

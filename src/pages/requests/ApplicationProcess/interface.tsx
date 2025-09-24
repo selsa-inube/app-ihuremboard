@@ -1,6 +1,6 @@
 import { useParams, useLocation } from "react-router-dom";
 import { Stack, useMediaQuery } from "@inubekit/inubekit";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { AppMenu } from "@components/layout/AppMenu";
 import { IRoute } from "@components/layout/AppMenu/types";
@@ -33,19 +33,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const isMobile = useMediaQuery("(max-width: 1000px)");
   const [showActions, setShowActions] = useState(false);
 
-  const requestNumber = state?.requestNumber ?? id;
+  const requestNumber = state?.requestNumber ?? id ?? "";
 
-  const {
-    data: requestDataFromHook,
-    isLoading,
-    error,
-  } = useHumanResourceRequest(requestNumber);
-
-  useEffect(() => {
-    console.log("🚀 requestNumber en UI:", requestNumber);
-    console.log("🚀 requestDataFromHook:", requestDataFromHook);
-    console.log("🚀 error:", error);
-  }, [requestDataFromHook, error]);
+  const { data: requestDataFromHook, isLoading } =
+    useHumanResourceRequest(requestNumber);
 
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
@@ -77,11 +68,11 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
         )}
 
         <RequestSummary
-          requestNumber={requestNumber}
-          requestDate={state?.requestDate}
-          title={state?.title}
-          status={state?.status}
-          fullStaffName={state?.fullStaffName}
+          requestNumber={requestDataFromHook?.humanResourceRequestNumber}
+          requestDate={requestDataFromHook?.humanResourceRequestDate}
+          title={requestDataFromHook?.humanResourceRequestDescription}
+          status={requestDataFromHook?.humanResourceRequestStatus}
+          fullStaffName={state?.fullStaffName ?? "Sin responsable"}
           humanResourceRequestData={
             requestDataFromHook?.humanResourceRequestData
           }

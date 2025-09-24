@@ -50,11 +50,12 @@ export interface HumanResourceRequestBlockingPerTask {
 }
 
 export interface HumanResourceRequestData {
-  contractId: string;
-  contractNumber: string;
-  businessName: string;
-  contractType: string;
-  observationEmployee: string;
+  contractId?: string;
+  contractNumber?: string;
+  businessName?: string;
+  startDate?: string;
+  contractType?: string;
+  observationEmployee?: string;
   daysToPay?: string;
   disbursementDate?: string;
   daysOff?: string;
