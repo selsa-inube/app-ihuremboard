@@ -42,7 +42,7 @@ function ApplicationProcess() {
         ...breadcrumbs.crumbs,
         {
           path: `/requests/${id}`,
-          label: breadcrumbs.label,
+          label: "Solicitud de vacaciones pagadas",
           id: `/requests/${id}`,
           isActive: true,
         },
