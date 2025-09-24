@@ -99,11 +99,7 @@ const mapTaskManagingHumanResourceRequestApiToEntity = (
   taskManagingId: String(item.taskManagingId ?? ""),
   humanResourceRequestId: String(item.humanResourceRequestId ?? ""),
   taskCode: String(item.taskCode ?? ""),
-  taskName: getValidEnumValue(
-    TaskNameMapping,
-    item.taskName,
-    "Tarea desconocida",
-  ) as TaskNameMapping,
+  taskName: item.taskName as keyof typeof TaskNameMapping,
   taskStatus: getValidEnumValue(
     ETaskStatus,
     item.taskStatus,

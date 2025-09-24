@@ -1,46 +1,51 @@
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Stack, Button, Icon, useMediaQuery } from "@inubekit/inubekit";
-import {
-  MdKeyboardArrowLeft,
-  MdAutorenew,
-  MdOutlineCancel,
-  MdMoreVert,
-} from "react-icons/md";
-import { useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
+import { Stack, useMediaQuery } from "@inubekit/inubekit";
+import { useState, useEffect } from "react";
 
 import { AppMenu } from "@components/layout/AppMenu";
 import { IRoute } from "@components/layout/AppMenu/types";
-import { RequestSummary } from "./Components/RequestSummary";
-import { VerticalDivider } from "./Components/RequestSummary/styles";
 import { spacing } from "@design/tokens/spacing";
 
+import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
+import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
 
 interface ApplicationProcessUIProps {
   appName: string;
   appRoute: IRoute[];
   navigatePage: string;
+  description: string;
 }
 
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
-  const { appName, appRoute, navigatePage } = props;
+  const { appName, appRoute, navigatePage, description } = props;
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-
   const { state } = useLocation() as {
-    state: {
-      requestNumber: string;
-      requestDate: string;
-      fullStaffName: string;
-      title: string;
-      status: string;
+    state?: {
+      requestNumber?: string;
+      requestDate?: string;
+      fullStaffName?: string;
+      title?: string;
+      status?: string;
     };
   };
 
-  const isMobile = useMediaQuery("(max-width: 710px)");
+  const isMobile = useMediaQuery("(max-width: 1000px)");
   const [showActions, setShowActions] = useState(false);
 
   const requestNumber = state?.requestNumber ?? id;
+
+  const {
+    data: requestDataFromHook,
+    isLoading,
+    error,
+  } = useHumanResourceRequest(requestNumber);
+
+  useEffect(() => {
+    console.log("🚀 requestNumber en UI:", requestNumber);
+    console.log("🚀 requestDataFromHook:", requestDataFromHook);
+    console.log("🚀 error:", error);
+  }, [requestDataFromHook, error]);
 
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
@@ -48,69 +53,13 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const handleSeeAttachments = () => console.log("Ver adjuntos");
 
   return (
-    <AppMenu appName={appName} appRoute={appRoute} navigatePage={navigatePage}>
+    <AppMenu
+      appName={appName}
+      appRoute={appRoute}
+      navigatePage={navigatePage}
+      appDescription={description}
+    >
       <Stack direction="column" gap={spacing.s200}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          width="100%"
-        >
-          <Button
-            appearance="primary"
-            variant="outlined"
-            onClick={() => void navigate("/requests")}
-            iconBefore={<MdKeyboardArrowLeft />}
-            spacing="compact"
-          >
-            Volver
-          </Button>
-
-          {isMobile ? (
-            <Icon
-              icon={<MdMoreVert />}
-              appearance="dark"
-              size="24px"
-              cursorHover
-              onClick={() => setShowActions(true)}
-            />
-          ) : (
-            <Stack direction="row" gap={spacing.s075} alignItems="center">
-              <Button
-                appearance="primary"
-                onClick={handleExecute}
-                iconBefore={<MdAutorenew />}
-                spacing="compact"
-              >
-                Ejecutar
-              </Button>
-              <Button
-                appearance="danger"
-                onClick={handleDiscard}
-                iconBefore={<MdOutlineCancel />}
-                spacing="compact"
-              >
-                Descartar
-              </Button>
-              <VerticalDivider />
-              <Button
-                variant="outlined"
-                onClick={handleAttach}
-                spacing="compact"
-              >
-                Adjuntar
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={handleSeeAttachments}
-                spacing="compact"
-              >
-                Ver adjuntos
-              </Button>
-            </Stack>
-          )}
-        </Stack>
-
         {isMobile && showActions && (
           <ActionModal
             onExecute={handleExecute}
@@ -133,6 +82,11 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           title={state?.title}
           status={state?.status}
           fullStaffName={state?.fullStaffName}
+          humanResourceRequestData={
+            requestDataFromHook?.humanResourceRequestData
+          }
+          requestType={requestDataFromHook?.humanResourceRequestType}
+          isLoading={isLoading}
         />
       </Stack>
     </AppMenu>

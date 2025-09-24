@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { inube } from "@inubekit/inubekit";
+
 import { spacing } from "@design/tokens/spacing";
 
 interface StyledRequestSummaryContainerProps {
@@ -37,7 +38,6 @@ const VerticalDivider = styled.div<IVerticalDividerProps>`
   margin: 0 ${spacing.s100};
 `;
 
-/* Nuevo grid para los detalles */
 const DetailsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

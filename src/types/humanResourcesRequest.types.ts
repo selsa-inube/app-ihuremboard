@@ -22,6 +22,7 @@ export interface HumanResourceRequest {
   tasksToManageTheHumanResourcesRequests: TaskToManageHumanResourceRequest[];
   humanResourceRequestBlockingPerTasks: HumanResourceRequestBlockingPerTask[];
 }
+
 export interface HumanResourceRequestTraceability {
   traceabilityId: string;
   humanResourceRequestId: string;
@@ -35,7 +36,7 @@ export interface TaskToManageHumanResourceRequest {
   taskManagingId: string;
   humanResourceRequestId: string;
   taskCode: string;
-  taskName: TaskNameMapping;
+  taskName: keyof typeof TaskNameMapping;
   taskStatus: ETaskStatus;
   description: string;
 }
@@ -47,17 +48,19 @@ export interface HumanResourceRequestBlockingPerTask {
   registrationDate: string;
   taskManagingId: string;
 }
+
 export interface HumanResourceRequestData {
-  daysOff?: string;
-  startDate?: string;
-  typeOfRequest?: string;
+  contractId: string;
+  contractNumber: string;
+  businessName: string;
+  contractType: string;
+  observationEmployee: string;
   daysToPay?: string;
-  certification?: string;
+  disbursementDate?: string;
+  daysOff?: string;
+  startDateEnyoment?: string;
+  certificationType?: string;
   addressee?: string;
-  contractDesc?: string;
-  id: string;
-  contract?: string;
-  observations?: string;
 }
 
 export enum ERequestType {
