@@ -10,14 +10,19 @@ import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
 import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
 import { requestConfigs } from "@config/requests.config";
-import { ERequestType } from "@ptypes/humanResourcesRequest.types";
-
+import { capitalizeFullName } from "@utils/string";
 interface ApplicationProcessUIProps {
   appName: string;
   appRoute: IRoute[];
   navigatePage: string;
   description: string;
   requestLabel: string;
+}
+
+function isRequestConfigKey(
+  value: string,
+): value is keyof typeof requestConfigs {
+  return value in requestConfigs;
 }
 
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
@@ -39,7 +44,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
 
   const requestNumberParam = state?.requestNumber ?? id ?? "";
 
-  // Hook para traer datos de la solicitud
   const { data: requestData, isLoading: isLoadingRequest } =
     useHumanResourceRequest(requestNumberParam);
 
@@ -48,20 +52,20 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const handleAttach = () => console.log("Adjuntar archivos");
   const handleSeeAttachments = () => console.log("Ver adjuntos");
 
-  // Label de la solicitud según estado o configuración
   const rawLabel =
     requestData?.humanResourceRequestDescription ?? state?.title ?? "";
   const parts = rawLabel.trim().split(" ");
-  const keyCandidate = parts[parts.length - 1] as keyof typeof ERequestType;
-  const finalRequestLabel =
-    requestConfigs[keyCandidate as ERequestType]?.label ?? rawLabel;
+  const keyCandidate = parts[parts.length - 1];
+
+  const finalRequestLabel = isRequestConfigKey(keyCandidate)
+    ? requestConfigs[keyCandidate].label
+    : rawLabel;
 
   const displayRequestLabel =
     finalRequestLabel.toLowerCase() === "solicitud"
       ? finalRequestLabel
       : `Solicitud de ${finalRequestLabel}`;
 
-  // Actualiza breadcrumbs
   const updatedAppRoute = appRoute.map((crumb) =>
     crumb.id === `/requests/${id}`
       ? { ...crumb, label: displayRequestLabel }
@@ -103,7 +107,9 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           }
           title={finalRequestLabel}
           status={requestData?.humanResourceRequestStatus ?? state?.status}
-          fullStaffName={state?.fullStaffName ?? "Sin responsable"}
+          fullStaffName={capitalizeFullName(
+            state?.fullStaffName ?? "Sin responsable",
+          )}
           humanResourceRequestData={requestData?.humanResourceRequestData}
           requestType={requestData?.humanResourceRequestType}
           isLoading={isLoadingRequest}
