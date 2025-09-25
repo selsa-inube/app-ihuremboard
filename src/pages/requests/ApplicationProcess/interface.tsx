@@ -79,7 +79,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
         <RequestSummary
           requestNumber={state?.requestNumber ?? id}
           requestDate={state?.requestDate}
-          title={displayRequestLabel}
+          title={finalRequestLabel}
           status={state?.status}
           fullStaffName={state?.fullStaffName}
         />
