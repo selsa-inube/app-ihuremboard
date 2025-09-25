@@ -5,6 +5,7 @@ import {
   HumanResourceRequestData,
   ERequestType,
   ERequestStatus,
+  EContractType,
 } from "@ptypes/humanResourcesRequest.types";
 import { formatDate } from "@utils/date";
 
@@ -70,15 +71,11 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
   const contractNumber =
     parsedData.contractNumber ?? parsedData.contractId ?? "N/A";
   const businessName = parsedData.businessName ?? "N/A";
-  const contractTypeMapping: Record<string, string> = {
-    FixedTermContract: "Contrato a término fijo",
-    IndefiniteTermContract: "Contrato a término indefinido",
-    ApprenticeshipContract: "Contrato de aprendizaje",
-  };
-  const contractType =
-    parsedData.contractType && contractTypeMapping[parsedData.contractType]
-      ? contractTypeMapping[parsedData.contractType]
-      : (parsedData.contractType ?? "N/A");
+
+  const contractType = parsedData.contractType
+    ? (EContractType[parsedData.contractType as keyof typeof EContractType] ??
+      parsedData.contractType)
+    : "N/A";
 
   const observationEmployee =
     parsedData.observationEmployee ?? parsedData.addressee ?? "N/A";

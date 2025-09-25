@@ -85,6 +85,12 @@ export enum ETaskStatus {
   system_locked = "Bloqueada por Sistema",
 }
 
+export enum EContractType {
+  FixedTermContract = "Contrato a término fijo",
+  IndefiniteTermContract = "Contrato a término indefinido",
+  ApprenticeshipContract = "Contrato de aprendizaje",
+}
+
 export enum ERequestStatus {
   closed = "Cerrada",
   rejected = "Rechazada",
