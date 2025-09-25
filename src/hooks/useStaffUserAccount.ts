@@ -22,19 +22,15 @@ export const useStaffUserAccount = ({
 
   useEffect(() => {
     const fetchUserAccount = async () => {
-      console.log({ userAccountId });
       if (!userAccountId) {
         setHasError(null);
         setLoading(false);
         return;
       }
       try {
-        console.log("Fetching user account...");
         const data = await staffUserAccountById(userAccountId);
-        console.log({ data });
         setUserAccount(data);
-      } catch (error) {
-        console.error("✖️ Error fetching user account:", error);
+      } catch {
         setHasError(500);
         setFlagShown(true);
       } finally {

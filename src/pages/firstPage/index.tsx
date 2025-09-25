@@ -47,7 +47,6 @@ export function FirstPage() {
   if (userAccountLoading) {
     return <LoadingAppUI />;
   }
-  console.log(userAccountError, userAccount, userAccountLoading);
   if (userAccountError || !userAccount?.identificationDocumentNumber) {
     signOut("/error?code=1004");
     return;
