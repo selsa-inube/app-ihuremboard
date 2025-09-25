@@ -7,6 +7,7 @@ import { useStaffUserAccount } from "@hooks/useStaffUserAccount";
 import { Login } from "@pages/login";
 import { useAppContext } from "@context/AppContext/useAppContext";
 import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
+import { useSignOut } from "@hooks/useSignOut";
 
 export function FirstPage() {
   const { user, setStaffUser } = useAppContext();
@@ -21,9 +22,13 @@ export function FirstPage() {
     userAccountId: user?.id,
     enabled: !!user?.id,
   });
-
+  const { signOut } = useSignOut();
   useEffect(() => {
-    if (userAccount && !userAccountLoading && !userAccountError) {
+    if (
+      userAccount?.identificationDocumentNumber &&
+      !userAccountLoading &&
+      !userAccountError
+    ) {
       setStaffUser(userAccount);
       navigate(`/login/${userAccount}/checking-credentials`, { replace: true });
     }
@@ -42,9 +47,10 @@ export function FirstPage() {
   if (userAccountLoading) {
     return <LoadingAppUI />;
   }
-
-  if (userAccountError || !userAccount) {
-    return <ErrorPage errorCode={1004} />;
+  console.log(userAccountError, userAccount, userAccountLoading);
+  if (userAccountError || !userAccount?.identificationDocumentNumber) {
+    signOut("/error?code=1004");
+    return;
   }
 
   return <Login />;

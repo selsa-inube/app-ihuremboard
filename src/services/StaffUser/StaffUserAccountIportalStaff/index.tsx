@@ -34,13 +34,11 @@ const staffUserAccountById = async (
       );
 
       clearTimeout(timeoutId);
-
       if (res.status === 204) {
         return {} as IStaffUserAccount;
       }
 
       const data = await res.json();
-
       if (!res.ok) {
         throw {
           message: "Error al obtener los datos del usuario",
