@@ -27,7 +27,7 @@ export const requestConfigs: Record<ERequestType, IRequestConfig> = {
       "Permiso temporal solicitado por el empleado por motivos personales o laborales.",
   },
   [ERequestType.leaving_the_job]: {
-    label: "Retiro del trabajo",
+    label: "Retiro",
     description: "Proceso de retiro voluntario o finalización de contrato.",
   },
   [ERequestType.onboarding]: {

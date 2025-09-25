@@ -9,7 +9,6 @@ import { spacing } from "@design/tokens/spacing";
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
 import { requestConfigs } from "@config/requests.config";
-import { ERequestType } from "@ptypes/humanResourcesRequest.types";
 
 interface ApplicationProcessUIProps {
   appName: string;
@@ -20,7 +19,7 @@ interface ApplicationProcessUIProps {
 }
 
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
-  const { appRoute, navigatePage, description } = props;
+  const { appRoute, navigatePage } = props;
   const { id } = useParams<{ id: string }>();
   const { state } = useLocation() as {
     state?: {
@@ -40,24 +39,32 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const handleExecute = () => console.log("Ejecutar solicitud");
   const handleAttach = () => console.log("Adjuntar archivos");
   const handleSeeAttachments = () => console.log("Ver adjuntos");
-  const finalRequestLabel =
-    state?.title ?? requestConfigs[id as ERequestType]?.label ?? "Solicitud";
+
+  const finalRequestLabel = state?.title ?? id ?? "Solicitud";
+
+  const config = Object.values(requestConfigs).find(
+    (cfg) => cfg.label.toLowerCase() === finalRequestLabel.toLowerCase(),
+  );
+
   const displayRequestLabel =
     finalRequestLabel.toLowerCase() === "solicitud"
       ? finalRequestLabel
-      : `Solicitud de ${finalRequestLabel}`;
+      : `Solicitud de ${config?.label ?? finalRequestLabel}`;
+
   const updatedAppRoute = appRoute.map((crumb) =>
     crumb.id === `/requests/${id}`
       ? { ...crumb, label: displayRequestLabel }
       : crumb,
   );
 
+  const displayDescription = config?.description ?? "Descripción no disponible";
+
   return (
     <AppMenu
       appName={displayRequestLabel}
       appRoute={updatedAppRoute}
       navigatePage={navigatePage}
-      appDescription={description}
+      appDescription={displayDescription}
     >
       <Stack direction="column" gap={spacing.s200}>
         {isMobile && showActions && (
@@ -79,9 +86,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
         <RequestSummary
           requestNumber={state?.requestNumber ?? id}
           requestDate={state?.requestDate}
-          title={finalRequestLabel}
+          title={config?.label ?? finalRequestLabel}
           status={state?.status}
           fullStaffName={state?.fullStaffName}
+          description={displayDescription}
         />
       </Stack>
     </AppMenu>

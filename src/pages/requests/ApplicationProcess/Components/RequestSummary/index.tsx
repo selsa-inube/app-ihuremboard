@@ -34,6 +34,7 @@ export interface RequestSummaryProps {
   title?: string;
   status?: string;
   fullStaffName?: string;
+  description?: string;
   statusOptions?: IOption[];
 }
 
