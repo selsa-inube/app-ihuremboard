@@ -9,10 +9,6 @@ import { spacing } from "@design/tokens/spacing";
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
 import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
-import {
-  HumanResourceRequest,
-  HumanResourceRequestData,
-} from "@ptypes/humanResourcesRequest.types";
 
 interface ApplicationProcessUIProps {
   appName: string;
@@ -39,29 +35,8 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
 
   const requestNumberParam = state?.requestNumber ?? id ?? "";
 
-  const { data: requestDataFromHook, isLoading } = useHumanResourceRequest(
-    requestNumberParam,
-  ) as { data: HumanResourceRequest[] | undefined; isLoading: boolean };
-  const requestData = requestDataFromHook?.[0];
-
-  let parsedRequestData: HumanResourceRequestData = {};
-
-  if (requestData?.humanResourceRequestData) {
-    try {
-      const parsed = JSON.parse(requestData.humanResourceRequestData);
-      parsedRequestData =
-        typeof parsed === "object" && parsed !== null ? parsed : {};
-    } catch (error) {
-      console.error("Error al parsear humanResourceRequestData:", error);
-      parsedRequestData = {};
-    }
-  }
-
-  const fullStaffName =
-    requestData?.employeeName ??
-    state?.fullStaffName ??
-    requestData?.employeeId ??
-    "Sin responsable";
+  const { data: requestData, isLoading: isLoadingRequest } =
+    useHumanResourceRequest(requestNumberParam);
 
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
@@ -97,10 +72,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           requestDate={requestData?.humanResourceRequestDate}
           title={requestData?.humanResourceRequestDescription}
           status={requestData?.humanResourceRequestStatus}
-          fullStaffName={fullStaffName}
-          humanResourceRequestData={parsedRequestData}
+          fullStaffName={state?.fullStaffName ?? "Sin responsable"}
+          humanResourceRequestData={requestData?.humanResourceRequestData}
           requestType={requestData?.humanResourceRequestType}
-          isLoading={isLoading}
+          isLoading={isLoadingRequest}
         />
       </Stack>
     </AppMenu>

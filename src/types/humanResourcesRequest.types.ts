@@ -5,7 +5,7 @@ export interface HumanResourceRequest {
   humanResourceRequestDate: string;
   humanResourceRequestStatus: ERequestStatus;
   humanResourceRequestType: ERequestType;
-  humanResourceRequestData: string;
+  humanResourceRequestData: HumanResourceRequestData;
   employeeId: string;
   employeeName: string;
   employeeStatus: string;

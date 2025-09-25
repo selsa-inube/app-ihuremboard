@@ -26,7 +26,6 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
   const status = props.status ?? state?.status ?? "";
   const fullStaffName = props.fullStaffName ?? state?.fullStaffName ?? "";
   const statusOptions = props.statusOptions ?? state?.statusOptions ?? [];
-
   const rawData =
     props.humanResourceRequestData ?? state?.humanResourceRequestData ?? "{}";
 
