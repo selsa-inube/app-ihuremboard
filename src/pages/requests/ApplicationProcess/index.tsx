@@ -8,16 +8,15 @@ import { ERequestType } from "@ptypes/humanResourcesRequest.types";
 function ApplicationProcess() {
   const { id } = useParams<{ id: ERequestType }>();
   const isTablet = useMediaQuery("(max-width: 1100px)");
-
-  const config =
-    id && requestConfigs[id as ERequestType]
-      ? requestConfigs[id as ERequestType]
-      : null;
-
+  const config = id ? requestConfigs[id as ERequestType] : null;
   const description = config?.description ?? "Descripción no disponible";
+  const requestLabel = config?.label ?? "Solicitud";
+  const breadcrumbLabel =
+    requestLabel.toLowerCase() === "solicitud"
+      ? requestLabel
+      : `Solicitud de ${requestLabel}`;
 
   const breadcrumbs = {
-    label: "Solicitud",
     crumbs: [
       {
         path: "/",
@@ -27,7 +26,7 @@ function ApplicationProcess() {
       },
       {
         path: "/requests",
-        label: isTablet ? "..." : "...",
+        label: isTablet ? "..." : "Solicitudes",
         id: "/requests",
         isActive: false,
       },
@@ -37,18 +36,19 @@ function ApplicationProcess() {
 
   return (
     <ApplicationProcessUI
-      appName={breadcrumbs.label}
+      appName={breadcrumbLabel}
       appRoute={[
         ...breadcrumbs.crumbs,
         {
           path: `/requests/${id}`,
-          label: "Solicitud de vacaciones pagadas",
+          label: breadcrumbLabel,
           id: `/requests/${id}`,
           isActive: true,
         },
       ]}
       navigatePage={breadcrumbs.url}
       description={description}
+      requestLabel={requestLabel}
     />
   );
 }

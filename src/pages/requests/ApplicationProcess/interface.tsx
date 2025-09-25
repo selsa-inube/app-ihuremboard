@@ -8,25 +8,28 @@ import { spacing } from "@design/tokens/spacing";
 
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
+import { requestConfigs } from "@config/requests.config";
+import { ERequestType } from "@ptypes/humanResourcesRequest.types";
 
 interface ApplicationProcessUIProps {
   appName: string;
   appRoute: IRoute[];
   navigatePage: string;
   description: string;
+  requestLabel: string;
 }
 
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
-  const { appName, appRoute, navigatePage, description } = props;
+  const { appRoute, navigatePage, description } = props;
   const { id } = useParams<{ id: string }>();
-
   const { state } = useLocation() as {
-    state: {
+    state?: {
       requestNumber: string;
       requestDate: string;
       fullStaffName: string;
       title: string;
       status: string;
+      statusOptions?: { value: string; label: string }[];
     };
   };
 
@@ -37,11 +40,22 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const handleExecute = () => console.log("Ejecutar solicitud");
   const handleAttach = () => console.log("Adjuntar archivos");
   const handleSeeAttachments = () => console.log("Ver adjuntos");
+  const finalRequestLabel =
+    state?.title ?? requestConfigs[id as ERequestType]?.label ?? "Solicitud";
+  const displayRequestLabel =
+    finalRequestLabel.toLowerCase() === "solicitud"
+      ? finalRequestLabel
+      : `Solicitud de ${finalRequestLabel}`;
+  const updatedAppRoute = appRoute.map((crumb) =>
+    crumb.id === `/requests/${id}`
+      ? { ...crumb, label: displayRequestLabel }
+      : crumb,
+  );
 
   return (
     <AppMenu
-      appName={appName}
-      appRoute={appRoute}
+      appName={displayRequestLabel}
+      appRoute={updatedAppRoute}
       navigatePage={navigatePage}
       appDescription={description}
     >
@@ -65,7 +79,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
         <RequestSummary
           requestNumber={state?.requestNumber ?? id}
           requestDate={state?.requestDate}
-          title={state?.title}
+          title={displayRequestLabel}
           status={state?.status}
           fullStaffName={state?.fullStaffName}
         />
