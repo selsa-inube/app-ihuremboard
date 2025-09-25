@@ -9,7 +9,7 @@ function ApplicationProcess() {
   const { id } = useParams<{ id?: keyof typeof ERequestType }>();
   const isTablet = useMediaQuery("(max-width: 1100px)");
 
-  const safeId = String(id ?? ""); // ✅ garantizamos string
+  const safeId = String(id ?? "");
 
   const config = id ? requestConfigs[id] : null;
 
@@ -43,9 +43,9 @@ function ApplicationProcess() {
       appRoute={[
         ...breadcrumbs.crumbs,
         {
-          path: `/requests/${safeId}`, // ✅ siempre string
+          path: `/requests/${safeId}`,
           label: breadcrumbLabel,
-          id: `/requests/${safeId}`, // ✅ siempre string
+          id: `/requests/${safeId}`,
           isActive: true,
         },
       ]}
