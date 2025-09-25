@@ -9,6 +9,10 @@ import { spacing } from "@design/tokens/spacing";
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
 import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
+import {
+  HumanResourceRequest,
+  HumanResourceRequestData,
+} from "@ptypes/humanResourcesRequest.types";
 
 interface ApplicationProcessUIProps {
   appName: string;
@@ -33,10 +37,31 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const isMobile = useMediaQuery("(max-width: 1000px)");
   const [showActions, setShowActions] = useState(false);
 
-  const requestNumber = state?.requestNumber ?? id ?? "";
+  const requestNumberParam = state?.requestNumber ?? id ?? "";
 
-  const { data: requestDataFromHook, isLoading } =
-    useHumanResourceRequest(requestNumber);
+  const { data: requestDataFromHook, isLoading } = useHumanResourceRequest(
+    requestNumberParam,
+  ) as { data: HumanResourceRequest[] | undefined; isLoading: boolean };
+  const requestData = requestDataFromHook?.[0];
+
+  let parsedRequestData: HumanResourceRequestData = {};
+
+  if (requestData?.humanResourceRequestData) {
+    try {
+      const parsed = JSON.parse(requestData.humanResourceRequestData);
+      parsedRequestData =
+        typeof parsed === "object" && parsed !== null ? parsed : {};
+    } catch (error) {
+      console.error("Error al parsear humanResourceRequestData:", error);
+      parsedRequestData = {};
+    }
+  }
+
+  const fullStaffName =
+    requestData?.employeeName ??
+    state?.fullStaffName ??
+    requestData?.employeeId ??
+    "Sin responsable";
 
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
@@ -68,15 +93,13 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
         )}
 
         <RequestSummary
-          requestNumber={requestDataFromHook?.humanResourceRequestNumber}
-          requestDate={requestDataFromHook?.humanResourceRequestDate}
-          title={requestDataFromHook?.humanResourceRequestDescription}
-          status={requestDataFromHook?.humanResourceRequestStatus}
-          fullStaffName={state?.fullStaffName ?? "Sin responsable"}
-          humanResourceRequestData={
-            requestDataFromHook?.humanResourceRequestData
-          }
-          requestType={requestDataFromHook?.humanResourceRequestType}
+          requestNumber={requestData?.humanResourceRequestNumber}
+          requestDate={requestData?.humanResourceRequestDate}
+          title={requestData?.humanResourceRequestDescription}
+          status={requestData?.humanResourceRequestStatus}
+          fullStaffName={fullStaffName}
+          humanResourceRequestData={parsedRequestData}
+          requestType={requestData?.humanResourceRequestType}
           isLoading={isLoading}
         />
       </Stack>

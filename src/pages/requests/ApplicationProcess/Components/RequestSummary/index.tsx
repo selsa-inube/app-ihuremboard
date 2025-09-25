@@ -15,7 +15,6 @@ import {
   MdOutlineCancel,
 } from "react-icons/md";
 import { spacing } from "@design/tokens/spacing";
-import { formatDate } from "@utils/date";
 import {
   StyledRequestSummaryContainer,
   DetailsGrid,
@@ -36,7 +35,7 @@ export function RequestSummary(props: RequestSummaryProps) {
     statusLabel,
     staffDisplayName,
     daysToPay,
-    startDate,
+    disbursementDate,
     contractNumber,
     businessName,
     contractType,
@@ -67,7 +66,7 @@ export function RequestSummary(props: RequestSummaryProps) {
             <SkeletonLine animated width="120px" />
           ) : (
             <Text type="title" size="medium" appearance="gray">
-              {statusLabel}
+              {statusLabel || "Sin estado"}
             </Text>
           )}
         </Stack>
@@ -112,6 +111,7 @@ export function RequestSummary(props: RequestSummaryProps) {
           </Stack>
         )}
       </Stack>
+
       {isMobile && showActions && (
         <ActionModal
           onExecute={handleExecute}
@@ -127,7 +127,6 @@ export function RequestSummary(props: RequestSummaryProps) {
           }}
         />
       )}
-
       <StyledRequestSummaryContainer $isMobile={isMobile}>
         <Stack
           direction={isMobile ? "column" : "row"}
@@ -145,7 +144,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                 <SkeletonLine animated width="80px" />
               ) : (
                 <Text appearance="gray" type="label">
-                  {requestNumber ?? "XXXXXX"}
+                  {requestNumber || "N/A"}
                 </Text>
               )}
             </Stack>
@@ -158,7 +157,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                 <SkeletonLine animated width="100px" />
               ) : (
                 <Text appearance="gray" type="label">
-                  {requestDate ? formatDate(requestDate) : "Sin fecha"}
+                  {requestDate || "N/A"}
                 </Text>
               )}
             </Stack>
@@ -171,7 +170,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                 <SkeletonLine animated width="140px" />
               ) : (
                 <Text appearance="gray" type="label">
-                  {title ?? "Tipo desconocido"}
+                  {title || "N/A"}
                 </Text>
               )}
             </Stack>
@@ -182,7 +181,7 @@ export function RequestSummary(props: RequestSummaryProps) {
               <SkeletonLine animated width="120px" />
             ) : (
               <Text size="large" weight="bold">
-                {staffDisplayName}
+                {staffDisplayName || "Sin responsable"}
               </Text>
             )}
           </Stack>
@@ -209,7 +208,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                   Días a pagar
                 </Text>
                 <Text appearance="gray" type="label">
-                  {daysToPay}
+                  {daysToPay ?? "N/A"}
                 </Text>
               </DetailItem>
 
@@ -218,7 +217,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                   Número de contrato
                 </Text>
                 <Text appearance="gray" type="label">
-                  {contractNumber}
+                  {contractNumber ?? "N/A"}
                 </Text>
               </DetailItem>
 
@@ -227,7 +226,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                   Nombre de la empresa
                 </Text>
                 <Text appearance="gray" type="label">
-                  {businessName}
+                  {businessName ?? "N/A"}
                 </Text>
               </DetailItem>
 
@@ -236,7 +235,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                   Tipo de contrato
                 </Text>
                 <Text appearance="gray" type="label">
-                  {contractType}
+                  {contractType ?? "N/A"}
                 </Text>
               </DetailItem>
 
@@ -245,7 +244,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                   Fecha de desembolso
                 </Text>
                 <Text appearance="gray" type="label">
-                  {startDate ? formatDate(startDate) : "N/A"}
+                  {disbursementDate ?? "N/A"}
                 </Text>
               </DetailItem>
             </DetailsGrid>
@@ -255,7 +254,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                 Observaciones del empleado
               </Text>
               <Text appearance="gray" type="label">
-                {observationEmployee}
+                {observationEmployee ?? "N/A"}
               </Text>
             </DetailItem>
           </>

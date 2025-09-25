@@ -8,7 +8,7 @@ import { useHeaders } from "@hooks/useHeaders";
 export const useHumanResourceRequest = (
   requestNumber: string | null | undefined,
 ) => {
-  const [data, setData] = useState<HumanResourceRequest>();
+  const [data, setData] = useState<HumanResourceRequest[]>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<number | null>(null);
   const [flagShown, setFlagShown] = useState(false);
@@ -27,11 +27,11 @@ export const useHumanResourceRequest = (
     try {
       const headers = await getHeaders();
       const response = await getHumanResourceRequests(requestNumber, headers);
-
-      if (!response || Object.keys(response).length === 0) {
+      if (!response || !Array.isArray(response) || response.length === 0) {
         setError(404);
         return;
       }
+
       setData(response);
     } catch {
       setError(500);

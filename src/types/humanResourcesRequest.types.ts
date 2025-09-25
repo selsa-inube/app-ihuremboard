@@ -5,7 +5,7 @@ export interface HumanResourceRequest {
   humanResourceRequestDate: string;
   humanResourceRequestStatus: ERequestStatus;
   humanResourceRequestType: ERequestType;
-  humanResourceRequestData: HumanResourceRequestData;
+  humanResourceRequestData: string;
   employeeId: string;
   employeeName: string;
   employeeStatus: string;
@@ -48,7 +48,6 @@ export interface HumanResourceRequestBlockingPerTask {
   registrationDate: string;
   taskManagingId: string;
 }
-
 export interface HumanResourceRequestData {
   contractId?: string;
   contractNumber?: string;
@@ -56,9 +55,9 @@ export interface HumanResourceRequestData {
   startDate?: string;
   contractType?: string;
   observationEmployee?: string;
-  daysToPay?: string;
+  daysToPay?: string | number;
   disbursementDate?: string;
-  daysOff?: string;
+  daysOff?: string | number;
   startDateEnyoment?: string;
   certificationType?: string;
   addressee?: string;

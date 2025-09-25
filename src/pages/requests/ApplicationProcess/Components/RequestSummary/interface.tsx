@@ -1,20 +1,8 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { IOption } from "@inubekit/inubekit";
-
-export interface HumanResourceRequestData {
-  daysToPay?: string | number;
-  daysOff?: string | number;
-  startDate?: string;
-  startDateEnyoment?: string;
-  contractNumber?: string;
-  contractId?: string;
-  businessName?: string;
-  contractType?: string;
-  observationEmployee?: string;
-  addressee?: string;
-  certificationType?: string;
-}
+import { HumanResourceRequestData } from "@ptypes/humanResourcesRequest.types";
+import { formatDate } from "@utils/date";
 
 export interface RequestSummaryProps {
   isLoading?: boolean;
@@ -24,7 +12,7 @@ export interface RequestSummaryProps {
   status?: string;
   fullStaffName?: string;
   statusOptions?: IOption[];
-  humanResourceRequestData?: HumanResourceRequestData | string;
+  humanResourceRequestData?: HumanResourceRequestData;
   requestType?: string;
 }
 
@@ -38,38 +26,48 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
   const status = props.status ?? state?.status ?? "";
   const fullStaffName = props.fullStaffName ?? state?.fullStaffName ?? "";
   const statusOptions = props.statusOptions ?? state?.statusOptions ?? [];
-  const rawHumanResourceRequestData =
-    props.humanResourceRequestData ?? state?.humanResourceRequestData ?? {};
+
+  const rawData =
+    props.humanResourceRequestData ?? state?.humanResourceRequestData ?? "{}";
+
   const requestType = props.requestType ?? state?.requestType ?? "";
 
   let parsedData: HumanResourceRequestData = {};
-  if (rawHumanResourceRequestData) {
-    try {
-      parsedData =
-        typeof rawHumanResourceRequestData === "string"
-          ? JSON.parse(rawHumanResourceRequestData)
-          : (rawHumanResourceRequestData ?? {});
-    } catch (e) {
-      console.warn("Error parseando humanResourceRequestData:", e);
+  try {
+    parsedData = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+
+    if (typeof parsedData !== "object" || parsedData === null) {
       parsedData = {};
     }
+  } catch (e) {
+    console.warn("Error parseando humanResourceRequestData:", e, rawData);
+    parsedData = {};
   }
 
-  let daysToPay: string;
+  let daysToPay = "";
   if (requestType === "certification") {
     daysToPay = "-";
   } else if (requestType === "vacations_enjoyed") {
-    daysToPay = parsedData.daysOff?.toString() ?? "N/A";
+    daysToPay = parsedData.daysOff?.toString() ?? "";
   } else {
-    daysToPay = parsedData.daysToPay?.toString() ?? "N/A";
+    daysToPay =
+      parsedData.daysToPay?.toString() ?? parsedData.daysOff?.toString() ?? "";
   }
 
-  const startDate =
-    parsedData.startDate ?? parsedData.startDateEnyoment ?? undefined;
+  const startDateRaw = parsedData.startDate ?? parsedData.startDateEnyoment;
+  const startDate = startDateRaw ? formatDate(startDateRaw) : "";
+
+  const disbursementDateRaw =
+    parsedData.disbursementDate ?? parsedData.startDateEnyoment;
+  const disbursementDate = disbursementDateRaw
+    ? formatDate(disbursementDateRaw)
+    : "";
+
   const contractNumber =
     parsedData.contractNumber ?? parsedData.contractId ?? "N/A";
   const businessName = parsedData.businessName ?? "N/A";
   const contractType = parsedData.contractType ?? "N/A";
+
   const observationEmployee =
     parsedData.observationEmployee ?? parsedData.addressee ?? "N/A";
 
@@ -95,6 +93,7 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
     staffDisplayName,
     daysToPay,
     startDate,
+    disbursementDate,
     contractNumber,
     businessName,
     contractType,
