@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { inube } from "@inubekit/inubekit";
-
 import { spacing } from "@design/tokens/spacing";
 
 interface StyledRequestSummaryContainerProps {
@@ -16,16 +15,18 @@ interface IDetailItem {
   theme: typeof inube;
 }
 
+interface MobileIconContainerProps {
+  $isMobile: boolean;
+  $isSmall: boolean;
+}
+
 const StyledRequestSummaryContainer = styled.div<StyledRequestSummaryContainerProps>`
   display: flex;
   flex-direction: column;
   gap: ${spacing.s075};
   border-radius: ${spacing.s100};
   border: 1px solid
-    ${({ theme }) =>
-      theme && theme.palette?.neutral?.N40
-        ? theme.palette.neutral.N40
-        : inube.palette.neutral.N40};
+    ${({ theme }) => theme?.palette?.neutral?.N40 || inube.palette.neutral.N40};
   padding: ${spacing.s200};
   margin-bottom: ${spacing.s300};
 `;
@@ -55,9 +56,19 @@ const DetailItem = styled.div<IDetailItem>`
   border-radius: ${spacing.s075};
 `;
 
+const MobileIconContainer = styled.div<MobileIconContainerProps>`
+  position: absolute;
+  z-index: 10;
+  right: ${({ $isSmall, $isMobile }) =>
+    $isSmall ? "10px" : $isMobile ? "60px" : "90px"};
+  top: ${({ $isSmall, $isMobile }) =>
+    $isSmall ? "100px" : $isMobile ? "123px" : "90px"};
+`;
+
 export {
   StyledRequestSummaryContainer,
   VerticalDivider,
   DetailsGrid,
   DetailItem,
+  MobileIconContainer,
 };

@@ -3,7 +3,6 @@ import {
   Text,
   Button,
   Icon,
-  SkeletonLine,
   Divider,
   useMediaQuery,
 } from "@inubekit/inubekit";
@@ -14,20 +13,20 @@ import {
   MdAutorenew,
   MdOutlineCancel,
 } from "react-icons/md";
+
 import { spacing } from "@design/tokens/spacing";
+
 import {
   StyledRequestSummaryContainer,
   DetailsGrid,
   DetailItem,
   VerticalDivider,
+  MobileIconContainer,
 } from "./styles";
 import { ActionModal } from "../Actions";
 import { RequestSummaryProps, useRequestSummaryLogic } from "./interface";
 
 export function RequestSummary(props: RequestSummaryProps) {
-  const isMobile = useMediaQuery("(max-width:1050px)");
-  const isLoading = props.isLoading ?? false;
-
   const {
     requestNumber,
     requestDate,
@@ -50,6 +49,9 @@ export function RequestSummary(props: RequestSummaryProps) {
     handleSeeAttachments,
   } = useRequestSummaryLogic(props);
 
+  const isMobile = useMediaQuery("(max-width: 1100px)");
+  const isSmall = useMediaQuery("(max-width: 490px)");
+
   return (
     <Stack direction="column" gap={spacing.s100}>
       <Stack
@@ -62,23 +64,21 @@ export function RequestSummary(props: RequestSummaryProps) {
           <Text type="title" size="medium" weight="bold">
             Estado:
           </Text>
-          {isLoading ? (
-            <SkeletonLine animated width="120px" />
-          ) : (
-            <Text type="title" size="medium" appearance="gray">
-              {statusLabel || "Sin estado"}
-            </Text>
-          )}
+          <Text type="title" size="medium" appearance="gray">
+            {statusLabel}
+          </Text>
         </Stack>
 
         {isMobile ? (
-          <Icon
-            icon={<MdMoreVert />}
-            appearance="dark"
-            size="24px"
-            cursorHover
-            onClick={() => setShowActions(true)}
-          />
+          <MobileIconContainer $isMobile={isMobile} $isSmall={isSmall}>
+            <Icon
+              icon={<MdMoreVert />}
+              appearance="dark"
+              size="24px"
+              cursorHover
+              onClick={() => setShowActions(true)}
+            />
+          </MobileIconContainer>
         ) : (
           <Stack direction="row" gap={spacing.s075} alignItems="center">
             <Button
@@ -127,6 +127,7 @@ export function RequestSummary(props: RequestSummaryProps) {
           }}
         />
       )}
+
       <StyledRequestSummaryContainer $isMobile={isMobile}>
         <Stack
           direction={isMobile ? "column" : "row"}
@@ -140,50 +141,34 @@ export function RequestSummary(props: RequestSummaryProps) {
               <Text type="label" weight="bold">
                 No. de solicitud
               </Text>
-              {isLoading ? (
-                <SkeletonLine animated width="80px" />
-              ) : (
-                <Text appearance="gray" type="label">
-                  {requestNumber || "N/A"}
-                </Text>
-              )}
+              <Text appearance="gray" type="label">
+                {requestNumber ?? "N/A"}
+              </Text>
             </Stack>
 
             <Stack gap={spacing.s050}>
               <Text type="label" weight="bold">
                 Fecha de solicitud
               </Text>
-              {isLoading ? (
-                <SkeletonLine animated width="100px" />
-              ) : (
-                <Text appearance="gray" type="label">
-                  {requestDate || "N/A"}
-                </Text>
-              )}
+              <Text appearance="gray" type="label">
+                {requestDate ?? "N/A"}
+              </Text>
             </Stack>
 
             <Stack gap={spacing.s050}>
               <Text type="label" weight="bold">
                 Tipo de solicitud
               </Text>
-              {isLoading ? (
-                <SkeletonLine animated width="140px" />
-              ) : (
-                <Text appearance="gray" type="label">
-                  {title || "N/A"}
-                </Text>
-              )}
+              <Text appearance="gray" type="label">
+                {title ?? "N/A"}
+              </Text>
             </Stack>
           </Stack>
 
           <Stack alignItems="center">
-            {isLoading ? (
-              <SkeletonLine animated width="120px" />
-            ) : (
-              <Text size="large" weight="bold">
-                {staffDisplayName || "Sin responsable"}
-              </Text>
-            )}
+            <Text size="large" weight="bold">
+              {staffDisplayName}
+            </Text>
           </Stack>
 
           <Stack>

@@ -1,8 +1,15 @@
+// useRequestSummaryLogic.ts
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { IOption } from "@inubekit/inubekit";
-import { HumanResourceRequestData } from "@ptypes/humanResourcesRequest.types";
+import {
+  HumanResourceRequestData,
+  ERequestStatus,
+  ERequestType,
+} from "@ptypes/humanResourcesRequest.types";
+import { requestConfigs } from "@config/requests.config";
 import { formatDate } from "@utils/date";
+import { capitalizeFullName } from "@utils/string";
 
 export interface RequestSummaryProps {
   isLoading?: boolean;
@@ -22,36 +29,31 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
 
   const requestNumber = props.requestNumber ?? state?.requestNumber ?? "";
   const requestDate = props.requestDate ?? state?.requestDate ?? "";
-  const title = props.title ?? state?.title ?? "";
-  const status = props.status ?? state?.status ?? "";
+  const rawTitle = props.title ?? state?.title ?? "";
+  const rawStatus = props.status ?? state?.status ?? "";
   const fullStaffName = props.fullStaffName ?? state?.fullStaffName ?? "";
   const statusOptions = props.statusOptions ?? state?.statusOptions ?? [];
   const rawData =
     props.humanResourceRequestData ?? state?.humanResourceRequestData ?? "{}";
-
   const requestType = props.requestType ?? state?.requestType ?? "";
 
   let parsedData: HumanResourceRequestData = {};
   try {
     parsedData = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
-
-    if (typeof parsedData !== "object" || parsedData === null) {
-      parsedData = {};
-    }
+    if (typeof parsedData !== "object" || parsedData === null) parsedData = {};
   } catch (e) {
     console.warn("Error parseando humanResourceRequestData:", e, rawData);
     parsedData = {};
   }
 
+  // Días a pagar según tipo de solicitud
   let daysToPay = "";
-  if (requestType === "certification") {
-    daysToPay = "-";
-  } else if (requestType === "vacations_enjoyed") {
+  if (requestType === "certification") daysToPay = "-";
+  else if (requestType === "vacations_enjoyed")
     daysToPay = parsedData.daysOff?.toString() ?? "";
-  } else {
+  else
     daysToPay =
       parsedData.daysToPay?.toString() ?? parsedData.daysOff?.toString() ?? "";
-  }
 
   const startDateRaw = parsedData.startDate ?? parsedData.startDateEnyoment;
   const startDate = startDateRaw ? formatDate(startDateRaw) : "";
@@ -66,15 +68,30 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
     parsedData.contractNumber ?? parsedData.contractId ?? "N/A";
   const businessName = parsedData.businessName ?? "N/A";
   const contractType = parsedData.contractType ?? "N/A";
-
   const observationEmployee =
     parsedData.observationEmployee ?? parsedData.addressee ?? "N/A";
 
-  const staffDisplayName = fullStaffName ?? "Sin responsable";
+  const staffDisplayName = fullStaffName
+    ? capitalizeFullName(fullStaffName)
+    : "Sin responsable";
+
+  // Estado en español usando ERequestStatus o label del select
   const statusLabel =
-    statusOptions.find((opt) => opt.value === status)?.label ??
-    status ??
+    ERequestStatus[rawStatus as keyof typeof ERequestStatus] ??
+    statusOptions.find((opt) => opt.value === rawStatus)?.label ??
+    rawStatus ??
     "Sin estado";
+
+  // Convertir tipo de solicitud a español aunque rawTitle tenga texto extra
+  const getRequestTypeLabel = (rawTitle?: string): string => {
+    if (!rawTitle) return "N/A";
+    const keys = Object.keys(requestConfigs); // todas las claves
+    const foundKey = keys.find((key) => rawTitle.includes(key));
+    if (foundKey) return requestConfigs[foundKey as ERequestType].label;
+    return rawTitle; // fallback
+  };
+
+  const title = getRequestTypeLabel(rawTitle);
 
   const [showActions, setShowActions] = useState(false);
   const [showDetails, setShowDetails] = useState(false);

@@ -9,16 +9,19 @@ import { spacing } from "@design/tokens/spacing";
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
 import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
+import { requestConfigs } from "@config/requests.config";
+import { ERequestType } from "@ptypes/humanResourcesRequest.types";
 
 interface ApplicationProcessUIProps {
   appName: string;
   appRoute: IRoute[];
   navigatePage: string;
   description: string;
+  requestLabel: string;
 }
 
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
-  const { appName, appRoute, navigatePage, description } = props;
+  const { appRoute, navigatePage, description } = props;
   const { id } = useParams<{ id: string }>();
   const { state } = useLocation() as {
     state?: {
@@ -27,6 +30,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       fullStaffName?: string;
       title?: string;
       status?: string;
+      statusOptions?: { value: string; label: string }[];
     };
   };
 
@@ -35,6 +39,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
 
   const requestNumberParam = state?.requestNumber ?? id ?? "";
 
+  // Hook para traer datos de la solicitud
   const { data: requestData, isLoading: isLoadingRequest } =
     useHumanResourceRequest(requestNumberParam);
 
@@ -43,10 +48,30 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const handleAttach = () => console.log("Adjuntar archivos");
   const handleSeeAttachments = () => console.log("Ver adjuntos");
 
+  // Label de la solicitud según estado o configuración
+  const rawLabel =
+    requestData?.humanResourceRequestDescription ?? state?.title ?? "";
+  const parts = rawLabel.trim().split(" ");
+  const keyCandidate = parts[parts.length - 1] as keyof typeof ERequestType;
+  const finalRequestLabel =
+    requestConfigs[keyCandidate as ERequestType]?.label ?? rawLabel;
+
+  const displayRequestLabel =
+    finalRequestLabel.toLowerCase() === "solicitud"
+      ? finalRequestLabel
+      : `Solicitud de ${finalRequestLabel}`;
+
+  // Actualiza breadcrumbs
+  const updatedAppRoute = appRoute.map((crumb) =>
+    crumb.id === `/requests/${id}`
+      ? { ...crumb, label: displayRequestLabel }
+      : crumb,
+  );
+
   return (
     <AppMenu
-      appName={appName}
-      appRoute={appRoute}
+      appName={displayRequestLabel}
+      appRoute={updatedAppRoute}
       navigatePage={navigatePage}
       appDescription={description}
     >
@@ -68,10 +93,16 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
         )}
 
         <RequestSummary
-          requestNumber={requestData?.humanResourceRequestNumber}
-          requestDate={requestData?.humanResourceRequestDate}
-          title={requestData?.humanResourceRequestDescription}
-          status={requestData?.humanResourceRequestStatus}
+          requestNumber={
+            requestData?.humanResourceRequestNumber ??
+            state?.requestNumber ??
+            id
+          }
+          requestDate={
+            requestData?.humanResourceRequestDate ?? state?.requestDate
+          }
+          title={finalRequestLabel}
+          status={requestData?.humanResourceRequestStatus ?? state?.status}
           fullStaffName={state?.fullStaffName ?? "Sin responsable"}
           humanResourceRequestData={requestData?.humanResourceRequestData}
           requestType={requestData?.humanResourceRequestType}
