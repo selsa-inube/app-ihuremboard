@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { IOption } from "@inubekit/inubekit";
+
 import {
   HumanResourceRequestData,
   ERequestType,
@@ -9,17 +9,7 @@ import {
 } from "@ptypes/humanResourcesRequest.types";
 import { formatDate } from "@utils/date";
 
-export interface RequestSummaryProps {
-  isLoading?: boolean;
-  requestNumber?: string | number;
-  requestDate?: string;
-  title?: string;
-  status?: string;
-  fullStaffName?: string;
-  statusOptions?: IOption[];
-  humanResourceRequestData?: HumanResourceRequestData;
-  requestType?: string;
-}
+import { RequestSummaryProps } from "./index";
 
 export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
   const location = useLocation();

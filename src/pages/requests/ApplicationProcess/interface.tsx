@@ -5,12 +5,12 @@ import { useState } from "react";
 import { AppMenu } from "@components/layout/AppMenu";
 import { IRoute } from "@components/layout/AppMenu/types";
 import { spacing } from "@design/tokens/spacing";
-
-import { RequestSummary } from "./Components/RequestSummary";
-import { ActionModal } from "./Components/Actions";
 import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
 import { requestConfigs } from "@config/requests.config";
 import { capitalizeFullName } from "@utils/string";
+
+import { RequestSummary } from "./Components/RequestSummary";
+import { ActionModal } from "./Components/Actions";
 
 interface ApplicationProcessUIProps {
   appName: string;

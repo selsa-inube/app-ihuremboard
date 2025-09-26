@@ -4,8 +4,9 @@ import {
   environment,
 } from "@config/environment";
 
+import { HumanResourceRequest } from "@ptypes/humanResourcesRequest.types";
+
 import { mapHumanResourceRequestApiToEntity } from "../mappers";
-import { HumanResourceRequest } from "@src/types/humanResourcesRequest.types";
 
 const getHumanResourceRequests = async (
   humanResourceRequestNumber: string,

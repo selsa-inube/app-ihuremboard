@@ -5,6 +5,7 @@ import {
   Icon,
   Divider,
   useMediaQuery,
+  IOption,
 } from "@inubekit/inubekit";
 import {
   MdKeyboardArrowDown,
@@ -15,6 +16,7 @@ import {
 } from "react-icons/md";
 
 import { spacing } from "@design/tokens/spacing";
+import { HumanResourceRequestData } from "@ptypes/humanResourcesRequest.types";
 
 import {
   StyledRequestSummaryContainer,
@@ -24,7 +26,19 @@ import {
   MobileIconContainer,
 } from "./styles";
 import { ActionModal } from "../Actions";
-import { RequestSummaryProps, useRequestSummaryLogic } from "./interface";
+import { useRequestSummaryLogic } from "./interface";
+
+export interface RequestSummaryProps {
+  isLoading?: boolean;
+  requestNumber?: string | number;
+  requestDate?: string;
+  title?: string;
+  status?: string;
+  fullStaffName?: string;
+  statusOptions?: IOption[];
+  humanResourceRequestData?: HumanResourceRequestData;
+  requestType?: string;
+}
 
 export function RequestSummary(props: RequestSummaryProps) {
   const {
@@ -166,9 +180,7 @@ export function RequestSummary(props: RequestSummaryProps) {
           </Stack>
 
           <Stack alignItems="center">
-            <Text size="large" weight="bold">
-              {staffDisplayName}
-            </Text>
+            <Text weight="bold">{staffDisplayName}</Text>
           </Stack>
 
           <Stack>
