@@ -26,12 +26,12 @@ export const getDateString = (date: string | { value: string }): string => {
 
 export const parseFormattedDate = (dateStr: string): Date => {
   const parts = dateStr.split("/");
-  if (parts.length !== 3) {
-    return new Date(dateStr);
-  }
+  if (parts.length !== 3) return new Date(dateStr);
+
   const day = parseInt(parts[0], 10);
   const monthAbbr = parts[1].toLowerCase();
   const year = parseInt(parts[2], 10);
+
   const monthMap: Record<string, number> = {
     ene: 0,
     feb: 1,
@@ -47,5 +47,46 @@ export const parseFormattedDate = (dateStr: string): Date => {
     dic: 11,
   };
   const month = monthMap[monthAbbr] ?? 0;
+
   return new Date(year, month, day);
+};
+
+export const formatRequestTime = (
+  dateString: string | undefined | null,
+): string => {
+  if (!dateString) return "Fecha desconocida";
+
+  const requestDate = parseFormattedDate(dateString);
+  if (isNaN(requestDate.getTime())) return "Fecha desconocida";
+
+  const now = new Date();
+
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const requestDay = new Date(
+    requestDate.getFullYear(),
+    requestDate.getMonth(),
+    requestDate.getDate(),
+  );
+
+  const diffDays = Math.floor(
+    (today.getTime() - requestDay.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  if (diffDays === 0) {
+    const diffMs = now.getTime() - requestDate.getTime();
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+
+    if (seconds < 60)
+      return `Hace ${seconds} segundo${seconds === 1 ? "" : "s"}`;
+    if (minutes < 60)
+      return `Hace ${minutes} minuto${minutes === 1 ? "" : "s"}`;
+    if (hours < 24) return `Hace ${hours} hora${hours === 1 ? "" : "s"}`;
+    return "Hoy";
+  } else if (diffDays === 1) {
+    return "Ayer";
+  } else {
+    return `Hace ${diffDays} día${diffDays === 1 ? "" : "s"}`;
+  }
 };
