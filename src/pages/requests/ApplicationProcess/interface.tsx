@@ -11,6 +11,7 @@ import { ActionModal } from "./Components/Actions";
 import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
 import { requestConfigs } from "@config/requests.config";
 import { capitalizeFullName } from "@utils/string";
+
 interface ApplicationProcessUIProps {
   appName: string;
   appRoute: IRoute[];
@@ -26,7 +27,7 @@ function isRequestConfigKey(
 }
 
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
-  const { appRoute, navigatePage, description } = props;
+  const { appRoute, navigatePage } = props;
   const { id } = useParams<{ id: string }>();
   const { state } = useLocation() as {
     state?: {
@@ -43,14 +44,8 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const [showActions, setShowActions] = useState(false);
 
   const requestNumberParam = state?.requestNumber ?? id ?? "";
-
   const { data: requestData, isLoading: isLoadingRequest } =
     useHumanResourceRequest(requestNumberParam);
-
-  const handleDiscard = () => console.log("Descartar solicitud");
-  const handleExecute = () => console.log("Ejecutar solicitud");
-  const handleAttach = () => console.log("Adjuntar archivos");
-  const handleSeeAttachments = () => console.log("Ver adjuntos");
 
   const rawLabel =
     requestData?.humanResourceRequestDescription ?? state?.title ?? "";
@@ -61,10 +56,16 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     ? requestConfigs[keyCandidate].label
     : rawLabel;
 
+  const config = Object.values(requestConfigs).find(
+    (cfg) => cfg.label.toLowerCase() === finalRequestLabel.toLowerCase(),
+  );
+
   const displayRequestLabel =
     finalRequestLabel.toLowerCase() === "solicitud"
       ? finalRequestLabel
-      : `Solicitud de ${finalRequestLabel}`;
+      : `Solicitud de ${config?.label ?? finalRequestLabel}`;
+
+  const displayDescription = config?.description ?? "Descripción no disponible";
 
   const updatedAppRoute = appRoute.map((crumb) =>
     crumb.id === `/requests/${id}`
@@ -72,12 +73,17 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       : crumb,
   );
 
+  const handleDiscard = () => console.log("Descartar solicitud");
+  const handleExecute = () => console.log("Ejecutar solicitud");
+  const handleAttach = () => console.log("Adjuntar archivos");
+  const handleSeeAttachments = () => console.log("Ver adjuntos");
+
   return (
     <AppMenu
       appName={displayRequestLabel}
       appRoute={updatedAppRoute}
       navigatePage={navigatePage}
-      appDescription={description}
+      appDescription={displayDescription}
     >
       <Stack direction="column" gap={spacing.s200}>
         {isMobile && showActions && (
