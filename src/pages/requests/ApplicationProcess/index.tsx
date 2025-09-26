@@ -3,22 +3,26 @@ import { useMediaQuery } from "@inubekit/inubekit";
 
 import { ApplicationProcessUI } from "./interface";
 import { requestConfigs } from "@config/requests.config";
+import { ERequestType } from "@ptypes/humanResourcesRequest.types";
 
 function ApplicationProcess() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id?: keyof typeof ERequestType }>();
   const isTablet = useMediaQuery("(max-width: 1100px)");
 
-  const config = Object.values(requestConfigs).find(
-    (cfg) => cfg.label.toLowerCase() === (id ?? "").toLowerCase(),
-  );
+  const safeId = String(id ?? "");
 
-  const description = config?.description ?? "Descripción no disponible";
+  const config = id ? requestConfigs[id] : null;
+
+  const description = id
+    ? (ERequestType[id] ?? "Descripción no disponible")
+    : "Descripción no disponible";
+
   const requestLabel = config?.label ?? "Solicitud";
 
   const breadcrumbLabel =
     requestLabel.toLowerCase() === "solicitud"
-      ? requestLabel
-      : `Solicitud de ${requestLabel}`;
+      ? `Solicitud de ${description}`
+      : requestLabel;
 
   const breadcrumbs = {
     crumbs: [
@@ -39,9 +43,9 @@ function ApplicationProcess() {
       appRoute={[
         ...breadcrumbs.crumbs,
         {
-          path: `/requests/${id}`,
+          path: `/requests/${safeId}`,
           label: breadcrumbLabel,
-          id: `/requests/${id}`,
+          id: `/requests/${safeId}`,
           isActive: true,
         },
       ]}
