@@ -1,6 +1,8 @@
-import { Stack, Text, Divider, Icon } from "@inubekit/inubekit";
+import { Stack, Text, Divider, Icon, useMediaQuery } from "@inubekit/inubekit";
 import { MdOutlinePerson, MdOutlineReportProblem } from "react-icons/md";
+
 import { spacing } from "@design/tokens/spacing";
+
 import { StyledRequestCard, StyledTitle } from "./styles";
 
 interface RequestCardProps {
@@ -9,11 +11,11 @@ interface RequestCardProps {
   requestDate: string;
   employeeName: string;
   employeeSurnames?: string;
-  status: string;
+  status?: string;
   responsible: string;
   taskName?: string;
-  onclick?: () => void;
   showExtraIcon?: boolean;
+  onclick?: () => void;
 }
 
 const RequestCard = (props: RequestCardProps) => {
@@ -25,13 +27,15 @@ const RequestCard = (props: RequestCardProps) => {
     employeeSurnames,
     taskName,
     responsible,
-    onclick,
     showExtraIcon,
+    onclick,
   } = props;
 
+  const isMobile = useMediaQuery("(max-width: 600px)");
+
   return (
-    <Stack direction="column" width="280px">
-      <StyledRequestCard onClick={onclick}>
+    <Stack direction="column" width={isMobile ? "100%" : "280px"}>
+      <StyledRequestCard onClick={onclick} $isMobile={isMobile}>
         <StyledTitle>
           <Text
             type="label"
@@ -45,6 +49,7 @@ const RequestCard = (props: RequestCardProps) => {
         </StyledTitle>
 
         <Divider dashed />
+
         <Stack justifyContent="center">
           <Icon icon={<MdOutlinePerson />} size="16px" appearance="primary" />
           <Text size="small" type="label">
@@ -53,6 +58,7 @@ const RequestCard = (props: RequestCardProps) => {
               : "Sin nombre de empleado"}
           </Text>
         </Stack>
+
         <Stack direction="column" gap={spacing.s100}>
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">

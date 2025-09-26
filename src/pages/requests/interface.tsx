@@ -381,17 +381,28 @@ function RequestsUI(props: RequestsUIProps) {
                           employeeName={employeeName}
                           employeeSurnames={surnames}
                           taskName={taskName}
-                          status={status}
                           responsible={responsible ?? ""}
                           onclick={() => {
                             if (RequestsNav[requestTypeTitle]) {
                               navigate(
                                 `${RequestsNav[requestTypeTitle].path}/${id}`,
-                                { state: { section: value } },
+                                {
+                                  state: {
+                                    requestNumber: id,
+                                    requestDate,
+                                    fullStaffName: `${employeeName} ${surnames}`,
+                                    title: requestTypeTitle,
+                                    status: taskName,
+                                    statusOptions,
+                                  },
+                                },
                               );
                             }
                           }}
-                          showExtraIcon={sectionTitle === "Con pendientes"}
+                          showExtraIcon={
+                            sectionTitle === "Con pendientes" &&
+                            requestTypeTitle !== ERequestType.onboarding
+                          }
                         />
                       );
                     },

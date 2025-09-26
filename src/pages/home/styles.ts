@@ -21,7 +21,7 @@ const StyledAppPage = styled.div`
 
 const StyledContainer = styled.div`
   display: flex;
-  justify-content: center; /* centra horizontalmente */
+  justify-content: center;
   width: 100%;
   box-sizing: border-box;
 `;
@@ -35,7 +35,7 @@ const StyledMain = styled.main<StyledMainProps>`
       ? `0 ${spacing.s250} ${spacing.s0}`
       : `0 ${spacing.s800} ${spacing.s0}`};
   width: 100%;
-  max-width: 1300px; /* límite global */
+  max-width: 1300px;
   margin: ${spacing.s450} auto 0 auto;
   box-sizing: border-box;
 `;
@@ -68,7 +68,7 @@ const StyledQuickAccessContainer = styled.div<StyledMainProps>`
   justify-content: ${({ $isTablet }) => ($isTablet ? "center" : "flex-start")};
 
   width: 100%;
-  max-width: 1300px; /* mismo límite que StyledMain */
+  max-width: 1300px;
   margin: 0 auto;
   box-sizing: border-box;
 `;
