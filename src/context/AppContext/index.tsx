@@ -18,6 +18,7 @@ import {
   IBusinessUnit,
 } from "@ptypes/employeePortalBusiness.types";
 import { Employee } from "@ptypes/employeePortalConsultation.types";
+import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
 
 import { IAppContextType, IPreferences, IClient, IUser } from "./types";
 
@@ -36,19 +37,35 @@ function AppProvider(props: AppProviderProps) {
   const { user: IAuthUser } = useIAuth();
 
   const [user, setUser] = useState<IUser | null>(null);
+  const [hasUserLoaded, setHasUserLoaded] = useState(false);
 
   useEffect(() => {
-    if (IAuthUser) {
+    const isValidAuthUser =
+      IAuthUser?.id &&
+      IAuthUser?.username &&
+      IAuthUser.id !== "id" &&
+      IAuthUser.username !== "username";
+
+    if (isValidAuthUser) {
       setUser({
         username: IAuthUser.username,
         id: IAuthUser.id,
         company: IAuthUser.company,
         urlImgPerfil: IAuthUser.urlImgPerfil ?? "",
       });
-    } else {
+      setHasUserLoaded(true);
+    } else if (
+      IAuthUser?.id === "id" &&
+      IAuthUser?.username === "username" &&
+      !hasUserLoaded
+    ) {
+      setUser(null);
+    } else if (!IAuthUser && !hasUserLoaded) {
       setUser(null);
     }
-  }, [IAuthUser]);
+  }, [IAuthUser, hasUserLoaded]);
+
+  const isLoadingApp = !hasUserLoaded;
 
   const initialLogo = localStorage.getItem("logoUrl") ?? selsaLogo;
   const [logoUrl, setLogoUrl] = useState<string>(initialLogo);
@@ -158,6 +175,10 @@ function AppProvider(props: AppProviderProps) {
       localStorage.removeItem("selectedEmployee");
     }
   }, [selectedEmployee]);
+
+  if (isLoadingApp) {
+    return <LoadingAppUI />;
+  }
 
   return (
     <AppContext.Provider
