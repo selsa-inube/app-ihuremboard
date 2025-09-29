@@ -1,14 +1,19 @@
 import { useParams, useLocation } from "react-router-dom";
-import { Stack, useMediaQuery } from "@inubekit/inubekit";
-import { useState } from "react";
+import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
+import { useState, useEffect } from "react";
 
 import { AppMenu } from "@components/layout/AppMenu";
 import { IRoute } from "@components/layout/AppMenu/types";
 import { spacing } from "@design/tokens/spacing";
+import { requestConfigs } from "@config/requests.config";
+import { Fieldset } from "@components/data/Fieldset";
 
+import { StyledFieldsetContainer } from "./styles";
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
-import { requestConfigs } from "@config/requests.config";
+
+import { useEvaluateResponsibleOfTasks } from "@hooks/useEvaluateResponsibleOfTasks";
+import { useHeaders } from "@hooks/useHeaders";
 
 interface ApplicationProcessUIProps {
   appName: string;
@@ -34,11 +39,11 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
 
   const isMobile = useMediaQuery("(max-width: 1000px)");
   const [showActions, setShowActions] = useState(false);
+  const [decision, setDecision] = useState<string>("");
 
-  const handleDiscard = () => console.log("Descartar solicitud");
-  const handleExecute = () => console.log("Ejecutar solicitud");
-  const handleAttach = () => console.log("Adjuntar archivos");
-  const handleSeeAttachments = () => console.log("Ver adjuntos");
+  const handleSend = () => {
+    console.log("Decisión seleccionada:", decision);
+  };
 
   const finalRequestLabel = state?.title ?? id ?? "Solicitud";
 
@@ -58,6 +63,40 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   );
 
   const displayDescription = config?.description ?? "Descripción no disponible";
+
+  const headers = useHeaders();
+  const [resolvedHeaders, setResolvedHeaders] = useState<Record<
+    string,
+    string
+  > | null>(null);
+
+  useEffect(() => {
+    const fetchHeaders = async () => {
+      const h = await headers.getHeaders();
+      setResolvedHeaders(h);
+    };
+    fetchHeaders();
+  }, []);
+
+  const {
+    data: responsibleData,
+    loading,
+    error,
+  } = useEvaluateResponsibleOfTasks({
+    requestId: id ?? "",
+    headers: resolvedHeaders ?? {},
+    enabled: !!resolvedHeaders,
+  });
+
+  const responsibleLabel =
+    !responsibleData || responsibleData.responsible?.length !== 1
+      ? "Sin responsable"
+      : `${responsibleData.responsible[0].names} ${responsibleData.responsible[0].surnames}`;
+
+  const handleDiscard = () => console.log("Descartar solicitud");
+  const handleExecute = () => console.log("Ejecutar solicitud");
+  const handleAttach = () => console.log("Adjuntar archivos");
+  const handleSeeAttachments = () => console.log("Ver adjuntos");
 
   return (
     <AppMenu
@@ -91,6 +130,51 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           fullStaffName={state?.fullStaffName}
           description={displayDescription}
         />
+
+        <StyledFieldsetContainer $isMobile={isMobile}>
+          <Fieldset
+            title="Por hacer"
+            descriptionTitle={
+              loading
+                ? "Cargando..."
+                : error
+                  ? "Error al cargar"
+                  : responsibleLabel
+            }
+          >
+            <Stack direction="column" gap={spacing.s150}>
+              <Text>Verificar viabilidad de la solicitud.</Text>
+
+              <Stack direction="row" alignItems="flex-end" gap={spacing.s150}>
+                <Select
+                  name="decision"
+                  id="decision"
+                  label="Decisión"
+                  placeholder="Seleccione una opción"
+                  options={
+                    state?.statusOptions?.map((opt) => ({
+                      id: opt.value,
+                      value: opt.value,
+                      label: opt.label,
+                    })) ?? []
+                  }
+                  value={decision}
+                  onChange={(_, value) => setDecision(value)}
+                  size="wide"
+                  fullwidth
+                />
+
+                <Button
+                  appearance="primary"
+                  variant="filled"
+                  onClick={handleSend}
+                >
+                  Enviar
+                </Button>
+              </Stack>
+            </Stack>
+          </Fieldset>
+        </StyledFieldsetContainer>
       </Stack>
     </AppMenu>
   );
