@@ -1,7 +1,7 @@
+import type { ComponentProps } from "react";
 import { Meta, StoryFn } from "@storybook/react";
 import { MemoryRouter } from "react-router-dom";
 import { RequestSummary } from ".";
-import type { ComponentProps } from "react";
 
 type RequestSummaryProps = ComponentProps<typeof RequestSummary>;
 

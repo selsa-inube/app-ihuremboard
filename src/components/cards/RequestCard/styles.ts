@@ -13,8 +13,8 @@ interface IStyledTitle {
 }
 
 const StyledRequestCard = styled.div<IStyledRequestCard>`
-  width: ${({ $isMobile }) => ($isMobile ? "280px" : "242px")};
-  height: ${({ $isMobile }) => ($isMobile ? "280px" : "312px")};
+  width: 280px;
+  height: 280px;
   display: flex;
   flex-direction: column;
   gap: ${spacing.s100};
