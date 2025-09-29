@@ -70,7 +70,7 @@ const RequestCard = (props: RequestCardProps) => {
 
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">
-              Fecha de solicitud
+              Tiempo de solicitud
             </Text>
             <Text size="medium" appearance="gray">
               {requestDate}
