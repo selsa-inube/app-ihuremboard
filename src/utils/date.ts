@@ -73,16 +73,6 @@ export const formatRequestTime = (
   );
 
   if (diffDays === 0) {
-    const diffMs = now.getTime() - requestDate.getTime();
-    const seconds = Math.floor(diffMs / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-
-    if (seconds < 60)
-      return `Hace ${seconds} segundo${seconds === 1 ? "" : "s"}`;
-    if (minutes < 60)
-      return `Hace ${minutes} minuto${minutes === 1 ? "" : "s"}`;
-    if (hours < 24) return `Hace ${hours} hora${hours === 1 ? "" : "s"}`;
     return "Hoy";
   } else if (diffDays === 1) {
     return "Ayer";
