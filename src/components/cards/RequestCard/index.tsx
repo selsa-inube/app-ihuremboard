@@ -1,5 +1,5 @@
 import { Stack, Text, Divider, Icon, useMediaQuery } from "@inubekit/inubekit";
-import { MdOutlinePerson, MdOutlineReportProblem } from "react-icons/md";
+import { MdOutlinePerson } from "react-icons/md";
 
 import { spacing } from "@design/tokens/spacing";
 
@@ -27,7 +27,6 @@ const RequestCard = (props: RequestCardProps) => {
     employeeSurnames,
     taskName,
     responsible,
-    showExtraIcon,
     onclick,
   } = props;
 
@@ -50,7 +49,7 @@ const RequestCard = (props: RequestCardProps) => {
 
         <Divider dashed />
 
-        <Stack justifyContent="center">
+        <Stack justifyContent="center" gap={spacing.s050}>
           <Icon icon={<MdOutlinePerson />} size="16px" appearance="primary" />
           <Text size="small" type="label">
             {employeeName?.trim()
@@ -96,16 +95,6 @@ const RequestCard = (props: RequestCardProps) => {
             </Text>
           </Stack>
         </Stack>
-
-        {showExtraIcon && (
-          <Stack justifyContent="flex-end">
-            <Icon
-              icon={<MdOutlineReportProblem />}
-              size="20px"
-              appearance="primary"
-            />
-          </Stack>
-        )}
       </StyledRequestCard>
     </Stack>
   );
