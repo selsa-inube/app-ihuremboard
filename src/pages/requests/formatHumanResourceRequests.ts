@@ -31,8 +31,6 @@ export const formatHumanResourceRequests = (
       status = "completed";
     } else if (hasUnassignedTask) {
       status = "noResponsible";
-    } else if (req.humanResourceRequestBlockingPerTasks.length > 0) {
-      status = "blocked";
     } else if (hasResponsible) {
       status = "inProgress";
     }
@@ -46,11 +44,11 @@ export const formatHumanResourceRequests = (
         : "Sin responsable",
       status,
       taskName:
-        TaskNameMapping[req.taskName as keyof typeof TaskNameMapping] ||
-        req.taskName ||
+        TaskNameMapping[req.taskName as keyof typeof TaskNameMapping] ??
+        req.taskName ??
         "Sin tarea",
-      employeeName: req.names?.trim() || "",
-      surnames: req.surnames || "",
+      employeeName: req.names?.trim() ?? "",
+      surnames: req.surnames ?? "",
     };
   });
 };

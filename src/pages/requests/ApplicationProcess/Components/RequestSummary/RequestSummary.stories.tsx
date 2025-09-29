@@ -1,7 +1,9 @@
+import type { ComponentProps } from "react";
 import { Meta, StoryFn } from "@storybook/react";
 import { MemoryRouter } from "react-router-dom";
+import { RequestSummary } from ".";
 
-import { RequestSummary, RequestSummaryProps } from ".";
+type RequestSummaryProps = ComponentProps<typeof RequestSummary>;
 
 const meta: Meta<typeof RequestSummary> = {
   title: "components/RequestSummary",
@@ -23,9 +25,9 @@ const meta: Meta<typeof RequestSummary> = {
   },
 };
 
-export const Default: StoryFn<RequestSummaryProps> = (args) => (
-  <RequestSummary {...args} />
-);
+export const Default: StoryFn<RequestSummaryProps> = (
+  args: RequestSummaryProps,
+) => <RequestSummary {...args} />;
 
 Default.args = {
   fullStaffName: "Juan Pérez",

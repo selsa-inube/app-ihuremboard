@@ -52,23 +52,25 @@ function Requests() {
   useOutsideClick(menuRef, isMenuOpen, () => setIsMenuOpen(false));
 
   const boardSections = useMemo(() => {
-    const sectionTitles = {
+    type BoardStatus = Extract<
+      Status,
+      "noResponsible" | "inProgress" | "completed"
+    >;
+
+    const sectionTitles: Record<BoardStatus, string> = {
       noResponsible: "Sin responsable",
-      blocked: "Con pendientes",
       inProgress: "En progreso",
       completed: "Terminada",
     };
 
-    const backgroundMap = {
+    const backgroundMap: Record<BoardStatus, "gray" | "light"> = {
       noResponsible: "gray",
-      blocked: "light",
-      inProgress: "gray",
-      completed: "light",
-    } as const;
+      inProgress: "light",
+      completed: "gray",
+    };
 
-    const statuses: Status[] = [
+    const statuses: BoardStatus[] = [
       "noResponsible",
-      "blocked",
       "inProgress",
       "completed",
     ];
@@ -80,6 +82,7 @@ function Requests() {
       sectionInformation: data.filter((req) => req.status === status),
     }));
   }, [data]);
+
   const openFilterModal = useCallback(() => {
     setIsFilterModalOpen(true);
     setIsMenuOpen(false);

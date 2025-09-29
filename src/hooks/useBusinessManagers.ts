@@ -29,14 +29,12 @@ export const useBusinessManagers = (
         const fetchedBusinessManagers = await getBusinessManagerByCode(
           portalPublicCode.businessManagerCode,
         );
-
         if (
           !fetchedBusinessManagers ||
           Object.keys(fetchedBusinessManagers).length === 0
         ) {
           setHasError(true);
-          setCodeError(1006);
-          setFlagShown(true);
+          setCodeError(1002);
           return;
         }
 
