@@ -5,7 +5,7 @@ import { mapEvaluateResponsibleOfTasksApiToEntity } from "./mappers";
 export async function postEvaluateResponsibleOfTasks(
   requestBody: { humanResourceRequestId: string },
   headers: Record<string, string>,
-): Promise<IEvaluateResponsibleOfTasks> {
+): Promise<IEvaluateResponsibleOfTasks[]> {
   const response = await fetch(
     `${environment.IVITE_IHUREM_PERSISTENCE_PROCESS_SERVICE}/human-resources-requests`,
     {
@@ -20,7 +20,7 @@ export async function postEvaluateResponsibleOfTasks(
   );
 
   if (response.status === 204) {
-    return { namePosition: "", responsible: [] };
+    return [];
   }
 
   if (!response.ok) {
@@ -35,5 +35,7 @@ export async function postEvaluateResponsibleOfTasks(
   }
 
   const data = await response.json();
-  return mapEvaluateResponsibleOfTasksApiToEntity(data);
+  return Array.isArray(data)
+    ? data.map(mapEvaluateResponsibleOfTasksApiToEntity)
+    : [];
 }

@@ -32,20 +32,8 @@ export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
     !$isSelected
       ? theme?.palette?.neutral?.N0 || inube.palette.neutral.N0
       : theme?.palette?.blue?.B50 || inube.palette.blue.B50};
-  border-color: ${({ theme, $borderColor, $isSelected }) => {
-    if ($isSelected) {
-      return theme?.palette?.blue?.B300 || inube.palette.blue.B300;
-    }
-    switch ($borderColor) {
-      case "blue":
-        return theme?.palette?.blue?.B300 || inube.palette.blue.B300;
-      case "normal":
-        return theme?.palette?.neutral?.N300 || inube.palette.neutral.N300;
-      case "gray":
-      default:
-        return theme?.palette?.neutral?.N40 || inube.palette.neutral.N40;
-    }
-  }};
+  border: 1px solid
+    ${({ theme }) => theme?.palette?.neutral?.N40 || inube.palette.neutral.N40};
   box-shadow: ${({ theme, $isSelected }) =>
     $isSelected &&
     `-12px 0px 0px ${theme?.palette?.blue?.B400 || inube.palette.blue.B400}`};

@@ -6,4 +6,5 @@ interface IFieldsetContainerProps {
 
 export const StyledFieldsetContainer = styled.div<IFieldsetContainerProps>`
   width: ${({ $isMobile }) => ($isMobile ? "100%" : "50%")};
+  margin-top: -20px;
 `;

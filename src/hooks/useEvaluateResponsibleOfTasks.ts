@@ -18,7 +18,7 @@ export function useEvaluateResponsibleOfTasks({
   headers,
   enabled = true,
 }: UseEvaluateResponsibleOfTasksOptions) {
-  const [data, setData] = useState<IEvaluateResponsibleOfTasks | null>(null);
+  const [data, setData] = useState<IEvaluateResponsibleOfTasks[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -30,11 +30,10 @@ export function useEvaluateResponsibleOfTasks({
       setError(null);
 
       try {
-        const response: IEvaluateResponsibleOfTasks =
-          await postEvaluateResponsibleOfTasks(
-            { humanResourceRequestId: requestId },
-            headers,
-          );
+        const response = await postEvaluateResponsibleOfTasks(
+          { humanResourceRequestId: requestId },
+          headers,
+        );
 
         setData(response);
       } catch (err: unknown) {

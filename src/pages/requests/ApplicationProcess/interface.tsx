@@ -97,15 +97,20 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     loading,
     error,
   } = useEvaluateResponsibleOfTasks({
-    requestId: id ?? "",
+    requestId: requestData?.humanResourceRequestId ?? "",
     headers: resolvedHeaders ?? {},
-    enabled: !!resolvedHeaders,
+    enabled: !!resolvedHeaders && !!requestData?.humanResourceRequestId,
   });
 
+  const firstGroup =
+    responsibleData && responsibleData.length > 0 ? responsibleData[0] : null;
+
   const responsibleLabel =
-    !responsibleData || responsibleData.responsible?.length !== 1
+    !firstGroup || firstGroup.responsible.length !== 1
       ? "Sin responsable"
-      : `${responsibleData.responsible[0].names} ${responsibleData.responsible[0].surnames}`;
+      : capitalizeFullName(
+          `${firstGroup.responsible[0].names.trim()} ${firstGroup.responsible[0].surnames.trim()}`,
+        );
 
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
