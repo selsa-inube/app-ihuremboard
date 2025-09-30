@@ -34,38 +34,24 @@ interface AppProviderProps {
 function AppProvider(props: AppProviderProps) {
   const { children, dataPortal, businessManagersData, businessUnitsData } =
     props;
-  const { user: IAuthUser } = useIAuth();
+  const { user: IAuthUser, isLoading: isIAuthLoading } = useIAuth();
 
   const [user, setUser] = useState<IUser | null>(null);
-  const [hasUserLoaded, setHasUserLoaded] = useState(false);
 
   useEffect(() => {
-    const isValidAuthUser =
-      IAuthUser?.id &&
-      IAuthUser?.username &&
-      IAuthUser.id !== "id" &&
-      IAuthUser.username !== "username";
-
-    if (isValidAuthUser) {
-      setUser({
-        username: IAuthUser.username,
-        id: IAuthUser.id,
-        company: IAuthUser.company,
-        urlImgPerfil: IAuthUser.urlImgPerfil ?? "",
-      });
-      setHasUserLoaded(true);
-    } else if (
-      IAuthUser?.id === "id" &&
-      IAuthUser?.username === "username" &&
-      !hasUserLoaded
-    ) {
-      setUser(null);
-    } else if (!IAuthUser && !hasUserLoaded) {
-      setUser(null);
+    if (!isIAuthLoading) {
+      if (IAuthUser) {
+        setUser({
+          username: IAuthUser.username,
+          id: IAuthUser.id,
+          company: IAuthUser.company,
+          urlImgPerfil: IAuthUser.urlImgPerfil ?? "",
+        });
+      } else {
+        setUser(null);
+      }
     }
-  }, [IAuthUser, hasUserLoaded]);
-
-  const isLoadingApp = !hasUserLoaded;
+  }, [IAuthUser, isIAuthLoading]);
 
   const initialLogo = localStorage.getItem("logoUrl") ?? selsaLogo;
   const [logoUrl, setLogoUrl] = useState<string>(initialLogo);
@@ -176,7 +162,7 @@ function AppProvider(props: AppProviderProps) {
     }
   }, [selectedEmployee]);
 
-  if (isLoadingApp) {
+  if (isIAuthLoading) {
     return <LoadingAppUI />;
   }
 

@@ -1,7 +1,7 @@
 import { TaskNameMapping } from "@ptypes/humanResourcesRequest.types";
 import { formatDate } from "@utils/date";
 import { Status } from "./types";
-import { HumanEmployeeResourceRequest } from "@src/types/humanEmployeeResourcesRequest.types";
+import { HumanEmployeeResourceRequest } from "@ptypes/humanEmployeeResourcesRequest.types";
 
 export const formatHumanResourceRequests = (
   requests: HumanEmployeeResourceRequest[],
@@ -46,11 +46,11 @@ export const formatHumanResourceRequests = (
         : "Sin responsable",
       status,
       taskName:
-        TaskNameMapping[req.taskName as keyof typeof TaskNameMapping] ||
-        req.taskName ||
+        TaskNameMapping[req.taskName as keyof typeof TaskNameMapping] ??
+        req.taskName ??
         "Sin tarea",
-      employeeName: req.names?.trim() || "",
-      surnames: req.surnames || "",
+      employeeName: req.names?.trim() ?? "",
+      surnames: req.surnames ?? "",
     };
   });
 };
