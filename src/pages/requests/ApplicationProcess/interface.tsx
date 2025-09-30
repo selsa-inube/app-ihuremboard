@@ -5,10 +5,12 @@ import { useState } from "react";
 import { AppMenu } from "@components/layout/AppMenu";
 import { IRoute } from "@components/layout/AppMenu/types";
 import { spacing } from "@design/tokens/spacing";
+import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
+import { requestConfigs } from "@config/requests.config";
+import { capitalizeFullName } from "@utils/string";
 
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
-import { requestConfigs } from "@config/requests.config";
 
 interface ApplicationProcessUIProps {
   appName: string;
@@ -18,16 +20,22 @@ interface ApplicationProcessUIProps {
   requestLabel: string;
 }
 
+function isRequestConfigKey(
+  value: string,
+): value is keyof typeof requestConfigs {
+  return value in requestConfigs;
+}
+
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const { appRoute, navigatePage } = props;
   const { id } = useParams<{ id: string }>();
   const { state } = useLocation() as {
     state?: {
-      requestNumber: string;
-      requestDate: string;
-      fullStaffName: string;
-      title: string;
-      status: string;
+      requestNumber?: string;
+      requestDate?: string;
+      fullStaffName?: string;
+      title?: string;
+      status?: string;
       statusOptions?: { value: string; label: string }[];
     };
   };
@@ -35,12 +43,18 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const isMobile = useMediaQuery("(max-width: 1000px)");
   const [showActions, setShowActions] = useState(false);
 
-  const handleDiscard = () => console.log("Descartar solicitud");
-  const handleExecute = () => console.log("Ejecutar solicitud");
-  const handleAttach = () => console.log("Adjuntar archivos");
-  const handleSeeAttachments = () => console.log("Ver adjuntos");
+  const requestNumberParam = state?.requestNumber ?? id ?? "";
+  const { data: requestData, isLoading: isLoadingRequest } =
+    useHumanResourceRequest(requestNumberParam);
 
-  const finalRequestLabel = state?.title ?? id ?? "Solicitud";
+  const rawLabel =
+    requestData?.humanResourceRequestDescription ?? state?.title ?? "";
+  const parts = rawLabel.trim().split(" ");
+  const keyCandidate = parts[parts.length - 1];
+
+  const finalRequestLabel = isRequestConfigKey(keyCandidate)
+    ? requestConfigs[keyCandidate].label
+    : rawLabel;
 
   const config = Object.values(requestConfigs).find(
     (cfg) => cfg.label.toLowerCase() === finalRequestLabel.toLowerCase(),
@@ -51,13 +65,18 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       ? finalRequestLabel
       : `Solicitud de ${config?.label ?? finalRequestLabel}`;
 
+  const displayDescription = config?.description ?? "Descripción no disponible";
+
   const updatedAppRoute = appRoute.map((crumb) =>
     crumb.id === `/requests/${id}`
       ? { ...crumb, label: displayRequestLabel }
       : crumb,
   );
 
-  const displayDescription = config?.description ?? "Descripción no disponible";
+  const handleDiscard = () => console.log("Descartar solicitud");
+  const handleExecute = () => console.log("Ejecutar solicitud");
+  const handleAttach = () => console.log("Adjuntar archivos");
+  const handleSeeAttachments = () => console.log("Ver adjuntos");
 
   return (
     <AppMenu
@@ -84,12 +103,22 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
         )}
 
         <RequestSummary
-          requestNumber={state?.requestNumber ?? id}
-          requestDate={state?.requestDate}
-          title={config?.label ?? finalRequestLabel}
-          status={state?.status}
-          fullStaffName={state?.fullStaffName}
-          description={displayDescription}
+          requestNumber={
+            requestData?.humanResourceRequestNumber ??
+            state?.requestNumber ??
+            id
+          }
+          requestDate={
+            requestData?.humanResourceRequestDate ?? state?.requestDate
+          }
+          title={finalRequestLabel}
+          status={requestData?.humanResourceRequestStatus ?? state?.status}
+          fullStaffName={capitalizeFullName(
+            state?.fullStaffName ?? "Sin responsable",
+          )}
+          humanResourceRequestData={requestData?.humanResourceRequestData}
+          requestType={requestData?.humanResourceRequestType}
+          isLoading={isLoadingRequest}
         />
       </Stack>
     </AppMenu>

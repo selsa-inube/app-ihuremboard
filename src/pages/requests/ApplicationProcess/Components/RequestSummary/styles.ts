@@ -11,6 +11,10 @@ interface IVerticalDividerProps {
   theme: typeof inube;
 }
 
+interface IDetailItem {
+  theme: typeof inube;
+}
+
 interface MobileIconContainerProps {
   $isMobile: boolean;
   $isSmall: boolean;
@@ -19,14 +23,11 @@ interface MobileIconContainerProps {
 const StyledRequestSummaryContainer = styled.div<StyledRequestSummaryContainerProps>`
   display: flex;
   flex-direction: column;
-  gap: ${spacing.s200};
+  gap: ${spacing.s075};
   border-radius: ${spacing.s100};
   border: 1px solid
-    ${({ theme }) =>
-      theme && theme.palette?.neutral?.N40
-        ? theme.palette.neutral.N40
-        : inube.palette.neutral.N40};
-  padding: ${spacing.s100};
+    ${({ theme }) => theme?.palette?.neutral?.N40 || inube.palette.neutral.N40};
+  padding: ${spacing.s200};
   margin-bottom: ${spacing.s300};
 `;
 
@@ -38,6 +39,23 @@ const VerticalDivider = styled.div<IVerticalDividerProps>`
   margin: 0 ${spacing.s100};
 `;
 
+const DetailsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: ${spacing.s200};
+  width: 100%;
+`;
+
+const DetailItem = styled.div<IDetailItem>`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacing.s050};
+  background-color: ${({ theme }) =>
+    theme?.palette?.neutral?.N10 || inube.palette.neutral.N10};
+  padding: ${spacing.s150};
+  border-radius: ${spacing.s075};
+`;
+
 const MobileIconContainer = styled.div<MobileIconContainerProps>`
   position: absolute;
   z-index: 10;
@@ -47,4 +65,10 @@ const MobileIconContainer = styled.div<MobileIconContainerProps>`
     $isSmall ? "100px" : $isMobile ? "123px" : "90px"};
 `;
 
-export { StyledRequestSummaryContainer, VerticalDivider, MobileIconContainer };
+export {
+  StyledRequestSummaryContainer,
+  VerticalDivider,
+  DetailsGrid,
+  DetailItem,
+  MobileIconContainer,
+};

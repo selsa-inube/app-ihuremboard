@@ -14,6 +14,8 @@ import { RequestCard } from "@components/cards/RequestCard";
 import { FilterRequestModal } from "@components/modals/FilterRequestModal";
 import { SelectedFilters } from "@components/cards/SelectedFilters";
 import { ERequestType } from "@ptypes/humanResourcesRequest.types";
+import { formatRequestTime } from "@utils/date";
+import { capitalizeFullName } from "@utils/string";
 
 import { RequestsNav } from "./config/nav.config";
 import { IRoute, BoardSections, RequestItem } from "./types";
@@ -377,9 +379,9 @@ function RequestsUI(props: RequestsUIProps) {
                           key={id}
                           id={id}
                           title={requestTypeTitle}
-                          requestDate={requestDate}
-                          employeeName={employeeName}
-                          employeeSurnames={surnames}
+                          requestDate={formatRequestTime(requestDate)}
+                          employeeName={capitalizeFullName(employeeName)}
+                          employeeSurnames={capitalizeFullName(surnames ?? "")}
                           taskName={taskName}
                           responsible={responsible ?? ""}
                           onclick={() => {
@@ -390,7 +392,7 @@ function RequestsUI(props: RequestsUIProps) {
                                   state: {
                                     requestNumber: id,
                                     requestDate,
-                                    fullStaffName: `${employeeName} ${surnames}`,
+                                    fullStaffName: `${capitalizeFullName(employeeName)} ${capitalizeFullName(surnames ?? "")}`,
                                     title: requestTypeTitle,
                                     status: taskName,
                                     statusOptions,

@@ -22,6 +22,7 @@ export interface HumanResourceRequest {
   tasksToManageTheHumanResourcesRequests: TaskToManageHumanResourceRequest[];
   humanResourceRequestBlockingPerTasks: HumanResourceRequestBlockingPerTask[];
 }
+
 export interface HumanResourceRequestTraceability {
   traceabilityId: string;
   humanResourceRequestId: string;
@@ -35,7 +36,7 @@ export interface TaskToManageHumanResourceRequest {
   taskManagingId: string;
   humanResourceRequestId: string;
   taskCode: string;
-  taskName: TaskNameMapping;
+  taskName: keyof typeof TaskNameMapping;
   taskStatus: ETaskStatus;
   description: string;
 }
@@ -47,35 +48,20 @@ export interface HumanResourceRequestBlockingPerTask {
   registrationDate: string;
   taskManagingId: string;
 }
-export interface IVacationGeneralInformationEntry {
-  id: string;
-  daysOff: string;
-  startDate: string;
-  contract: string;
-  observations: string;
-  typeOfRequest?: string;
+export interface HumanResourceRequestData {
+  contractId?: string;
+  contractNumber?: string;
+  businessName?: string;
+  startDate?: string;
+  contractType?: string;
+  observationEmployee?: string;
+  daysToPay?: string | number;
+  disbursementDate?: string;
+  daysOff?: string | number;
+  startDateEnyoment?: string;
+  certificationType?: string;
+  addressee?: string;
 }
-
-export interface IVacationPaymentGeneralInformationEntry {
-  id: string;
-  daysToPay: string;
-  contract: string;
-  observations: string;
-}
-
-export interface ICertificationGeneralInformationEntry {
-  id: string;
-  certification: string;
-  addressee: string;
-  contract: string;
-  contractDesc: string;
-  observations: string;
-}
-
-export type HumanResourceRequestData =
-  | IVacationGeneralInformationEntry
-  | ICertificationGeneralInformationEntry
-  | IVacationPaymentGeneralInformationEntry;
 
 export enum ERequestType {
   absence = "Ausencia",
@@ -97,6 +83,12 @@ export enum ETaskStatus {
   executed = "Ejecutada",
   manually_locked = "Bloqueada Manualmente",
   system_locked = "Bloqueada por Sistema",
+}
+
+export enum EContractType {
+  FixedTermContract = "Contrato a término fijo",
+  IndefiniteTermContract = "Contrato a término indefinido",
+  ApprenticeshipContract = "Contrato de aprendizaje",
 }
 
 export enum ERequestStatus {

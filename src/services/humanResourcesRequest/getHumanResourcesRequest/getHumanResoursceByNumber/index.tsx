@@ -4,12 +4,14 @@ import {
   environment,
 } from "@config/environment";
 
+import { HumanResourceRequest } from "@ptypes/humanResourcesRequest.types";
+
 import { mapHumanResourceRequestApiToEntity } from "../mappers";
 
 const getHumanResourceRequests = async (
   humanResourceRequestNumber: string,
   headers: Record<string, string>,
-) => {
+): Promise<HumanResourceRequest> => {
   const maxRetries = maxRetriesServices;
   const fetchTimeout = fetchTimeoutServices;
 
@@ -37,7 +39,7 @@ const getHumanResourceRequests = async (
       clearTimeout(timeoutId);
 
       if (res.status === 204) {
-        return null;
+        return {} as HumanResourceRequest;
       }
 
       if (!res.ok) {
@@ -47,8 +49,7 @@ const getHumanResourceRequests = async (
       }
 
       const data = await res.json();
-
-      return mapHumanResourceRequestApiToEntity(data);
+      return mapHumanResourceRequestApiToEntity(data[0]);
     } catch (error) {
       if (attempt === maxRetries) {
         console.error(
@@ -62,7 +63,7 @@ const getHumanResourceRequests = async (
     }
   }
 
-  return null;
+  return {} as HumanResourceRequest;
 };
 
 export { getHumanResourceRequests };

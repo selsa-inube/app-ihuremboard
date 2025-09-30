@@ -1,80 +1,56 @@
 import {
-  Text,
-  useMediaQuery,
-  Icon,
   Stack,
-  SkeletonLine,
-  IOption,
+  Text,
   Button,
+  Icon,
+  Divider,
+  useMediaQuery,
 } from "@inubekit/inubekit";
 import {
   MdKeyboardArrowDown,
+  MdKeyboardArrowUp,
   MdMoreVert,
   MdAutorenew,
   MdOutlineCancel,
 } from "react-icons/md";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
 
 import { spacing } from "@design/tokens/spacing";
-import { formatDate } from "@utils/date";
-import { capitalizeFullName } from "@utils/string";
 
 import {
   StyledRequestSummaryContainer,
+  DetailsGrid,
+  DetailItem,
   VerticalDivider,
   MobileIconContainer,
 } from "./styles";
 import { ActionModal } from "../Actions";
+import { RequestSummaryProps, useRequestSummaryLogic } from "./interface";
 
-export interface RequestSummaryProps {
-  isLoading?: boolean;
-  requestNumber?: string | number;
-  requestDate?: string;
-  title?: string;
-  status?: string;
-  fullStaffName?: string;
-  description?: string;
-  statusOptions?: IOption[];
-}
+export function RequestSummary(props: RequestSummaryProps) {
+  const {
+    requestNumber,
+    requestDate,
+    title,
+    statusLabel,
+    staffDisplayName,
+    daysToPay,
+    disbursementDate,
+    contractNumber,
+    businessName,
+    contractType,
+    observationEmployee,
+    showActions,
+    setShowActions,
+    showDetails,
+    setShowDetails,
+    handleDiscard,
+    handleExecute,
+    handleAttach,
+    handleSeeAttachments,
+  } = useRequestSummaryLogic(props);
 
-function RequestSummary({
-  isLoading: propsIsLoading,
-  requestNumber: propsRequestNumber,
-  requestDate: propsRequestDate,
-  title: propsTitle,
-  status: propsStatus,
-  fullStaffName: propsFullStaffName,
-  statusOptions: propsStatusOptions,
-}: RequestSummaryProps) {
-  const location = useLocation();
-  const state = location.state as RequestSummaryProps | undefined;
-
-  const requestNumber = propsRequestNumber ?? state?.requestNumber;
-  const requestDate = propsRequestDate ?? state?.requestDate;
-  const title = propsTitle ?? state?.title;
-  const status = propsStatus ?? state?.status;
-  const fullStaffName = propsFullStaffName ?? state?.fullStaffName;
-  const statusOptions = propsStatusOptions ?? state?.statusOptions ?? [];
-
-  const isLoading = propsIsLoading ?? false;
   const isMobile = useMediaQuery("(max-width: 1100px)");
   const isSmall = useMediaQuery("(max-width: 490px)");
-  const [showActions, setShowActions] = useState(false);
-
-  const staffDisplayName = fullStaffName
-    ? capitalizeFullName(fullStaffName)
-    : "Sin responsable";
-
-  const statusLabel =
-    statusOptions.find((opt) => opt.value === status)?.label ??
-    status ??
-    "Sin estado";
-
-  const handleDiscard = () => console.log("Descartar solicitud");
-  const handleExecute = () => console.log("Ejecutar solicitud");
-  const handleAttach = () => console.log("Adjuntar archivos");
-  const handleSeeAttachments = () => console.log("Ver adjuntos");
 
   return (
     <Stack direction="column" gap={spacing.s100}>
@@ -88,14 +64,11 @@ function RequestSummary({
           <Text type="title" size="medium" weight="bold">
             Estado:
           </Text>
-          {isLoading ? (
-            <SkeletonLine animated width="120px" />
-          ) : (
-            <Text type="title" size="medium" appearance="gray">
-              {statusLabel}
-            </Text>
-          )}
+          <Text type="title" size="medium" appearance="gray">
+            {statusLabel}
+          </Text>
         </Stack>
+
         {isMobile ? (
           <MobileIconContainer $isMobile={isMobile} $isSmall={isSmall}>
             <Icon
@@ -154,137 +127,124 @@ function RequestSummary({
           }}
         />
       )}
+
       <StyledRequestSummaryContainer $isMobile={isMobile}>
-        {isMobile ? (
-          <Stack direction="column" gap={spacing.s150} width="100%">
-            <Stack justifyContent="center">
-              <Text weight="bold">{staffDisplayName}</Text>
+        <Stack
+          direction={isMobile ? "column" : "row"}
+          justifyContent="space-between"
+          alignItems={isMobile ? "flex-start" : "center"}
+          gap={spacing.s150}
+          width="100%"
+        >
+          <Stack direction="column" gap={spacing.s075}>
+            <Stack gap={spacing.s050}>
+              <Text type="label" weight="bold">
+                No. de solicitud
+              </Text>
+              <Text appearance="gray" type="label">
+                {requestNumber ?? "N/A"}
+              </Text>
             </Stack>
 
-            <Stack
-              justifyContent="space-between"
-              alignItems="center"
-              width="100%"
-            >
-              <Stack direction="column" gap={spacing.s075}>
-                <Stack gap={spacing.s050}>
-                  <Text type="label" weight="bold">
-                    No. de solicitud
-                  </Text>
-                  {isLoading ? (
-                    <SkeletonLine animated width="80px" />
-                  ) : (
-                    <Text appearance="gray" type="label">
-                      {requestNumber ?? "XXXXXX"}
-                    </Text>
-                  )}
-                </Stack>
+            <Stack gap={spacing.s050}>
+              <Text type="label" weight="bold">
+                Fecha de solicitud
+              </Text>
+              <Text appearance="gray" type="label">
+                {requestDate ?? "N/A"}
+              </Text>
+            </Stack>
 
-                <Stack gap={spacing.s050}>
-                  <Text type="label" weight="bold">
-                    Fecha de solicitud
-                  </Text>
-                  {isLoading ? (
-                    <SkeletonLine animated width="100px" />
-                  ) : (
-                    <Text appearance="gray" type="label">
-                      {requestDate ? formatDate(requestDate) : "Sin fecha"}
-                    </Text>
-                  )}
-                </Stack>
-
-                <Stack gap={spacing.s050}>
-                  <Text type="label" weight="bold">
-                    Tipo de solicitud
-                  </Text>
-                  {isLoading ? (
-                    <SkeletonLine animated width="140px" />
-                  ) : (
-                    <Text appearance="gray" type="label">
-                      {title ?? "Tipo desconocido"}
-                    </Text>
-                  )}
-                </Stack>
-              </Stack>
-
-              <Icon
-                icon={<MdKeyboardArrowDown />}
-                appearance="primary"
-                size="24px"
-                cursorHover
-                onClick={() => console.log("Mostrar más información")}
-              />
+            <Stack gap={spacing.s050}>
+              <Text type="label" weight="bold">
+                Tipo de solicitud
+              </Text>
+              <Text appearance="gray" type="label">
+                {title ?? "N/A"}
+              </Text>
             </Stack>
           </Stack>
-        ) : (
-          <Stack
-            justifyContent="space-between"
-            alignItems="center"
-            width="100%"
-            gap={spacing.s100}
-          >
-            <Stack direction="column" gap={spacing.s050}>
-              <Stack gap={spacing.s050}>
-                <Text type="label" weight="bold">
-                  No. de solicitud
-                </Text>
-                {isLoading ? (
-                  <SkeletonLine animated width="80px" />
-                ) : (
-                  <Text appearance="gray" type="label">
-                    {requestNumber ?? "XXXXXX"}
-                  </Text>
-                )}
-              </Stack>
 
-              <Stack gap={spacing.s050}>
-                <Text type="label" weight="bold">
-                  Fecha de solicitud
-                </Text>
-                {isLoading ? (
-                  <SkeletonLine animated width="100px" />
-                ) : (
-                  <Text appearance="gray" type="label">
-                    {requestDate ? formatDate(requestDate) : "Sin fecha"}
-                  </Text>
-                )}
-              </Stack>
-              <Stack gap={spacing.s050}>
-                <Text type="label" weight="bold">
-                  Tipo de solicitud
-                </Text>
-                {isLoading ? (
-                  <SkeletonLine animated width="140px" />
-                ) : (
-                  <Text appearance="gray" type="label">
-                    {title ?? "Tipo desconocido"}
-                  </Text>
-                )}
-              </Stack>
-            </Stack>
-
-            <Stack alignItems="center" gap={spacing.s050}>
-              {isLoading ? (
-                <SkeletonLine animated width="120px" />
-              ) : (
-                <Text>{staffDisplayName}</Text>
-              )}
-            </Stack>
-
-            <Stack>
-              <Icon
-                icon={<MdKeyboardArrowDown />}
-                appearance="primary"
-                size="24px"
-                cursorHover
-                onClick={() => console.log("Mostrar más información")}
-              />
-            </Stack>
+          <Stack alignItems="center">
+            <Text size="large" weight="bold">
+              {staffDisplayName}
+            </Text>
           </Stack>
+
+          <Stack>
+            <Icon
+              icon={
+                showDetails ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />
+              }
+              appearance="primary"
+              size="24px"
+              cursorHover
+              onClick={() => setShowDetails(!showDetails)}
+            />
+          </Stack>
+        </Stack>
+
+        {showDetails && (
+          <>
+            <Divider dashed />
+            <DetailsGrid>
+              <DetailItem>
+                <Text type="label" weight="bold">
+                  Días a pagar
+                </Text>
+                <Text appearance="gray" type="label">
+                  {daysToPay ?? "N/A"}
+                </Text>
+              </DetailItem>
+
+              <DetailItem>
+                <Text type="label" weight="bold">
+                  Número de contrato
+                </Text>
+                <Text appearance="gray" type="label">
+                  {contractNumber ?? "N/A"}
+                </Text>
+              </DetailItem>
+
+              <DetailItem>
+                <Text type="label" weight="bold">
+                  Nombre de la empresa
+                </Text>
+                <Text appearance="gray" type="label">
+                  {businessName ?? "N/A"}
+                </Text>
+              </DetailItem>
+
+              <DetailItem>
+                <Text type="label" weight="bold">
+                  Tipo de contrato
+                </Text>
+                <Text appearance="gray" type="label">
+                  {contractType ?? "N/A"}
+                </Text>
+              </DetailItem>
+
+              <DetailItem>
+                <Text type="label" weight="bold">
+                  Fecha de desembolso
+                </Text>
+                <Text appearance="gray" type="label">
+                  {disbursementDate ?? "N/A"}
+                </Text>
+              </DetailItem>
+            </DetailsGrid>
+
+            <DetailItem>
+              <Text type="label" weight="bold">
+                Observaciones del empleado
+              </Text>
+              <Text appearance="gray" type="label">
+                {observationEmployee ?? "N/A"}
+              </Text>
+            </DetailItem>
+          </>
         )}
       </StyledRequestSummaryContainer>
     </Stack>
   );
 }
-
-export { RequestSummary };
