@@ -1,7 +1,7 @@
 import { TaskNameMapping } from "@ptypes/humanResourcesRequest.types";
 import { formatDate } from "@utils/date";
 import { Status } from "./types";
-import { HumanEmployeeResourceRequest } from "@src/types/humanEmployeeResourcesRequest.types";
+import { HumanEmployeeResourceRequest } from "@ptypes/humanEmployeeResourcesRequest.types";
 
 export const formatHumanResourceRequests = (
   requests: HumanEmployeeResourceRequest[],
