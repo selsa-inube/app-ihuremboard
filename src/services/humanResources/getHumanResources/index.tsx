@@ -12,7 +12,7 @@ import { mapHumanDecisionTasksApiToEntity } from "./mappers";
 
 const getHumanDecisionTasks = async (
   requestType: string,
-  headers: Record<string, string>,
+  businessUnits: string,
 ): Promise<IHumanDecisionTasksResponse> => {
   const maxRetries = maxRetriesServices;
   const fetchTimeout = fetchTimeoutServices;
@@ -27,8 +27,9 @@ const getHumanDecisionTasks = async (
       const res = await fetch(url, {
         method: "GET",
         headers: {
-          ...headers,
           "Content-Type": "application/json; charset=UTF-8",
+          "X-Action": "GetByHumanDecisionTasks",
+          "X-Business-Unit": businessUnits,
         },
         signal: controller.signal,
       });

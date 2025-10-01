@@ -8,7 +8,7 @@ interface IHumanDecisionTasksResponse {
 
 export function useHumanDecisionTasks(
   requestType: string,
-  headers: Record<string, string>,
+  businessUnits: string,
   enabled = true,
 ) {
   const [data, setData] = useState<IHumanDecisionTasksResponse | null>(null);
@@ -16,14 +16,17 @@ export function useHumanDecisionTasks(
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!enabled || !requestType) return;
+    if (!enabled || !requestType || !businessUnits) return;
 
     const fetchData = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const response = await getHumanDecisionTasks(requestType, headers);
+        const response = await getHumanDecisionTasks(
+          requestType,
+          businessUnits,
+        );
         setData(response);
       } catch (err: unknown) {
         setError(err instanceof Error ? err : new Error("Unknown error"));
@@ -33,7 +36,7 @@ export function useHumanDecisionTasks(
     };
 
     fetchData();
-  }, [requestType, headers, enabled]);
+  }, [requestType, businessUnits, enabled]);
 
   return { data, loading, error };
 }

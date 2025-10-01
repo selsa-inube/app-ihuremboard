@@ -10,6 +10,11 @@ import { capitalizeFullName } from "@utils/string";
 import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
 import { useEvaluateResponsibleOfTasks } from "@hooks/useEvaluateResponsibleOfTasks";
 import { useHeaders } from "@hooks/useHeaders";
+import { useHumanDecisionTasks } from "@hooks/useHumanDecisionTasks";
+import {
+  HumanDecision,
+  HumanDecisionTranslations,
+} from "@ptypes/humanResources.types";
 
 import { StyledFieldsetContainer } from "./styles";
 import { RequestSummary } from "./Components/RequestSummary";
@@ -40,7 +45,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       fullStaffName?: string;
       title?: string;
       status?: string;
-      statusOptions?: { value: string; label: string }[];
     };
   };
 
@@ -51,6 +55,9 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const requestNumberParam = state?.requestNumber ?? id ?? "";
   const { data: requestData, isLoading: isLoadingRequest } =
     useHumanResourceRequest(requestNumberParam);
+
+  const taskNameToUse =
+    requestData?.tasksToManageTheHumanResourcesRequests?.[0]?.taskName ?? "";
 
   const rawLabel =
     requestData?.humanResourceRequestDescription ?? state?.title ?? "";
@@ -101,6 +108,16 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     headers: resolvedHeaders ?? {},
     enabled: !!resolvedHeaders && !!requestData?.humanResourceRequestId,
   });
+
+  const {
+    data: decisionsData,
+    loading: loadingDecisions,
+    error: errorDecisions,
+  } = useHumanDecisionTasks(
+    taskNameToUse,
+    resolvedHeaders?.["X-Business-Unit"] ?? "",
+    !!resolvedHeaders && !!taskNameToUse,
+  );
 
   const firstGroup =
     responsibleData && responsibleData.length > 0 ? responsibleData[0] : null;
@@ -180,12 +197,19 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                   name="decision"
                   id="decision"
                   label="Decisión"
-                  placeholder="Seleccione una opción"
+                  placeholder={
+                    loadingDecisions
+                      ? "Cargando opciones..."
+                      : errorDecisions
+                        ? "Error al cargar"
+                        : "Seleccione una opción"
+                  }
                   options={
-                    state?.statusOptions?.map((opt) => ({
-                      id: opt.value,
-                      value: opt.value,
-                      label: opt.label,
+                    decisionsData?.decisions.map((opt) => ({
+                      id: opt,
+                      value: opt,
+                      label:
+                        HumanDecisionTranslations[opt as HumanDecision] ?? opt,
                     })) ?? []
                   }
                   value={decision}
