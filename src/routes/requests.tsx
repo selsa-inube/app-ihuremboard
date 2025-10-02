@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 
 import { Requests } from "@pages/requests";
-import { ApplicationProcess } from "@src/pages/requests/ApplicationProcess/applicationProcess.tsx";
+import { ApplicationProcess } from "@src/pages/requests/ApplicationProcess/applicationProcess";
 import { ErrorPage } from "@components/layout/ErrorPage";
 
 function RequestsRoutes() {

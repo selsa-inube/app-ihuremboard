@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useMediaQuery } from "@inubekit/inubekit";
 
-import { ApplicationProcessUI } from "./index";
 import { requestConfigs } from "@config/requests.config";
 import { ERequestType } from "@ptypes/humanResourcesRequest.types";
+
+import { ApplicationProcessUI } from "./index";
 
 function ApplicationProcess() {
   const { id } = useParams<{ id?: keyof typeof ERequestType }>();
