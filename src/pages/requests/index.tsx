@@ -5,7 +5,7 @@ import { RequestsUI } from "./interface";
 import { assignmentOptions, statusOptions } from "./config";
 import { IRequest, Status } from "./types";
 import { breadcrumbs } from "./config/nav.config";
-import { useHumanEmployeeResourceRequests } from "@src/hooks/useHumanEmployeeResourceRequests";
+import { useHumanEmployeeResourceRequests } from "@hooks/useHumanEmployeeResourceRequests";
 
 const useDebouncedSearch = (value: string, delay = 500) => {
   const [debouncedValue, setDebouncedValue] = useState(value);

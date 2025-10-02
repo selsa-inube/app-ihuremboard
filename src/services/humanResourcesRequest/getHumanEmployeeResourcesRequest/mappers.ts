@@ -4,7 +4,7 @@ import {
   HumanResourceRequestBlockingPerTask,
   TaskNameMapping,
 } from "@ptypes/humanResourcesRequest.types";
-import { HumanEmployeeResourceRequest } from "@src/types/humanEmployeeResourcesRequest.types";
+import { HumanEmployeeResourceRequest } from "@ptypes/humanEmployeeResourcesRequest.types";
 import { getValidEnumValue } from "@utils/enumValidator";
 
 const mapHumanEmployeeResourceRequestApiToEntity = (
