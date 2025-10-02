@@ -1,5 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { Stack, Text, Button } from "@inubekit/inubekit";
+import { spacing } from "@design/tokens/spacing";
 
 import { Fieldset } from ".";
 
@@ -34,7 +35,7 @@ const meta: Meta<typeof Fieldset> = {
 };
 
 const Example = () => (
-  <Stack direction="column" gap="16px">
+  <Stack direction="column" gap={spacing.s200}>
     <Text type="label" appearance="dark">
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum culpa
       neque ab! Ab, quibusdam magnam! Quod enim dolor blanditiis quos voluptatum
@@ -46,7 +47,7 @@ const Example = () => (
 );
 
 const SelectedExample = () => (
-  <Stack direction="column" gap="16px" padding="16px">
+  <Stack direction="column" gap={spacing.s200} padding={spacing.s200}>
     <Stack justifyContent="space-between">
       <Text appearance="dark" type="label" weight="bold">
         Monto máx.

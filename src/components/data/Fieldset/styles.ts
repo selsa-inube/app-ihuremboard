@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { inube } from "@inubekit/inubekit";
+import { spacing } from "@design/tokens/spacing";
 
 interface IStyledContainerFieldset {
   $isSelected: boolean;
@@ -21,12 +22,10 @@ export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
   cursor: ${({ $isClickable }) => ($isClickable ? "pointer" : "auto")};
   box-sizing: border-box;
   height: ${({ $height }) => $height};
-  border-radius: 8px;
+  border-radius: ${spacing.s100};
   border: 1px solid;
-  padding-top: ${({ $hasTable }) => !$hasTable && "16px"};
-  padding-bottom: ${({ $hasTable }) => !$hasTable && "16px"};
-  padding-right: ${({ $hasTable }) => !$hasTable && "8px"};
-  padding-left: ${({ $hasTable }) => !$hasTable && "8px"};
+  padding: ${({ $hasTable }) =>
+    !$hasTable ? `${spacing.s200} ${spacing.s100}` : "0"};
   aspect-ratio: ${({ $aspectRatio }) => $aspectRatio};
   background-color: ${({ theme, $isSelected }) =>
     !$isSelected
@@ -45,26 +44,27 @@ export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
     !$isMobile &&
     `
     &::-webkit-scrollbar {
-      width: 8px; 
-      border-radius: 8px;
+      width: ${spacing.s100}; 
+      border-radius: ${spacing.s100};
     }
 
     &::-webkit-scrollbar-thumb {
       background-color: ${
         theme?.palette?.neutral?.N30 || inube.palette.neutral.N30
       };
-      border-radius: 8px;
+      border-radius: ${spacing.s100};
     }
   `}
 `;
 
 export const StyledPrint = styled.div`
   display: flex;
-  gap: 8px;
+  gap: ${spacing.s100};
   @media print {
     display: none;
   }
 `;
+
 export const StyledMenuContainer = styled.div`
   position: relative;
   display: inline-block;
@@ -72,7 +72,7 @@ export const StyledMenuContainer = styled.div`
 
 export const StyledMenuDropdown = styled.div`
   position: absolute;
-  bottom: 30px;
+  bottom: ${spacing.s300};
   right: 0;
   z-index: 1000;
 `;

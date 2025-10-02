@@ -1,23 +1,19 @@
 import { useEffect, useState } from "react";
-import { IResponsible } from "@ptypes/humanResources.types";
+
+import { IEvaluateResponsibleOfTasks } from "@ptypes/humanResources.types";
 import { postEvaluateResponsibleOfTasks } from "@services/humanResources";
 
-interface UseEvaluateResponsibleOfTasksOptions {
+interface IEvaluateResponsibleOfTasksOptions {
   requestId: string;
   headers: Record<string, string>;
   enabled?: boolean;
-}
-
-interface IEvaluateResponsibleOfTasks {
-  namePosition: string;
-  responsible: IResponsible[];
 }
 
 export function useEvaluateResponsibleOfTasks({
   requestId,
   headers,
   enabled = true,
-}: UseEvaluateResponsibleOfTasksOptions) {
+}: IEvaluateResponsibleOfTasksOptions) {
   const [data, setData] = useState<IEvaluateResponsibleOfTasks[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);

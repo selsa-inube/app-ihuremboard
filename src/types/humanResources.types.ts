@@ -41,7 +41,7 @@ export enum HumanDecision {
   APPROVE_THE_REQUEST = "approve_the_request",
   REJECT_THE_REQUEST_AS_UNFEASIBLE = "reject_the_request_as_unfeasible",
   MAKE_THE_REQUEST_FEASIBLE = "make_the_request_feasible",
-  CANCEL_THE_REQUEST_AT_EMPLOYEES_REQUEST = "cancel_the_request_at_employee's_request",
+  CANCEL_THE_REQUEST_AT_EMPLOYEES_REQUEST = "cancel_the_request_at_employees_request",
   PAYMENT_COMPLETED = "payment_completed",
   PAYMENT_DECLINED = "payment_declined",
   CERTIFICATION_GENERATED = "certification_generated",

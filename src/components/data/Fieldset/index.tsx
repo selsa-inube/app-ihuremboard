@@ -7,36 +7,10 @@ import {
   StyledMenuContainer,
   StyledPrint,
 } from "./styles";
+import { FieldsetProps } from "./types";
 
-interface IOptionsButton {
-  title: string;
-  titleSistemValidation: string;
-  onClick?: () => void;
-  onClickSistemValidation?: () => void;
-}
-
-interface IFieldsetProps {
-  onSelectionChange?: () => void;
-  children: JSX.Element | JSX.Element[];
-  title?: string;
-  aspectRatio?: string;
-  heightFieldset?: string;
-  descriptionTitle?: string;
-  activeButton?: IOptionsButton;
-  disabledButton?: boolean;
-  hasTable?: boolean;
-  hasOverflow?: boolean;
-  isMobile?: boolean;
-  isClickable?: boolean;
-  selectedState?: boolean;
-  hasError?: boolean;
-  alignContent?: string;
-  borderColor?: string;
-}
-
-export const Fieldset = (props: IFieldsetProps) => {
+export const Fieldset = (props: FieldsetProps) => {
   const {
-    onSelectionChange,
     children,
     title,
     aspectRatio,
@@ -50,17 +24,17 @@ export const Fieldset = (props: IFieldsetProps) => {
     hasError = false,
     borderColor = "normal",
     alignContent,
+    onSelectionChange,
   } = props;
 
   const isMobile = useMediaQuery("(max-width:880px)");
 
   const [isSelected, setIsSelected] = useState(selectedState || false);
+
   const handleOnClick = () => {
     if (isClickable) {
       setIsSelected(!isSelected);
-      if (onSelectionChange) {
-        onSelectionChange();
-      }
+      onSelectionChange?.();
     }
   };
 

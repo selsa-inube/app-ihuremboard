@@ -1,10 +1,9 @@
 import styled from "styled-components";
 
-interface IFieldsetContainerProps {
+interface IStyledFieldsetContainer {
   $isMobile: boolean;
 }
 
-export const StyledFieldsetContainer = styled.div<IFieldsetContainerProps>`
+export const StyledFieldsetContainer = styled.div<IStyledFieldsetContainer>`
   width: ${({ $isMobile }) => ($isMobile ? "100%" : "50%")};
-  margin-top: -20px;
 `;
