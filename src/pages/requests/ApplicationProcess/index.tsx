@@ -1,59 +1,155 @@
-import { useParams } from "react-router-dom";
-import { useMediaQuery } from "@inubekit/inubekit";
+import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
 
-import { ApplicationProcessUI } from "./interface";
-import { requestConfigs } from "@config/requests.config";
-import { ERequestType } from "@ptypes/humanResourcesRequest.types";
+import { AppMenu } from "@components/layout/AppMenu";
+import { spacing } from "@design/tokens/spacing";
+import { Fieldset } from "@components/data/Fieldset";
+import { IRoute } from "@pages/requests/types";
+import {
+  HumanDecision,
+  HumanDecisionTranslations,
+} from "@ptypes/humanResources.types";
 
-function ApplicationProcess() {
-  const { id } = useParams<{ id?: keyof typeof ERequestType }>();
-  const isTablet = useMediaQuery("(max-width: 1100px)");
+import { RequestSummary } from "./Components/RequestSummary";
+import { ActionModal } from "./Components/Actions";
+import { StyledFieldsetContainer } from "./styles";
 
-  const safeId = String(id ?? "");
+import { useApplicationProcessLogic } from "./interface";
 
-  const config = id ? requestConfigs[id] : null;
+interface ApplicationProcessUIProps {
+  appName: string;
+  appRoute: IRoute[];
+  navigatePage: string;
+  description: string;
+  requestLabel: string;
+}
 
-  const description = id
-    ? (ERequestType[id] ?? "Descripción no disponible")
-    : "Descripción no disponible";
+function ApplicationProcessUI(props: ApplicationProcessUIProps) {
+  const { appRoute, navigatePage } = props;
 
-  const requestLabel = config?.label ?? "Solicitud";
+  const isMobile = useMediaQuery("(max-width: 1000px)");
 
-  const breadcrumbLabel =
-    requestLabel.toLowerCase() === "solicitud"
-      ? `Solicitud de ${description}`
-      : requestLabel;
-
-  const breadcrumbs = {
-    crumbs: [
-      { path: "/", label: "Inicio", id: "/", isActive: false },
-      {
-        path: "/requests",
-        label: isTablet ? "..." : "Solicitudes",
-        id: "/requests",
-        isActive: false,
-      },
-    ],
-    url: "/requests",
-  };
+  const {
+    id,
+    state,
+    decision,
+    setDecision,
+    showActions,
+    setShowActions,
+    requestData,
+    isLoadingRequest,
+    responsibleLabel,
+    loading,
+    error,
+    loadingDecisions,
+    errorDecisions,
+    decisionsData,
+    updatedAppRoute,
+    displayRequestLabel,
+    displayDescription,
+    handleDiscard,
+    handleExecute,
+    handleAttach,
+    handleSeeAttachments,
+    handleSend,
+  } = useApplicationProcessLogic(appRoute);
 
   return (
-    <ApplicationProcessUI
-      appName={breadcrumbLabel}
-      appRoute={[
-        ...breadcrumbs.crumbs,
-        {
-          path: `/requests/${safeId}`,
-          label: breadcrumbLabel,
-          id: `/requests/${safeId}`,
-          isActive: true,
-        },
-      ]}
-      navigatePage={breadcrumbs.url}
-      description={description}
-      requestLabel={requestLabel}
-    />
+    <AppMenu
+      appName={displayRequestLabel}
+      appRoute={updatedAppRoute}
+      navigatePage={navigatePage}
+      appDescription={displayDescription}
+    >
+      <Stack direction="column" gap={spacing.s200}>
+        {isMobile && showActions && (
+          <ActionModal
+            onExecute={handleExecute}
+            onDiscard={handleDiscard}
+            onAttach={handleAttach}
+            onSeeAttachments={handleSeeAttachments}
+            onClose={() => setShowActions(false)}
+            actionDescriptions={{
+              execute: "No puedes ejecutar esta acción ahora",
+              discard: "No puedes descartar esta acción ahora",
+              attach: "No puedes adjuntar archivos en este momento",
+              seeAttachments: "No puedes ver los adjuntos en este momento",
+            }}
+          />
+        )}
+        <Stack direction="column" gap={spacing.s0}>
+          <RequestSummary
+            requestNumber={
+              requestData?.humanResourceRequestNumber ??
+              state?.requestNumber ??
+              id
+            }
+            requestDate={
+              requestData?.humanResourceRequestDate ?? state?.requestDate
+            }
+            title={displayRequestLabel}
+            status={requestData?.humanResourceRequestStatus ?? state?.status}
+            fullStaffName={state?.fullStaffName ?? "Sin responsable"}
+            humanResourceRequestData={requestData?.humanResourceRequestData}
+            requestType={requestData?.humanResourceRequestType}
+            isLoading={isLoadingRequest}
+          />
+
+          <StyledFieldsetContainer $isMobile={isMobile}>
+            <Fieldset
+              title="Por hacer"
+              descriptionTitle={
+                loading
+                  ? "Cargando..."
+                  : error
+                    ? "Error al cargar"
+                    : responsibleLabel
+              }
+            >
+              <Stack direction="column" gap={spacing.s150}>
+                <Text>Verificar viabilidad de la solicitud.</Text>
+
+                <Stack alignItems="flex-end" gap={spacing.s150}>
+                  <Select
+                    name="decision"
+                    id="decision"
+                    label="Decisión"
+                    placeholder={
+                      loadingDecisions
+                        ? "Cargando opciones..."
+                        : errorDecisions
+                          ? "Error al cargar"
+                          : "Seleccione una opción"
+                    }
+                    options={
+                      decisionsData?.decisions.map((opt) => ({
+                        id: opt,
+                        value: opt,
+                        label:
+                          HumanDecisionTranslations[opt as HumanDecision] ??
+                          opt,
+                      })) ?? []
+                    }
+                    value={decision}
+                    onChange={(_, value) => setDecision(value)}
+                    size="wide"
+                    fullwidth
+                  />
+
+                  <Button
+                    appearance="primary"
+                    variant="filled"
+                    onClick={handleSend}
+                  >
+                    Enviar
+                  </Button>
+                </Stack>
+              </Stack>
+            </Fieldset>
+          </StyledFieldsetContainer>
+        </Stack>
+      </Stack>
+    </AppMenu>
   );
 }
 
-export { ApplicationProcess };
+export { ApplicationProcessUI };
