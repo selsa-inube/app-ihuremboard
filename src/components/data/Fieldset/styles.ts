@@ -25,8 +25,7 @@ export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
   height: ${({ $height }) => $height};
   border-radius: ${spacing.s100};
   border: 1px solid;
-  padding: ${({ $hasTable }) =>
-    !$hasTable ? `${spacing.s200} ${spacing.s100}` : "0"};
+  padding: ${spacing.s200};
   aspect-ratio: ${({ $aspectRatio }) => $aspectRatio};
   background-color: ${({ theme, $isSelected }) =>
     !$isSelected
