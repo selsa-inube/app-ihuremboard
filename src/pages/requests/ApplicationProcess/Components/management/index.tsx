@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { MdOutlineSend, MdAttachFile, MdInfoOutline } from "react-icons/md";
+import { MdOutlineSend, MdAttachFile } from "react-icons/md";
 import { Stack, Icon, Textfield } from "@inubekit/inubekit";
 
 import { Fieldset } from "@components/data/Fieldset";
@@ -18,16 +18,18 @@ export interface ITraceabilityItem {
 interface IManagementProps {
   isMobile: boolean;
   traceabilityData: ITraceabilityItem[];
+  currentUserName?: string;
 }
 
 export const ManagementUI = ({
   isMobile,
   traceabilityData,
+  currentUserName = "",
 }: IManagementProps) => {
   const [newMessage, setNewMessage] = useState("");
   const [localMessages, setLocalMessages] = useState<
     {
-      id: number;
+      id: number | string;
       type: "sent" | "received" | "system";
       text: string;
       date: string;
@@ -38,15 +40,21 @@ export const ManagementUI = ({
 
   const combinedMessages = [
     ...(traceabilityData && traceabilityData.length > 0
-      ? traceabilityData.map((item) => ({
-          id: Number(item.id),
-          type: "system" as const,
-          text: `[${item.user}] ${item.action}${item.comments ? ` - ${item.comments}` : ""}`,
-          date: item.date,
-        }))
+      ? traceabilityData.map((item) => {
+          const isFromCurrentUser =
+            item.user?.toLowerCase().trim() ===
+            currentUserName.toLowerCase().trim();
+
+          return {
+            id: item.id,
+            type: isFromCurrentUser ? ("sent" as const) : ("received" as const),
+            text: item.comments ?? "",
+            date: item.date,
+          };
+        })
       : [
           {
-            id: 0,
+            id: "0",
             type: "system" as const,
             text: "No hay trazabilidad disponible para esta solicitud.",
             date: new Date().toISOString(),
@@ -67,7 +75,7 @@ export const ManagementUI = ({
       ...prev,
       {
         id: prev.length + 1000,
-        type: "sent",
+        type: "sent" as const,
         text: newMessage,
         date: new Date().toISOString(),
       },
@@ -89,13 +97,16 @@ export const ManagementUI = ({
               type={msg.type}
               timestamp={msg.date}
               message={msg.text}
-              icon={<MdInfoOutline size={14} />}
-              onIconClick={() => console.log("Detalle de mensaje:", msg)}
             />
           ))}
         </ChatContent>
 
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSendMessage();
+          }}
+        >
           <Stack
             alignItems="center"
             direction="row"
@@ -107,7 +118,6 @@ export const ManagementUI = ({
               cursorHover
               size="24px"
               icon={<MdAttachFile />}
-              onClick={() => console.log("Abrir adjuntos")}
             />
             <Textfield
               id="text"

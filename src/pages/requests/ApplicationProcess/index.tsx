@@ -1,6 +1,5 @@
 import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
 
-import { ManagementUI, ITraceabilityItem } from "./Components/management";
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
 import { Fieldset } from "@components/data/Fieldset";
@@ -10,10 +9,10 @@ import {
   HumanDecisionTranslations,
 } from "@ptypes/humanResources.types";
 
+import { ManagementUI, ITraceabilityItem } from "./Components/management";
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
 import { StyledFieldsetContainer } from "./styles";
-
 import { useApplicationProcessLogic } from "./interface";
 
 interface ApplicationProcessUIProps {
@@ -157,16 +156,18 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                 isMobile={isMobile}
                 traceabilityData={(
                   requestData?.humanResourceRequestTraceabilities ?? []
-                ).map((t): ITraceabilityItem => {
-                  console.log("🔹 Trace item crudo:", t);
-                  return {
+                ).map(
+                  (t): ITraceabilityItem => ({
                     id: t.traceabilityId,
-                    action: t.actionExecuted,
+                    action:
+                      HumanDecisionTranslations[
+                        t.actionExecuted?.toLowerCase() as HumanDecision
+                      ] ?? t.actionExecuted,
                     date: t.executionDate,
                     user: t.userWhoExecutedAction,
                     comments: t.description,
-                  };
-                })}
+                  }),
+                )}
               />
             </StyledFieldsetContainer>
           </Stack>
