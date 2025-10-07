@@ -19,7 +19,7 @@ const getHumanEmployeeResourceRequests = async (
 
       const queryParameters = new URLSearchParams({
         page: "1",
-        per_page: "1000",
+        per_page: "374",
         sort: "desc.humanResourceRequestDate",
       });
 
