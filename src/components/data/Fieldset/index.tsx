@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { MdAdd, MdOutlineMoreVert } from "react-icons/md";
 import { Stack, Text, useMediaQuery, Button, Icon } from "@inubekit/inubekit";
-
 import { spacing } from "@design/tokens/spacing";
 
 import {
@@ -18,6 +17,7 @@ export interface FieldsetProps {
   aspectRatio?: string;
   heightFieldset?: string;
   activeButton?: IOptionsButton;
+  extraButtons?: React.ReactNode[];
   hasTable?: boolean;
   hasOverflow?: boolean;
   isClickable?: boolean;
@@ -36,6 +36,7 @@ export function Fieldset(props: FieldsetProps) {
     heightFieldset,
     descriptionTitle,
     activeButton,
+    extraButtons = [],
     hasTable = false,
     hasOverflow = false,
     isClickable = false,
@@ -47,7 +48,6 @@ export function Fieldset(props: FieldsetProps) {
   } = props;
 
   const isMobile = useMediaQuery("(max-width:880px)");
-
   const [isSelected, setIsSelected] = useState(selectedState || false);
 
   const handleOnClick = () => {
@@ -64,7 +64,7 @@ export function Fieldset(props: FieldsetProps) {
       width="-webkit-fill-available"
       height={!isMobile ? heightFieldset : "auto"}
     >
-      <Stack justifyContent={activeButton && "space-between"}>
+      <Stack justifyContent="space-between" alignItems="center">
         <Stack gap={isMobile ? spacing.s150 : spacing.s100}>
           <Text type="title" size={isMobile ? "medium" : "large"}>
             {title}
@@ -80,40 +80,49 @@ export function Fieldset(props: FieldsetProps) {
             </Text>
           )}
         </Stack>
-        {activeButton && (
-          <Stack>
-            {isMobile ? (
-              <StyledMenuContainer>
-                <Icon
-                  icon={<MdOutlineMoreVert />}
-                  appearance="primary"
-                  size="24px"
-                  cursorHover
-                />
-              </StyledMenuContainer>
-            ) : (
-              <StyledPrint>
-                <Button
-                  iconBefore={<MdAdd />}
-                  spacing="compact"
-                  onClick={activeButton.onClick}
-                  variant="outlined"
-                >
-                  {activeButton.title}
-                </Button>
-                <Button
-                  iconBefore={<MdAdd />}
-                  spacing="compact"
-                  onClick={activeButton.onClickSistemValidation}
-                  variant="outlined"
-                >
-                  {activeButton.titleSistemValidation}
-                </Button>
-              </StyledPrint>
-            )}
-          </Stack>
-        )}
+
+        <Stack gap={spacing.s100} alignItems="center">
+          {!isMobile ? (
+            <>
+              {activeButton && (
+                <StyledPrint>
+                  <Button
+                    iconBefore={<MdAdd />}
+                    spacing="compact"
+                    onClick={activeButton.onClick}
+                    variant="outlined"
+                  >
+                    {activeButton.title}
+                  </Button>
+                  <Button
+                    iconBefore={<MdAdd />}
+                    spacing="compact"
+                    onClick={activeButton.onClickSistemValidation}
+                    variant="outlined"
+                  >
+                    {activeButton.titleSistemValidation}
+                  </Button>
+                </StyledPrint>
+              )}
+
+              {extraButtons.length > 0 &&
+                extraButtons.map((btn, index) => (
+                  <Stack key={index}>{btn}</Stack>
+                ))}
+            </>
+          ) : (
+            <StyledMenuContainer>
+              <Icon
+                icon={<MdOutlineMoreVert />}
+                appearance="primary"
+                size="24px"
+                cursorHover
+              />
+            </StyledMenuContainer>
+          )}
+        </Stack>
       </Stack>
+
       <StyledContainerFieldset
         $aspectRatio={aspectRatio}
         $isMobile={isMobile}

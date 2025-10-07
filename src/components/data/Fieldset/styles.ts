@@ -22,6 +22,7 @@ export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
     $alignContent ?? ($hasError ? "center" : "flex-start")};
   cursor: ${({ $isClickable }) => ($isClickable ? "pointer" : "auto")};
   box-sizing: border-box;
+  height: ${({ $height }) => $height};
   border-radius: ${spacing.s100};
   border: 1px solid;
   padding: ${({ $hasTable }) =>
