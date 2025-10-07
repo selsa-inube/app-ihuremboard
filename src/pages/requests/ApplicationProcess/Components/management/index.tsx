@@ -86,7 +86,7 @@ export const ManagementUI = ({
   return (
     <Fieldset
       title="Gestión de Solicitud"
-      heightFieldset="340px"
+      heightFieldset="472px"
       aspectRatio={isMobile ? "auto" : "1"}
     >
       <Stack direction="column" height={!isMobile ? "100%" : "292px"}>

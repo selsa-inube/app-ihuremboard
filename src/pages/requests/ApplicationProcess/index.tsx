@@ -1,5 +1,4 @@
 import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
-
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
 import { Fieldset } from "@components/data/Fieldset";
@@ -76,6 +75,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
             }}
           />
         )}
+
         <Stack direction="column" gap={spacing.s0}>
           <RequestSummary
             requestNumber={
@@ -151,6 +151,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                 </Stack>
               </Fieldset>
             </StyledFieldsetContainer>
+
             <StyledFieldsetContainer $isMobile={isMobile}>
               <ManagementUI
                 isMobile={isMobile}
