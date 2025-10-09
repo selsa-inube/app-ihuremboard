@@ -47,11 +47,27 @@ export const StyledContainer = styled.div<IStyledContainer>`
   border-radius: 8px;
   max-width: 100%;
   position: relative;
+  overflow-y: auto;
   overflow-x: ${({ $isTablet }) => ($isTablet ? "auto" : "hidden")};
   border: ${({ theme, $borderTable }) =>
     $borderTable &&
     `2px solid ${theme?.palette?.neutral?.N40 || inube.palette.neutral.N40}`};
-  overflow: visible;
+  max-height: 100%;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) =>
+      theme?.palette?.neutral?.N30 || inube.palette.neutral.N30};
+    border-radius: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${({ theme }) =>
+      theme?.palette?.neutral?.N10 || inube.palette.neutral.N10};
+  }
 `;
 
 export const StyledThactions = styled.th<IStyledThactions>`

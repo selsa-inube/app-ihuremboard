@@ -6,22 +6,26 @@ import {
   Select,
   Tag,
 } from "@inubekit/inubekit";
+import React from "react";
 import {
   MdAddCircleOutline,
   MdOutlineCheckCircle,
   MdOutlineVisibility,
-  MdOutlineLink,
 } from "react-icons/md";
 
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
 import { Fieldset } from "@components/data/Fieldset";
 import { TableBoard } from "@components/data/TableBoard";
+import CheckIcon from "@assets/images/CheckIcon.svg";
+import CloseIcon from "@assets/images/CloseIcon.svg";
+import HelpIcon from "@assets/images/HelpIcon.svg";
 import type {
   IEntries as ITableEntries,
   ITitle,
   IAction,
 } from "@components/data/TableBoard/types";
+import { IEntries } from "@components/data/TableBoard/types";
 import { IRoute } from "@pages/requests/types";
 import {
   HumanDecision,
@@ -31,7 +35,7 @@ import {
 import { ManagementUI, ITraceabilityItem } from "./Components/management";
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
-import { StyledFieldsetContainer } from "./styles";
+import { StyledFieldsetContainer, StyledIconHowToReg } from "./styles";
 import { useApplicationProcessLogic } from "./interface";
 
 interface ApplicationProcessUIProps {
@@ -42,40 +46,54 @@ interface ApplicationProcessUIProps {
   requestLabel: string;
 }
 
-// --- Mock de datos --- //
-const systemValidations: ITableEntries[] = [
-  {
-    id: "1",
-    requirement: "Que el asociado sea activo",
-    tag: (
-      <Stack padding="s0 s100 s0 s0">
-        <Tag label="Cumple" appearance="success" />
-      </Stack>
-    ),
-  },
-  {
-    id: "2",
-    requirement: "Que esté al día con las obligaciones",
-    tag: (
-      <Stack padding="s0 s100 s0 s0">
-        <Tag label="Cumple" appearance="success" />
-      </Stack>
-    ),
-  },
-  {
-    id: "3",
-    requirement: "Que tenga más de 30 años",
-    tag: (
-      <Stack padding="s0 s100 s0 s0">
-        <Tag label="Sin Evaluar" appearance="danger" />
-      </Stack>
-    ),
-  },
-];
+const getValidationIcon = (label: string) => {
+  switch (label) {
+    case "Cumple":
+      return <img src={CheckIcon} alt="Cumple" width={20} height={20} />;
+    case "No Cumple":
+      return <img src={CloseIcon} alt="No Cumple" width={20} height={20} />;
+    case "Sin Evaluar":
+    default:
+      return <img src={HelpIcon} alt="Sin Evaluar" width={20} height={20} />;
+  }
+};
+
+const simulateData = false;
+
+const systemValidations: ITableEntries[] = simulateData
+  ? [
+      {
+        id: "1",
+        requirement: "Que el asociado sea activo",
+        tag: (
+          <Stack padding="s0 s100 s0 s0">
+            <Tag label="Cumple" appearance="success" />
+          </Stack>
+        ),
+      },
+      {
+        id: "2",
+        requirement: "Que esté al día con las obligaciones",
+        tag: (
+          <Stack padding="s0 s100 s0 s0">
+            <Tag label="Cumple" appearance="success" />
+          </Stack>
+        ),
+      },
+      {
+        id: "3",
+        requirement: "Que tenga más de 30 años",
+        tag: (
+          <Stack padding="s0 s100 s0 s0">
+            <Tag label="Sin Evaluar" appearance="danger" />
+          </Stack>
+        ),
+      },
+    ]
+  : [];
 
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const { appRoute, navigatePage } = props;
-
   const isMobile = useMediaQuery("(max-width: 1000px)");
 
   const {
@@ -125,15 +143,51 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     {
       id: "enlace",
       actionName: "",
-      content: () => (
-        <Stack>
-          <MdOutlineLink size={20} cursor="pointer" />
-        </Stack>
-      ),
+      content: () => {
+        const canRegister = Math.random() > 0.5;
+        return (
+          <Stack>
+            <StyledIconHowToReg
+              size={20}
+              $isEnabled={canRegister}
+              onClick={
+                canRegister ? () => console.log("Clic en registrar") : undefined
+              }
+            />
+          </Stack>
+        );
+      },
     },
   ];
 
-  // --- Títulos de tabla --- //
+  const getActionsMobileIconStatus = (): IAction[] => [
+    {
+      id: "status",
+      actionName: "Estado",
+      content: (row: IEntries) => {
+        let label = "Sin Evaluar";
+
+        if (typeof row?.status === "string") {
+          label = row.status;
+        } else if (React.isValidElement(row?.tag)) {
+          const tagChild = row.tag.props.children;
+          if (React.isValidElement(tagChild)) {
+            const childProps = tagChild.props as { label?: string };
+            if (childProps.label) {
+              label = childProps.label;
+            }
+          }
+        }
+
+        return (
+          <Stack direction="column" alignItems="center" justifyContent="center">
+            {getValidationIcon(label)}
+          </Stack>
+        );
+      },
+    },
+  ];
+
   const titles: ITitle[] = [
     { id: "requirement", titleName: "Requisito", priority: 1 },
     { id: "tag", titleName: "", priority: 2 },
@@ -163,7 +217,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           />
         )}
 
-        {/* --- Información principal --- */}
         <RequestSummary
           requestNumber={
             requestData?.humanResourceRequestNumber ??
@@ -237,7 +290,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
               </Stack>
             </Fieldset>
 
-            <Stack margin="16px 0 0 0">
+            <Stack margin={`${spacing.s200} 0 0 0`}>
               <Fieldset
                 title="Requisitos"
                 heightFieldset="304px"
@@ -250,24 +303,36 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                     console.log("Clic en Validación del sistema"),
                 }}
               >
-                <TableBoard
-                  id="validaciones"
-                  titles={titles}
-                  entries={systemValidations}
-                  actions={getActionsMobileIcon()}
-                  actionMobile={[]}
-                  actionMobileIcon={getActionsMobileIcon()}
-                  appearanceTable={{
-                    efectzebra: true,
-                    borderTable: true,
-                    title: "primary",
-                    isStyleMobile: true,
-                  }}
-                  infoItems={infoItems}
-                />
+                {systemValidations.length > 0 ? (
+                  <TableBoard
+                    id="validaciones"
+                    titles={titles}
+                    entries={systemValidations}
+                    actions={getActionsMobileIcon()}
+                    actionMobile={getActionsMobileIcon()}
+                    actionMobileIcon={getActionsMobileIconStatus()}
+                    appearanceTable={{
+                      efectzebra: true,
+                      borderTable: true,
+                      title: "primary",
+                      isStyleMobile: true,
+                    }}
+                    infoItems={infoItems}
+                    isFirstTable={true}
+                  />
+                ) : (
+                  <Stack
+                    justifyContent="center"
+                    alignItems="center"
+                    padding="s300"
+                  >
+                    <Text appearance="dark">No hay requisitos disponibles</Text>
+                  </Stack>
+                )}
               </Fieldset>
             </Stack>
           </StyledFieldsetContainer>
+
           <StyledFieldsetContainer $isMobile={isMobile}>
             <ManagementUI
               isMobile={isMobile}
