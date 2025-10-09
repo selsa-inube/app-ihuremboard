@@ -47,7 +47,6 @@ export function Fieldset(props: FieldsetProps) {
   } = props;
 
   const isMobile = useMediaQuery("(max-width:880px)");
-
   const [isSelected, setIsSelected] = useState(selectedState || false);
 
   const handleOnClick = () => {
@@ -80,6 +79,7 @@ export function Fieldset(props: FieldsetProps) {
             </Text>
           )}
         </Stack>
+
         {activeButton && (
           <Stack>
             {isMobile ? (
@@ -114,6 +114,7 @@ export function Fieldset(props: FieldsetProps) {
           </Stack>
         )}
       </Stack>
+
       <StyledContainerFieldset
         $aspectRatio={aspectRatio}
         $isMobile={isMobile}
