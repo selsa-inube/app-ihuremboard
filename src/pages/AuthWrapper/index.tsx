@@ -28,6 +28,7 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
       iAuthUrl={environment.IAUTH_URL}
       clientId={decrypt(authConfig.clientId)}
       clientSecret={decrypt(authConfig.clientSecret)}
+      serviceUrl={environment.IAUTH_SERVICE_URL}
     >
       {children}
     </IAuthProvider>
