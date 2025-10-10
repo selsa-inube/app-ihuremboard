@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { inube } from "@inubekit/inubekit";
-
 import { spacing } from "@design/tokens/spacing";
 
 interface IStyledContainerFieldset {
@@ -25,7 +24,8 @@ export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
   height: ${({ $height }) => $height};
   border-radius: ${spacing.s100};
   border: 1px solid;
-  padding: ${spacing.s200};
+  padding: ${({ $hasTable }) =>
+    !$hasTable ? `${spacing.s200} ${spacing.s100}` : "0"};
   aspect-ratio: ${({ $aspectRatio }) => $aspectRatio};
   background-color: ${({ theme, $isSelected }) =>
     !$isSelected
@@ -60,6 +60,7 @@ export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
 export const StyledPrint = styled.div`
   display: flex;
   gap: ${spacing.s100};
+
   @media print {
     display: none;
   }
