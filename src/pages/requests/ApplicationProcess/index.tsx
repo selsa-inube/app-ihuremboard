@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
 
+import { TextAreaModal } from "@components/modals/TextAreaModal";
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
 import { Fieldset } from "@components/data/Fieldset";
@@ -12,7 +14,6 @@ import {
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
 import { StyledFieldsetContainer } from "./styles";
-
 import { useApplicationProcessLogic } from "./interface";
 
 interface ApplicationProcessUIProps {
@@ -53,6 +54,8 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     handleSend,
   } = useApplicationProcessLogic(appRoute);
 
+  const [showTextAreaModal, setShowTextAreaModal] = useState(false);
+
   return (
     <AppMenu
       appName={displayRequestLabel}
@@ -76,6 +79,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
             }}
           />
         )}
+
         <Stack direction="column" gap={spacing.s0}>
           <RequestSummary
             requestNumber={
@@ -134,11 +138,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                     size="wide"
                     fullwidth
                   />
-
                   <Button
                     appearance="primary"
                     variant="filled"
-                    onClick={handleSend}
+                    onClick={() => setShowTextAreaModal(true)}
                   >
                     Enviar
                   </Button>
@@ -148,6 +151,21 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           </StyledFieldsetContainer>
         </Stack>
       </Stack>
+      {showTextAreaModal && (
+        <TextAreaModal
+          title="Agregar observaciones"
+          buttonText="Confirmar"
+          inputLabel="Observaciones"
+          inputPlaceholder="Escribe tus comentarios..."
+          description="Por favor, escribe tus observaciones antes de enviar la solicitud."
+          onSubmit={(values) => {
+            console.log("Texto enviado:", values.textarea);
+            handleSend();
+          }}
+          onCloseModal={() => setShowTextAreaModal(false)}
+          onSecondaryButtonClick={() => setShowTextAreaModal(false)}
+        />
+      )}
     </AppMenu>
   );
 }
