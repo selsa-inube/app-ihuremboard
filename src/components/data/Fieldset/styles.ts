@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { inube } from "@inubekit/inubekit";
-
 import { spacing } from "@design/tokens/spacing";
 
 interface IStyledContainerFieldset {
@@ -61,6 +60,7 @@ export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
 export const StyledPrint = styled.div`
   display: flex;
   gap: ${spacing.s100};
+
   @media print {
     display: none;
   }
