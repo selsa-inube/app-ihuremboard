@@ -15,11 +15,8 @@ import { MdClear } from "react-icons/md";
 
 import { spacing } from "@design/tokens/spacing";
 
+import { FormValues } from "./types";
 import { StyledModal, StyledContainerClose } from "./styles";
-
-interface FormValues {
-  textarea: string;
-}
 
 export interface TextAreaModalProps {
   title: string;
@@ -80,7 +77,7 @@ export function TextAreaModal(props: TextAreaModalProps) {
             {title}
           </Text>
           <StyledContainerClose onClick={onCloseModal}>
-            <Stack alignItems="center" gap="8px">
+            <Stack alignItems="center" gap={spacing.s100}>
               <Text>Cerrar</Text>
               <Icon
                 icon={<MdClear />}
@@ -131,7 +128,6 @@ export function TextAreaModal(props: TextAreaModalProps) {
                 gap={spacing.s250}
               >
                 <Button
-                  type="button"
                   variant="outlined"
                   appearance="gray"
                   onClick={() => {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
+
 import { TextAreaModal } from "@components/modals/TextAreaModal";
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
