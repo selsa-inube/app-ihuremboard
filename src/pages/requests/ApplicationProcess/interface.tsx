@@ -1,5 +1,5 @@
 import { useParams, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { IRoute } from "@components/layout/AppMenu/types";
 import { requestConfigs } from "@config/requests.config";
@@ -8,6 +8,8 @@ import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
 import { useEvaluateResponsibleOfTasks } from "@hooks/useEvaluateResponsibleOfTasks";
 import { useHeaders } from "@hooks/useHeaders";
 import { useHumanDecisionTasks } from "@hooks/useHumanDecisionTasks";
+import { useUpdateHumanResourceRequest } from "@hooks/useUpdateHumanResourceRequest";
+import { useErrorFlag } from "@hooks/useErrorFlag";
 
 export interface ApplicationProcessUIProps {
   appName: string;
@@ -115,11 +117,58 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
           `${firstGroup.responsible[0].names.trim()} ${firstGroup.responsible[0].surnames.trim()}`,
         );
 
+  const {
+    updateRequest,
+    loading: loadingUpdate,
+    error: errorUpdate,
+  } = useUpdateHumanResourceRequest();
+
+  useErrorFlag({
+    flagShown: !!errorUpdate,
+    message: errorUpdate ?? undefined,
+  });
+
+  const handleSend = useCallback(async () => {
+    if (!decision) {
+      useErrorFlag({
+        flagShown: true,
+        message: "Debes seleccionar una decisión antes de enviar",
+      });
+      return;
+    }
+
+    if (!requestData?.humanResourceRequestId) {
+      useErrorFlag({
+        flagShown: true,
+        message: "No se encontró el ID de la solicitud",
+      });
+      return;
+    }
+
+    try {
+      await updateRequest(
+        requestData.humanResourceRequestId,
+        decision,
+        "Decisión tomada desde el módulo de aplicación",
+        responsibleLabel ?? "Usuario desconocido",
+        resolvedHeaders?.["X-Business-Unit"],
+      );
+      setShowActions(false);
+    } catch (err) {
+      useErrorFlag({
+        flagShown: true,
+        message:
+          err instanceof Error
+            ? err.message
+            : "Ocurrió un error al enviar la solicitud",
+      });
+    }
+  }, [decision, requestData, responsibleLabel, resolvedHeaders, updateRequest]);
+
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
   const handleAttach = () => console.log("Adjuntar archivos");
   const handleSeeAttachments = () => console.log("Ver adjuntos");
-  const handleSend = () => console.log("Decisión seleccionada:", decision);
 
   return {
     id,
@@ -144,5 +193,6 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     handleAttach,
     handleSeeAttachments,
     handleSend,
+    loadingUpdate,
   };
 }

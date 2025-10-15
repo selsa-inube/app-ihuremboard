@@ -50,6 +50,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     handleAttach,
     handleSeeAttachments,
     handleSend,
+    loadingUpdate,
   } = useApplicationProcessLogic(appRoute);
 
   return (
@@ -139,13 +140,15 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                       size="wide"
                       fullwidth
                     />
-
                     <Button
                       appearance="primary"
                       variant="filled"
-                      onClick={handleSend}
+                      onClick={() => {
+                        void handleSend();
+                      }}
+                      disabled={loadingUpdate}
                     >
-                      Enviar
+                      {loadingUpdate ? "Enviando..." : "Enviar"}
                     </Button>
                   </Stack>
                 </Stack>
