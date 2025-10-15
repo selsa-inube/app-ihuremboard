@@ -17,15 +17,15 @@ const StyledContainer = styled.div`
 `;
 
 const StyledUl = styled.ul`
-  margin: 0px;
-  padding: 0px;
+  margin: ${spacing.s0};
+  padding: ${spacing.s0};
 `;
 
 const StyledLi = styled.li<IStyledLi>`
   list-style: none;
   display: flex;
   align-items: center;
-  padding: 7px 35px 7px 13px;
+  padding: ${spacing.s075} ${spacing.s450} ${spacing.s075} ${spacing.s150};
   gap: ${spacing.s050};
   cursor: pointer;
 `;
