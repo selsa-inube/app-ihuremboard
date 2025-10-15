@@ -1,11 +1,10 @@
 import { useState, useCallback } from "react";
+
 import { updateHumanResourceRequest } from "@services/humanResources/updateHumanResourceRequest";
-// 👇 Importamos solo como tipo, así evitamos cualquier colisión de tiempo de ejecución
 import type { IHumanResourceRequestResponse } from "@services/humanResources/updateHumanResourceRequest/types";
 import { useHeaders } from "@hooks/useHeaders";
 import { useErrorFlag } from "@hooks/useErrorFlag";
 
-// 🧩 Creamos un tipo seguro que nunca se infiera como any
 type HumanResourceResponseSafe = {
   [K in keyof IHumanResourceRequestResponse]: IHumanResourceRequestResponse[K];
 };
@@ -27,8 +26,6 @@ export const useUpdateHumanResourceRequest =
   (): UseUpdateHumanResourceRequestResult => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-
-    // ✅ El tipo mapeado asegura que ESLint y TS no lo interpreten como any
     const [data, setData] = useState<HumanResourceResponseSafe | null>(null);
 
     const { getHeaders } = useHeaders();
@@ -58,8 +55,6 @@ export const useUpdateHumanResourceRequest =
             userWhoExecutedAction,
             bu,
           );
-
-          // ✅ Forzamos el tipo a la interfaz mapeada (nunca any)
           setData(response as HumanResourceResponseSafe);
         } catch (err: unknown) {
           const errorMessage =
