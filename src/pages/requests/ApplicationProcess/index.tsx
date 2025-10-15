@@ -1,11 +1,4 @@
-import {
-  Stack,
-  Text,
-  useMediaQuery,
-  Button,
-  Select,
-  Tag,
-} from "@inubekit/inubekit";
+import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
 import React from "react";
 import {
   MdAddCircleOutline,
@@ -20,12 +13,11 @@ import { TableBoard } from "@components/data/TableBoard";
 import CheckIcon from "@assets/images/CheckIcon.svg";
 import CloseIcon from "@assets/images/CloseIcon.svg";
 import HelpIcon from "@assets/images/HelpIcon.svg";
-import type {
-  IEntries as ITableEntries,
-  ITitle,
-  IAction,
-} from "@components/data/TableBoard/types";
-import { IEntries } from "@components/data/TableBoard/types";
+import {
+  titles as tableTitles,
+  requirementsMock,
+} from "@mocks/TableBoard/requirements.mock";
+import { IAction } from "@components/data/TableBoard/types";
 import { IRoute } from "@pages/requests/types";
 import {
   HumanDecision,
@@ -37,6 +29,7 @@ import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
 import { StyledFieldsetContainer, StyledIconHowToReg } from "./styles";
 import { useApplicationProcessLogic } from "./interface";
+import { ITableRow } from "./types";
 
 interface ApplicationProcessUIProps {
   appName: string;
@@ -52,45 +45,10 @@ const getValidationIcon = (label: string) => {
       return <img src={CheckIcon} alt="Cumple" width={20} height={20} />;
     case "No Cumple":
       return <img src={CloseIcon} alt="No Cumple" width={20} height={20} />;
-    case "Sin Evaluar":
     default:
       return <img src={HelpIcon} alt="Sin Evaluar" width={20} height={20} />;
   }
 };
-
-const simulateData = false;
-
-const systemValidations: ITableEntries[] = simulateData
-  ? [
-      {
-        id: "1",
-        requirement: "Que el asociado sea activo",
-        tag: (
-          <Stack padding="s0 s100 s0 s0">
-            <Tag label="Cumple" appearance="success" />
-          </Stack>
-        ),
-      },
-      {
-        id: "2",
-        requirement: "Que esté al día con las obligaciones",
-        tag: (
-          <Stack padding="s0 s100 s0 s0">
-            <Tag label="Cumple" appearance="success" />
-          </Stack>
-        ),
-      },
-      {
-        id: "3",
-        requirement: "Que tenga más de 30 años",
-        tag: (
-          <Stack padding="s0 s100 s0 s0">
-            <Tag label="Sin Evaluar" appearance="danger" />
-          </Stack>
-        ),
-      },
-    ]
-  : [];
 
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const { appRoute, navigatePage } = props;
@@ -134,16 +92,22 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     {
       id: "ver",
       actionName: "",
-      content: () => (
-        <Stack>
-          <MdOutlineVisibility size={20} cursor="pointer" />
-        </Stack>
-      ),
+      content: (row: ITableRow) => {
+        if (row.isSubTitle) return null;
+
+        return (
+          <Stack>
+            <MdOutlineVisibility size={20} cursor="pointer" />
+          </Stack>
+        );
+      },
     },
     {
       id: "enlace",
       actionName: "",
-      content: () => {
+      content: (row: ITableRow) => {
+        if (row.isSubTitle) return null;
+
         const canRegister = Math.random() > 0.5;
         return (
           <Stack>
@@ -164,20 +128,13 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     {
       id: "status",
       actionName: "Estado",
-      content: (row: IEntries) => {
-        let label = "Sin Evaluar";
+      content: (row: ITableRow) => {
+        if (row.isSubTitle) return null;
 
-        if (typeof row?.status === "string") {
-          label = row.status;
-        } else if (React.isValidElement(row?.tag)) {
-          const tagChild = row.tag.props.children;
-          if (React.isValidElement(tagChild)) {
-            const childProps = tagChild.props as { label?: string };
-            if (childProps.label) {
-              label = childProps.label;
-            }
-          }
-        }
+        let label = "Sin Evaluar";
+        if (typeof row?.status === "string") label = row.status;
+        else if (React.isValidElement(row?.tag))
+          label = row.tag.props.label ?? label;
 
         return (
           <Stack direction="column" alignItems="center" justifyContent="center">
@@ -188,10 +145,8 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     },
   ];
 
-  const titles: ITitle[] = [
-    { id: "requirement", titleName: "Requisito", priority: 1 },
-    { id: "tag", titleName: "", priority: 2 },
-  ];
+  const showRequirements = false;
+  const requirementsToShow = showRequirements ? requirementsMock : [];
 
   return (
     <AppMenu
@@ -299,16 +254,16 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                 activeButton={{
                   title: "Validación humana",
                   titleSistemValidation: "Validación del sistema",
-                  onClick: () => console.log("Clic en Validación humana"),
+                  onClick: () => console.log("Validación humana"),
                   onClickSistemValidation: () =>
-                    console.log("Clic en Validación del sistema"),
+                    console.log("Validación del sistema"),
                 }}
               >
-                {systemValidations.length > 0 ? (
+                {requirementsToShow.length > 0 ? (
                   <TableBoard
-                    id="validaciones"
-                    titles={titles}
-                    entries={systemValidations}
+                    id="requisitos"
+                    titles={tableTitles}
+                    entries={requirementsToShow}
                     actions={getActionsMobileIcon()}
                     actionMobile={getActionsMobileIcon()}
                     actionMobileIcon={getActionsMobileIconStatus()}
@@ -325,9 +280,12 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                   <Stack
                     justifyContent="center"
                     alignItems="center"
-                    padding="s300"
+                    padding={spacing.s200}
+                    height="100%"
                   >
-                    <Text appearance="dark">No hay requisitos disponibles</Text>
+                    <Text appearance="gray" size="medium">
+                      No hay requisitos para mostrar
+                    </Text>
                   </Stack>
                 )}
               </Fieldset>
