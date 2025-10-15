@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
 import React from "react";
 import {
@@ -6,17 +7,21 @@ import {
   MdOutlineVisibility,
 } from "react-icons/md";
 
+import { TextAreaModal } from "@components/modals/TextAreaModal";
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
 import { Fieldset } from "@components/data/Fieldset";
 import { TableBoard } from "@components/data/TableBoard";
+
 import CheckIcon from "@assets/images/CheckIcon.svg";
 import CloseIcon from "@assets/images/CloseIcon.svg";
 import HelpIcon from "@assets/images/HelpIcon.svg";
+
 import {
   titles as tableTitles,
   requirementsMock,
 } from "@mocks/TableBoard/requirements.mock";
+
 import { IAction } from "@components/data/TableBoard/types";
 import { IRoute } from "@pages/requests/types";
 import {
@@ -79,6 +84,8 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     handleSend,
   } = useApplicationProcessLogic(appRoute);
 
+  const [showTextAreaModal, setShowTextAreaModal] = useState(false);
+
   const infoItems = [
     { icon: <MdAddCircleOutline />, text: "Adjuntar", appearance: "help" },
     {
@@ -94,7 +101,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       actionName: "",
       content: (row: ITableRow) => {
         if (row.isSubTitle) return null;
-
         return (
           <Stack>
             <MdOutlineVisibility size={20} cursor="pointer" />
@@ -107,7 +113,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       actionName: "",
       content: (row: ITableRow) => {
         if (row.isSubTitle) return null;
-
         const canRegister = Math.random() > 0.5;
         return (
           <Stack>
@@ -130,7 +135,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       actionName: "Estado",
       content: (row: ITableRow) => {
         if (row.isSubTitle) return null;
-
         let label = "Sin Evaluar";
         if (typeof row?.status === "string") label = row.status;
         else if (React.isValidElement(row?.tag))
@@ -145,7 +149,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     },
   ];
 
-  const showRequirements = false;
+  const showRequirements = true;
   const requirementsToShow = showRequirements ? requirementsMock : [];
 
   return (
@@ -171,7 +175,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
             }}
           />
         )}
-
         <RequestSummary
           requestNumber={
             requestData?.humanResourceRequestNumber ??
@@ -207,7 +210,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
             >
               <Stack direction="column" gap={spacing.s150}>
                 <Text>Verificar viabilidad de la solicitud.</Text>
-
                 <Stack alignItems="flex-end" gap={spacing.s150}>
                   <Select
                     name="decision"
@@ -234,11 +236,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                     size="wide"
                     fullwidth
                   />
-
                   <Button
                     appearance="primary"
                     variant="filled"
-                    onClick={handleSend}
+                    onClick={() => setShowTextAreaModal(true)}
                   >
                     Enviar
                   </Button>
@@ -291,7 +292,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
               </Fieldset>
             </Stack>
           </StyledFieldsetContainer>
-
           <StyledFieldsetContainer $isMobile={isMobile}>
             <ManagementUI
               isMobile={isMobile}
@@ -313,6 +313,21 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           </StyledFieldsetContainer>
         </Stack>
       </Stack>
+      {showTextAreaModal && (
+        <TextAreaModal
+          title="Agregar observaciones"
+          buttonText="Confirmar"
+          inputLabel="Observaciones"
+          inputPlaceholder="Escribe tus comentarios..."
+          description="Por favor, escribe tus observaciones antes de enviar la solicitud."
+          onSubmit={(values) => {
+            console.log("Texto enviado:", values.textarea);
+            handleSend();
+          }}
+          onCloseModal={() => setShowTextAreaModal(false)}
+          onSecondaryButtonClick={() => setShowTextAreaModal(false)}
+        />
+      )}
     </AppMenu>
   );
 }
