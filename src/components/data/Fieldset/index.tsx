@@ -7,7 +7,9 @@ import { spacing } from "@design/tokens/spacing";
 import {
   StyledContainerFieldset,
   StyledMenuContainer,
+  StyledMenuDropdown,
   StyledPrint,
+  StyledMobileMenuItem,
 } from "./styles";
 import { IOptionsButton } from "./types";
 
@@ -46,8 +48,9 @@ export function Fieldset(props: FieldsetProps) {
     onSelectionChange,
   } = props;
 
-  const isMobile = useMediaQuery("(max-width:880px)");
+  const isMobile = useMediaQuery("(max-width:1396px)");
   const [isSelected, setIsSelected] = useState(selectedState || false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleOnClick = () => {
     if (isClickable) {
@@ -63,7 +66,7 @@ export function Fieldset(props: FieldsetProps) {
       width="-webkit-fill-available"
       height={!isMobile ? heightFieldset : "auto"}
     >
-      <Stack justifyContent={activeButton && "space-between"}>
+      <Stack justifyContent={activeButton ? "space-between" : undefined}>
         <Stack gap={isMobile ? spacing.s150 : spacing.s100}>
           <Text type="title" size={isMobile ? "medium" : "large"}>
             {title}
@@ -89,7 +92,31 @@ export function Fieldset(props: FieldsetProps) {
                   appearance="dark"
                   size="24px"
                   cursorHover
+                  onClick={() => setMobileMenuOpen((prev) => !prev)}
                 />
+                {mobileMenuOpen && (
+                  <StyledMenuDropdown>
+                    <StyledMobileMenuItem
+                      onClick={() => {
+                        activeButton.onClick();
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      <Text size="small">{activeButton.title}</Text>
+                    </StyledMobileMenuItem>
+
+                    <StyledMobileMenuItem
+                      onClick={() => {
+                        activeButton.onClickSistemValidation();
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      <Text size="small">
+                        {activeButton.titleSistemValidation}
+                      </Text>
+                    </StyledMobileMenuItem>
+                  </StyledMenuDropdown>
+                )}
               </StyledMenuContainer>
             ) : (
               <StyledPrint>

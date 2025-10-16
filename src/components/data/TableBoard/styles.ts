@@ -55,12 +55,12 @@ export const StyledContainer = styled.div<IStyledContainer>`
   max-height: 100%;
 
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   &::-webkit-scrollbar-thumb {
     background-color: ${({ theme }) =>
-      theme?.palette?.neutral?.N30 || inube.palette.neutral.N30};
+      theme?.palette?.neutral?.N40 || inube.palette.neutral.N40};
     border-radius: 8px;
   }
 

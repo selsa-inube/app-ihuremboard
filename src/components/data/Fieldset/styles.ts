@@ -16,6 +16,10 @@ interface IStyledContainerFieldset {
   theme: typeof inube;
 }
 
+interface Menu {
+  theme: typeof inube;
+}
+
 export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
   align-content: ${({ $alignContent, $hasError }) =>
     $alignContent ?? ($hasError ? "center" : "flex-start")};
@@ -71,9 +75,35 @@ export const StyledMenuContainer = styled.div`
   display: inline-block;
 `;
 
-export const StyledMenuDropdown = styled.div`
+export const StyledMenuDropdown = styled.div<Menu>`
   position: absolute;
-  bottom: ${spacing.s300};
+  top: 100%;
   right: 0;
+  border-radius: ${spacing.s050};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 1000;
+  padding: ${spacing.s100};
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  gap: ${spacing.s050};
+  background-color: ${({ theme }) =>
+    theme?.palette?.neutral?.N10 || inube.palette.neutral.N10};
+  border: 1px solid
+    ${({ theme }) => theme?.palette?.neutral?.N30 || inube.palette.neutral.N30};
+`;
+
+export const StyledMobileMenuItem = styled.div<Menu>`
+  cursor: pointer;
+  padding: ${spacing.s050} ${spacing.s100};
+  border-radius: ${spacing.s025};
+  font-size: 14px;
+  color: ${({ theme }) =>
+    theme?.palette?.neutral?.N900 || inube.palette.neutral.N900};
+  transition: background 0.2s ease;
+
+  &:hover {
+    background-color: ${({ theme }) =>
+      theme?.palette?.neutral?.N10 || inube.palette.neutral.N10};
+  }
 `;

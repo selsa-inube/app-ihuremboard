@@ -5,6 +5,7 @@ import {
   MdAddCircleOutline,
   MdOutlineCheckCircle,
   MdOutlineVisibility,
+  MdOutlineHowToReg,
 } from "react-icons/md";
 
 import { TextAreaModal } from "@components/modals/TextAreaModal";
@@ -32,9 +33,10 @@ import {
 import { ManagementUI, ITraceabilityItem } from "./Components/management";
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
-import { StyledFieldsetContainer, StyledIconHowToReg } from "./styles";
+import { StyledFieldsetContainer } from "./styles";
 import { useApplicationProcessLogic } from "./interface";
 import { ITableRow } from "./types";
+import { inube } from "@inubekit/inubekit";
 
 interface ApplicationProcessUIProps {
   appName: string;
@@ -47,11 +49,11 @@ interface ApplicationProcessUIProps {
 const getValidationIcon = (label: string) => {
   switch (label) {
     case "Cumple":
-      return <img src={CheckIcon} alt="Cumple" width={20} height={20} />;
+      return <img src={CheckIcon} alt="Cumple" width={14} height={14} />;
     case "No Cumple":
-      return <img src={CloseIcon} alt="No Cumple" width={20} height={20} />;
+      return <img src={CloseIcon} alt="No Cumple" width={14} height={14} />;
     default:
-      return <img src={HelpIcon} alt="Sin Evaluar" width={20} height={20} />;
+      return <img src={HelpIcon} alt="Sin Evaluar" width={14} height={14} />;
   }
 };
 
@@ -102,8 +104,14 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       content: (row: ITableRow) => {
         if (row.isSubTitle) return null;
         return (
-          <Stack>
-            <MdOutlineVisibility size={20} cursor="pointer" />
+          <Stack
+            direction="row"
+            gap={spacing.s150}
+            margin={`0 ${spacing.s100}`}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <MdOutlineVisibility size={22} cursor="pointer" />
           </Stack>
         );
       },
@@ -114,11 +122,27 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       content: (row: ITableRow) => {
         if (row.isSubTitle) return null;
         const canRegister = Math.random() > 0.5;
+
+        const iconColor = canRegister
+          ? inube.palette.blue.B500
+          : inube.palette.neutral.N300;
+        const iconCursor = canRegister ? "pointer" : "not-allowed";
+
         return (
-          <Stack>
-            <StyledIconHowToReg
-              size={20}
-              $isEnabled={canRegister}
+          <Stack
+            direction="row"
+            gap={spacing.s150}
+            margin={`0 ${spacing.s100}`}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <MdOutlineHowToReg
+              size={22}
+              style={{
+                color: iconColor,
+                cursor: iconCursor,
+                transition: "color 0.2s ease-in-out",
+              }}
               onClick={
                 canRegister ? () => console.log("Clic en registrar") : undefined
               }
@@ -247,10 +271,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
               </Stack>
             </Fieldset>
 
-            <Stack margin={`${spacing.s200} 0 0 0`}>
+            <Stack margin={`${spacing.s200} ${spacing.s0}`}>
               <Fieldset
                 title="Requisitos"
-                heightFieldset="304px"
+                heightFieldset="280px"
                 hasOverflow={true}
                 activeButton={{
                   title: "Validación humana",
@@ -313,6 +337,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           </StyledFieldsetContainer>
         </Stack>
       </Stack>
+
       {showTextAreaModal && (
         <TextAreaModal
           title="Agregar observaciones"
