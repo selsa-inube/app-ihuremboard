@@ -52,22 +52,6 @@ export const StyledContainer = styled.div<IStyledContainer>`
   border: ${({ theme, $borderTable }) =>
     $borderTable &&
     `2px solid ${theme?.palette?.neutral?.N40 || inube.palette.neutral.N40}`};
-  max-height: 100%;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }) =>
-      theme?.palette?.neutral?.N40 || inube.palette.neutral.N40};
-    border-radius: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: ${({ theme }) =>
-      theme?.palette?.neutral?.N10 || inube.palette.neutral.N10};
-  }
 `;
 
 export const StyledThactions = styled.th<IStyledThactions>`

@@ -44,6 +44,13 @@ export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
     background-color 0.3s ease,
     box-shadow 0.3s ease;
 
+  ${({ $hasOverflow }) =>
+    $hasOverflow &&
+    `
+      overflow-y: auto;
+      overflow-x: hidden;
+  `}
+
   ${({ $isMobile, theme }) =>
     !$isMobile &&
     `
