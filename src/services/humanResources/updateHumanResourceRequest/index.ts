@@ -22,6 +22,8 @@ const updateHumanResourceRequest = async (
       const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
 
       const body = {
+        humanResourceRequestId: requestId,
+        modifyJustification: description,
         humanResourceRequestTraceabilities: [
           {
             actionExecuted,
@@ -45,7 +47,7 @@ const updateHumanResourceRequest = async (
       };
 
       const res = await fetch(
-        `${environment.IAUTH_SERVICE_URL}/human-resources-requests/${requestId}`,
+        `${environment.IVITE_IHUREM_PERSISTENCE_PROCESS_SERVICE}/human-resources-requests`,
         options,
       );
 
