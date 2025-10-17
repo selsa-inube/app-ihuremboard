@@ -4,6 +4,7 @@ import { updateHumanResourceRequest } from "@services/humanResources/updateHuman
 import type { IHumanResourceRequestResponse } from "@services/humanResources/updateHumanResourceRequest/types";
 import { useHeaders } from "@hooks/useHeaders";
 import { useErrorFlag } from "@hooks/useErrorFlag";
+import { useSuccessFlag } from "@hooks/useSuccessFlag";
 
 type HumanResourceResponseSafe = {
   [K in keyof IHumanResourceRequestResponse]: IHumanResourceRequestResponse[K];
@@ -31,6 +32,10 @@ export const useUpdateHumanResourceRequest =
     const { getHeaders } = useHeaders();
 
     useErrorFlag({ flagShown: Boolean(error), message: error ?? undefined });
+    useSuccessFlag({
+      flagShown: Boolean(data),
+      message: "La solicitud fue actualizada correctamente.",
+    });
 
     const updateRequest = useCallback(
       async (
@@ -55,6 +60,7 @@ export const useUpdateHumanResourceRequest =
             userWhoExecutedAction,
             bu,
           );
+
           setData(response as HumanResourceResponseSafe);
         } catch (err: unknown) {
           const errorMessage =
