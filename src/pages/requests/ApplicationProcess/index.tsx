@@ -274,7 +274,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
             <Stack margin={`${spacing.s200} ${spacing.s0}`}>
               <Fieldset
                 title="Requisitos"
-                heightFieldset="280px"
+                heightFieldset="314px"
                 hasOverflow={true}
                 activeButton={{
                   title: "Validación humana",

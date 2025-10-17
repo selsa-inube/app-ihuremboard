@@ -187,6 +187,7 @@ export const TableBoardUI = (props: ITableBoardUIProps) => {
                   type="title"
                   size="medium"
                   padding={isTablet ? "0px" : "0px 4px"}
+                  weight="bold"
                 >
                   {title.titleName}
                 </Text>

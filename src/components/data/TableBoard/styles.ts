@@ -82,7 +82,7 @@ export const StyledTable = styled.table<IStyledTable>`
 
   thead th {
     background-color: ${({ theme }) =>
-      theme?.palette?.neutral?.N10 || inube.palette.neutral.N10};
+      theme?.palette?.neutral?.N0 || inube.palette.neutral.N0};
   }
 
   ${({ $zebraEffect, theme, $background }) =>
