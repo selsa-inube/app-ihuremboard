@@ -39,6 +39,7 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
 
   const [showActions, setShowActions] = useState(false);
   const [decision, setDecision] = useState<string>("");
+  const [comment, setComment] = useState<string>("");
 
   const requestNumberParam = state?.requestNumber ?? id ?? "";
   const { data: requestData, isLoading: isLoadingRequest } =
@@ -128,42 +129,46 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     message: errorUpdate ?? undefined,
   });
 
-  const handleSend = useCallback(async () => {
-    if (!decision) {
-      useErrorFlag({
-        flagShown: true,
-        message: "Debes seleccionar una decisión antes de enviar",
-      });
-      return;
-    }
+  const handleSend = useCallback(
+    async (commentToSend?: string) => {
+      if (!decision) {
+        useErrorFlag({
+          flagShown: true,
+          message: "Debes seleccionar una decisión antes de enviar",
+        });
+        return;
+      }
 
-    if (!requestData?.humanResourceRequestId) {
-      useErrorFlag({
-        flagShown: true,
-        message: "No se encontró el ID de la solicitud",
-      });
-      return;
-    }
+      if (!requestData?.humanResourceRequestId) {
+        useErrorFlag({
+          flagShown: true,
+          message: "No se encontró el ID de la solicitud",
+        });
+        return;
+      }
 
-    try {
-      await updateRequest(
-        requestData.humanResourceRequestId,
-        decision,
-        "Decisión tomada desde el módulo de aplicación",
-        responsibleLabel ?? "Usuario desconocido",
-        resolvedHeaders?.["X-Business-Unit"],
-      );
-      setShowActions(false);
-    } catch (err) {
-      useErrorFlag({
-        flagShown: true,
-        message:
-          err instanceof Error
-            ? err.message
-            : "Ocurrió un error al enviar la solicitud",
-      });
-    }
-  }, [decision, requestData, responsibleLabel, resolvedHeaders, updateRequest]);
+      try {
+        await updateRequest(
+          requestData.humanResourceRequestId,
+          decision,
+          commentToSend ?? "Sin observaciones",
+          responsibleLabel ?? "Usuario desconocido",
+          resolvedHeaders?.["X-Business-Unit"],
+        );
+        setShowActions(false);
+        setComment("");
+      } catch (err) {
+        useErrorFlag({
+          flagShown: true,
+          message:
+            err instanceof Error
+              ? err.message
+              : "Ocurrió un error al enviar la solicitud",
+        });
+      }
+    },
+    [decision, requestData, responsibleLabel, resolvedHeaders, updateRequest],
+  );
 
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
@@ -175,6 +180,8 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     state,
     decision,
     setDecision,
+    comment,
+    setComment,
     showActions,
     setShowActions,
     requestData,

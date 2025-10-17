@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
+
+import { TextAreaModal } from "@components/modals/TextAreaModal";
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
 import { Fieldset } from "@components/data/Fieldset";
@@ -26,12 +29,14 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const { appRoute, navigatePage } = props;
 
   const isMobile = useMediaQuery("(max-width: 1000px)");
+  const [showTextAreaModal, setShowTextAreaModal] = useState(false);
 
   const {
     id,
     state,
     decision,
     setDecision,
+    setComment,
     showActions,
     setShowActions,
     requestData,
@@ -143,9 +148,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                     <Button
                       appearance="primary"
                       variant="filled"
-                      onClick={() => {
-                        void handleSend();
-                      }}
+                      onClick={() => setShowTextAreaModal(true)}
                       disabled={loadingUpdate}
                     >
                       {loadingUpdate ? "Enviando..." : "Enviar"}
@@ -177,6 +180,23 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           </Stack>
         </Stack>
       </Stack>
+
+      {showTextAreaModal && (
+        <TextAreaModal
+          title="Agregar observaciones"
+          buttonText="Enviar"
+          inputLabel="Observaciones"
+          inputPlaceholder="Escribe tus comentarios..."
+          description="Por favor, escribe tus observaciones antes de enviar la solicitud."
+          onSubmit={async (values) => {
+            setComment(values.textarea);
+            await handleSend(values.textarea);
+            setShowTextAreaModal(false);
+          }}
+          onCloseModal={() => setShowTextAreaModal(false)}
+          onSecondaryButtonClick={() => setShowTextAreaModal(false)}
+        />
+      )}
     </AppMenu>
   );
 }
