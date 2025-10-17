@@ -57,12 +57,11 @@ const DetailItem = styled.div<IDetailItem>`
 `;
 
 const MobileIconContainer = styled.div<MobileIconContainerProps>`
-  position: absolute;
-  z-index: 10;
-  right: ${({ $isSmall, $isMobile }) =>
-    $isSmall ? "10px" : $isMobile ? "60px" : "90px"};
-  top: ${({ $isSmall, $isMobile }) =>
-    $isSmall ? "100px" : $isMobile ? "123px" : "90px"};
+  border-radius: 8px;
+  position: relative;
+  height: 0px;
+  z-index: 1;
+  top: -95px;
 `;
 
 export {
