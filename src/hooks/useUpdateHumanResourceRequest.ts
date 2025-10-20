@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 
 import { updateHumanResourceRequest } from "@services/humanResources/updateHumanResourceRequest";
-import { IHumanResourceRequestResponse } from "../../src/services/humanResources/updateHumanResourceRequest/types";
+import { IHumanResourceRequestResponse } from "../../src/types/humanResources.types";
 import { useHeaders } from "@hooks/useHeaders";
 import { useErrorFlag } from "@hooks/useErrorFlag";
 
