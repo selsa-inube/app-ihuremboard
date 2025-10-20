@@ -1,9 +1,20 @@
 import { useState, useCallback } from "react";
 
 import { updateHumanResourceRequest } from "@services/humanResources/updateHumanResourceRequest";
-import { IHumanResourceRequestResponse } from "../../src/types/humanResources.types";
+import { ITraceability, ITask } from "@ptypes/humanResources.types";
 import { useHeaders } from "@hooks/useHeaders";
 import { useErrorFlag } from "@hooks/useErrorFlag";
+
+interface IHumanResourceRequestResponse {
+  employeeId: string;
+  humanResourceRequestId: string;
+  humanResourceRequestNumber: string;
+  humanResourceRequestStatus: string;
+  humanResourceRequestType: string;
+  modifyJustification: string;
+  humanResourceRequestTraceabilities: ITraceability[];
+  tasksToManageTheHumanResourcesRequests: ITask[];
+}
 
 interface IUseUpdateHumanResourceRequestResult {
   updateRequest: (
