@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { inube } from "@inubekit/inubekit";
+
 import { spacing } from "@design/tokens/spacing";
 
 interface IStyledActions {
@@ -16,32 +17,27 @@ const StyledContainer = styled.div`
 `;
 
 const StyledUl = styled.ul`
-  margin: ${spacing.s0};
-  padding: ${spacing.s0};
+  margin: 0px;
+  padding: 0px;
 `;
 
 const StyledLi = styled.li<IStyledLi>`
   list-style: none;
   display: flex;
   align-items: center;
-  padding: ${spacing.s100} ${spacing.s100} ${spacing.s050} ${spacing.s200};
+  padding: 10px 10px 7px 16px;
   gap: ${spacing.s050};
   cursor: pointer;
 `;
 
-interface IStyledActions {
-  theme: typeof inube;
-  $isMobile?: boolean;
-}
-
 const StyledActions = styled.div<IStyledActions>`
   border-radius: 8px;
   width: 180px;
-  height: 140px;
-  position: fixed;
-  z-index: 9999;
-  right: ${({ $isMobile }) => ($isMobile ? "20px" : "70px")};
-  top: ${({ $isMobile }) => ($isMobile ? "120px" : "145px")};
+  height: auto;
+  position: absolute;
+  z-index: 1;
+  right: 10px;
+  top: 30px;
   background-color: ${({ theme }) =>
     theme?.palette?.neutral?.N0 || inube.palette.neutral.N0};
   box-shadow: 0px 2px 6px 1px

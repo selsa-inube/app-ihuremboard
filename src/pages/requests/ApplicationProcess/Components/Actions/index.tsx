@@ -1,5 +1,4 @@
-import { createPortal } from "react-dom";
-import { Stack, Text, Icon, useMediaQuery } from "@inubekit/inubekit";
+import { Stack, Text, Icon } from "@inubekit/inubekit";
 import { MdClose } from "react-icons/md";
 
 import { StyledLi, StyledUl, StyledActions, StyledCloseIcon } from "./styles";
@@ -46,8 +45,6 @@ export function ActionModal(props: ActionModalProps) {
     onSeeAttachments,
   });
 
-  const isMobile = useMediaQuery("(max-width: 490px)");
-
   const handleItemClick = (item: IAction) => {
     if (item.isDisabled && onInfoIconClick) {
       onInfoIconClick(
@@ -58,9 +55,9 @@ export function ActionModal(props: ActionModalProps) {
     }
   };
 
-  return createPortal(
-    <StyledActions $isMobile={isMobile}>
-      <Stack>
+  return (
+    <StyledActions>
+      <Stack direction="column" gap="4px">
         <StyledUl>
           {actionsList.map((item, index) => (
             <StyledLi
@@ -93,7 +90,6 @@ export function ActionModal(props: ActionModalProps) {
           />
         </StyledCloseIcon>
       </Stack>
-    </StyledActions>,
-    document.body,
+    </StyledActions>
   );
 }

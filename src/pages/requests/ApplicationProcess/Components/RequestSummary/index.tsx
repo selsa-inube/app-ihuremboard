@@ -9,7 +9,6 @@ import {
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
-  MdMoreVert,
   MdAutorenew,
   MdOutlineCancel,
 } from "react-icons/md";
@@ -21,9 +20,9 @@ import {
   DetailsGrid,
   DetailItem,
   VerticalDivider,
-  MobileIconContainer,
 } from "./styles";
-import { ActionModal } from "../Actions";
+
+import { Detail } from "../Detail";
 import { RequestSummaryProps, useRequestSummaryLogic } from "./interface";
 
 export function RequestSummary(props: RequestSummaryProps) {
@@ -39,8 +38,6 @@ export function RequestSummary(props: RequestSummaryProps) {
     businessName,
     contractType,
     observationEmployee,
-    showActions,
-    setShowActions,
     showDetails,
     setShowDetails,
     handleDiscard,
@@ -50,7 +47,6 @@ export function RequestSummary(props: RequestSummaryProps) {
   } = useRequestSummaryLogic(props);
 
   const isMobile = useMediaQuery("(max-width: 1100px)");
-  const isSmall = useMediaQuery("(max-width: 490px)");
 
   return (
     <Stack direction="column" gap={spacing.s100}>
@@ -70,15 +66,18 @@ export function RequestSummary(props: RequestSummaryProps) {
         </Stack>
 
         {isMobile ? (
-          <MobileIconContainer $isMobile={isMobile} $isSmall={isSmall}>
-            <Icon
-              icon={<MdMoreVert />}
-              appearance="dark"
-              size="24px"
-              cursorHover
-              onClick={() => setShowActions(true)}
-            />
-          </MobileIconContainer>
+          <Detail
+            onExecute={handleExecute}
+            onDiscard={handleDiscard}
+            onAttach={handleAttach}
+            onSeeAttachments={handleSeeAttachments}
+            actionDescriptions={{
+              execute: "No puedes ejecutar esta acción ahora",
+              discard: "No puedes descartar esta acción ahora",
+              attach: "No puedes adjuntar archivos en este momento",
+              seeAttachments: "No puedes ver los adjuntos en este momento",
+            }}
+          />
         ) : (
           <Stack direction="row" gap={spacing.s075} alignItems="center">
             <Button
@@ -111,22 +110,6 @@ export function RequestSummary(props: RequestSummaryProps) {
           </Stack>
         )}
       </Stack>
-
-      {isMobile && showActions && (
-        <ActionModal
-          onExecute={handleExecute}
-          onDiscard={handleDiscard}
-          onAttach={handleAttach}
-          onSeeAttachments={handleSeeAttachments}
-          onClose={() => setShowActions(false)}
-          actionDescriptions={{
-            execute: "No puedes ejecutar esta acción ahora",
-            discard: "No puedes descartar esta acción ahora",
-            attach: "No puedes adjuntar archivos en este momento",
-            seeAttachments: "No puedes ver los adjuntos en este momento",
-          }}
-        />
-      )}
 
       <StyledRequestSummaryContainer $isMobile={isMobile}>
         <Stack
