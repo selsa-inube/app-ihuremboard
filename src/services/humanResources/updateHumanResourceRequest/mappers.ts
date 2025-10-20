@@ -1,4 +1,8 @@
-import { IHumanResourceRequestResponse, ITraceability, ITask } from "./types";
+import {
+  IHumanResourceRequestResponse,
+  ITraceability,
+  ITask,
+} from "@ptypes/humanResources.types";
 
 interface IHumanResourceRequestApi {
   employeeId?: string;

@@ -3,7 +3,8 @@ import {
   fetchTimeoutServices,
   maxRetriesServices,
 } from "@config/environment";
-import { IHumanResourceRequestResponse } from "./types";
+import { IHumanResourceRequestResponse } from "@ptypes/humanResources.types";
+
 import { mapHumanResourceRequestApiToEntity } from "./mappers";
 
 const updateHumanResourceRequest = async (
