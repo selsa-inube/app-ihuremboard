@@ -29,7 +29,7 @@ export function PageTitle(props: PageTitleProps) {
     modalCancelText = "Cancelar",
   } = props;
 
-  const smallScreen = useMediaQuery("(max-width:490px)");
+  const smallScreen = useMediaQuery("(max-width: 600px)");
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);

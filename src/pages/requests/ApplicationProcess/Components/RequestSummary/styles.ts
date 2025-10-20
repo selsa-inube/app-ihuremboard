@@ -15,11 +15,6 @@ interface IDetailItem {
   theme: typeof inube;
 }
 
-interface MobileIconContainerProps {
-  $isMobile: boolean;
-  $isSmall: boolean;
-}
-
 const StyledRequestSummaryContainer = styled.div<StyledRequestSummaryContainerProps>`
   display: flex;
   flex-direction: column;
@@ -55,20 +50,9 @@ const DetailItem = styled.div<IDetailItem>`
   padding: ${spacing.s150};
   border-radius: ${spacing.s075};
 `;
-
-const MobileIconContainer = styled.div<MobileIconContainerProps>`
-  position: absolute;
-  z-index: 10;
-  right: ${({ $isSmall, $isMobile }) =>
-    $isSmall ? "10px" : $isMobile ? "60px" : "90px"};
-  top: ${({ $isSmall, $isMobile }) =>
-    $isSmall ? "100px" : $isMobile ? "123px" : "90px"};
-`;
-
 export {
   StyledRequestSummaryContainer,
   VerticalDivider,
   DetailsGrid,
   DetailItem,
-  MobileIconContainer,
 };
