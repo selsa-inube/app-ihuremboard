@@ -29,6 +29,34 @@ export interface IApiErrorResponse {
   originalCode: string;
 }
 
+export interface ITraceability {
+  actionExecuted: string;
+  description: string;
+  executionDate: string;
+  userWhoExecutedAction: string;
+  transactionOperation: string;
+  traceabilityId?: string;
+}
+
+export interface ITask {
+  taskName: string;
+  taskStatus: string;
+  description: string;
+  taskManagingId: string;
+  taskCode: string;
+}
+
+export interface IHumanResourceRequestResponse {
+  employeeId: string;
+  humanResourceRequestId: string;
+  humanResourceRequestNumber: string;
+  humanResourceRequestStatus: string;
+  humanResourceRequestType: string;
+  modifyJustification: string;
+  humanResourceRequestTraceabilities: ITraceability[];
+  tasksToManageTheHumanResourcesRequests: ITask[];
+}
+
 export enum HumanDecisionStatus {
   APPROVE_REQUEST = "approve_request",
   VERIFY_REQUEST_FEASIBILITY = "verify_request_feasibility",

@@ -1,0 +1,93 @@
+import { useState, useCallback } from "react";
+
+import { updateHumanResourceRequest } from "@services/humanResources/updateHumanResourceRequest";
+import { ITraceability, ITask } from "@ptypes/humanResources.types";
+import { useHeaders } from "@hooks/useHeaders";
+import { useErrorFlag } from "@hooks/useErrorFlag";
+
+interface IHumanResourceRequestResponse {
+  employeeId: string;
+  humanResourceRequestId: string;
+  humanResourceRequestNumber: string;
+  humanResourceRequestStatus: string;
+  humanResourceRequestType: string;
+  modifyJustification: string;
+  humanResourceRequestTraceabilities: ITraceability[];
+  tasksToManageTheHumanResourcesRequests: ITask[];
+}
+
+interface IUseUpdateHumanResourceRequestResult {
+  updateRequest: (
+    requestId: string,
+    actionExecuted: string,
+    description: string,
+    userWhoExecutedAction: string,
+    businessUnit?: string,
+  ) => Promise<void>;
+  loading: boolean;
+  error: string | null;
+  data: IHumanResourceRequestResponse | null;
+}
+
+export const useUpdateHumanResourceRequest =
+  (): IUseUpdateHumanResourceRequestResult => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [data, setData] = useState<IHumanResourceRequestResponse | null>(
+      null,
+    );
+
+    const { getHeaders } = useHeaders();
+
+    useErrorFlag({
+      flagShown: Boolean(error),
+      message: error ?? undefined,
+      isSuccess: false,
+    });
+
+    useErrorFlag({
+      flagShown: Boolean(data),
+      message: "La solicitud fue actualizada correctamente.",
+      isSuccess: true,
+    });
+
+    const updateRequest = useCallback(
+      async (
+        requestId: string,
+        actionExecuted: string,
+        description: string,
+        userWhoExecutedAction: string,
+        businessUnit?: string,
+      ) => {
+        setLoading(true);
+        setError(null);
+        setData(null);
+
+        try {
+          const headers = await getHeaders();
+          const bu = businessUnit ?? headers["X-Business-Unit"];
+
+          const response = await updateHumanResourceRequest(
+            requestId,
+            actionExecuted,
+            description,
+            userWhoExecutedAction,
+            bu,
+          );
+
+          setData(response);
+        } catch (err: unknown) {
+          const errorMessage =
+            err instanceof Error
+              ? err.message
+              : "Ocurrió un error al actualizar la solicitud";
+          setError(errorMessage);
+        } finally {
+          setLoading(false);
+        }
+      },
+      [getHeaders],
+    );
+
+    return { updateRequest, loading, error, data };
+  };

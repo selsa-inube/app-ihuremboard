@@ -1,5 +1,6 @@
 import { useParams, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useIAuth } from "@inube/iauth-react";
 
 import { IRoute } from "@components/layout/AppMenu/types";
 import { requestConfigs } from "@config/requests.config";
@@ -8,6 +9,8 @@ import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
 import { useEvaluateResponsibleOfTasks } from "@hooks/useEvaluateResponsibleOfTasks";
 import { useHeaders } from "@hooks/useHeaders";
 import { useHumanDecisionTasks } from "@hooks/useHumanDecisionTasks";
+import { useUpdateHumanResourceRequest } from "@hooks/useUpdateHumanResourceRequest";
+import { useErrorFlag } from "@hooks/useErrorFlag";
 
 export interface ApplicationProcessUIProps {
   appName: string;
@@ -35,8 +38,11 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     };
   };
 
+  const { user } = useIAuth();
+
   const [showActions, setShowActions] = useState(false);
   const [decision, setDecision] = useState<string>("");
+  const [comment, setComment] = useState<string>("");
 
   const requestNumberParam = state?.requestNumber ?? id ?? "";
   const { data: requestData, isLoading: isLoadingRequest } =
@@ -115,17 +121,71 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
           `${firstGroup.responsible[0].names.trim()} ${firstGroup.responsible[0].surnames.trim()}`,
         );
 
+  const {
+    updateRequest,
+    loading: loadingUpdate,
+    error: errorUpdate,
+  } = useUpdateHumanResourceRequest();
+
+  useErrorFlag({
+    flagShown: !!errorUpdate,
+    message: errorUpdate ?? undefined,
+  });
+
+  const handleSend = useCallback(
+    async (commentToSend?: string) => {
+      if (!decision) {
+        useErrorFlag({
+          flagShown: true,
+          message: "Debes seleccionar una decisión antes de enviar",
+        });
+        return;
+      }
+
+      if (!requestData?.humanResourceRequestId) {
+        useErrorFlag({
+          flagShown: true,
+          message: "No se encontró el ID de la solicitud",
+        });
+        return;
+      }
+
+      try {
+        await updateRequest(
+          requestData.humanResourceRequestId,
+          decision,
+          commentToSend ?? "Sin observaciones",
+          user?.id ?? "Sin identificación",
+          resolvedHeaders?.["X-Business-Unit"],
+        );
+
+        setShowActions(false);
+        setComment("");
+      } catch (err) {
+        useErrorFlag({
+          flagShown: true,
+          message:
+            err instanceof Error
+              ? err.message
+              : "Ocurrió un error al enviar la solicitud",
+        });
+      }
+    },
+    [decision, requestData, resolvedHeaders, updateRequest, user],
+  );
+
   const handleDiscard = () => console.log("Descartar solicitud");
   const handleExecute = () => console.log("Ejecutar solicitud");
   const handleAttach = () => console.log("Adjuntar archivos");
   const handleSeeAttachments = () => console.log("Ver adjuntos");
-  const handleSend = () => console.log("Decisión seleccionada:", decision);
 
   return {
     id,
     state,
     decision,
     setDecision,
+    comment,
+    setComment,
     showActions,
     setShowActions,
     requestData,
@@ -144,5 +204,6 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     handleAttach,
     handleSeeAttachments,
     handleSend,
+    loadingUpdate,
   };
 }
