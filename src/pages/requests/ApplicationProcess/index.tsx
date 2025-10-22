@@ -33,7 +33,7 @@ import {
 import { ManagementUI, ITraceabilityItem } from "./Components/management";
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
-import { StyledFieldsetContainer } from "./styles";
+import { StyledFieldsetContainer, StyledDecisionContainer } from "./styles";
 import { useApplicationProcessLogic } from "./interface";
 import { ITableRow } from "./types";
 import { inube } from "@inubekit/inubekit";
@@ -88,6 +88,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     handleSend,
     loadingUpdate,
   } = useApplicationProcessLogic(appRoute);
+
+  const [decisionError, setDecisionError] = useState<string | undefined>(
+    undefined,
+  );
 
   const infoItems = [
     { icon: <MdAddCircleOutline />, text: "Adjuntar", appearance: "help" },
@@ -236,7 +240,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
             >
               <Stack direction="column" gap={spacing.s150}>
                 <Text>Verificar viabilidad de la solicitud.</Text>
-
                 <Stack alignItems="flex-end" gap={spacing.s150}>
                   <Select
                     name="decision"
@@ -259,18 +262,33 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                       })) ?? []
                     }
                     value={decision}
-                    onChange={(_, value) => setDecision(value)}
-                    size="wide"
+                    onChange={(_, value) => {
+                      setDecision(value);
+                      setDecisionError(undefined);
+                    }}
+                    size="compact"
                     fullwidth
+                    message={decisionError}
+                    invalid={!!decisionError}
                   />
-                  <Button
-                    appearance="primary"
-                    variant="filled"
-                    onClick={() => setShowTextAreaModal(true)}
-                    disabled={loadingUpdate}
-                  >
-                    {loadingUpdate ? "Enviando..." : "Enviar"}
-                  </Button>
+                  <StyledDecisionContainer $hasError={!!decisionError}>
+                    <Button
+                      appearance="primary"
+                      variant="filled"
+                      onClick={() => {
+                        if (!decision) {
+                          setDecisionError("Debe seleccionar una decisión.");
+                          return;
+                        }
+
+                        setDecisionError(undefined);
+                        setShowTextAreaModal(true);
+                      }}
+                      disabled={loadingUpdate}
+                    >
+                      {loadingUpdate ? "Enviando..." : "Enviar"}
+                    </Button>
+                  </StyledDecisionContainer>
                 </Stack>
               </Stack>
             </Fieldset>

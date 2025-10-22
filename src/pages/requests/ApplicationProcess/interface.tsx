@@ -1,5 +1,6 @@
 import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
+import { useIAuth } from "@inube/iauth-react";
 
 import { IRoute } from "@components/layout/AppMenu/types";
 import { requestConfigs } from "@config/requests.config";
@@ -36,6 +37,8 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
       status?: string;
     };
   };
+
+  const { user } = useIAuth();
 
   const [showActions, setShowActions] = useState(false);
   const [decision, setDecision] = useState<string>("");
@@ -152,9 +155,10 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
           requestData.humanResourceRequestId,
           decision,
           commentToSend ?? "Sin observaciones",
-          responsibleLabel ?? "Usuario desconocido",
+          user?.id ?? "Sin identificación",
           resolvedHeaders?.["X-Business-Unit"],
         );
+
         setShowActions(false);
         setComment("");
       } catch (err) {
@@ -167,7 +171,7 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
         });
       }
     },
-    [decision, requestData, responsibleLabel, resolvedHeaders, updateRequest],
+    [decision, requestData, resolvedHeaders, updateRequest, user],
   );
 
   const handleDiscard = () => console.log("Descartar solicitud");
