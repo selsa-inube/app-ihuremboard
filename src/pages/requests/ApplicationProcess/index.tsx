@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
+import {
+  inube,
+  Stack,
+  Text,
+  useMediaQuery,
+  Button,
+  Select,
+} from "@inubekit/inubekit";
 import React from "react";
 import {
   MdAddCircleOutline,
@@ -13,16 +20,13 @@ import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
 import { Fieldset } from "@components/data/Fieldset";
 import { TableBoard } from "@components/data/TableBoard";
-
 import CheckIcon from "@assets/images/CheckIcon.svg";
 import CloseIcon from "@assets/images/CloseIcon.svg";
 import HelpIcon from "@assets/images/HelpIcon.svg";
-
 import {
   titles as tableTitles,
   requirementsMock,
 } from "@mocks/TableBoard/requirements.mock";
-
 import { IAction } from "@components/data/TableBoard/types";
 import { IRoute } from "@pages/requests/types";
 import {
@@ -36,7 +40,6 @@ import { ActionModal } from "./Components/Actions";
 import { StyledFieldsetContainer, StyledDecisionContainer } from "./styles";
 import { useApplicationProcessLogic } from "./interface";
 import { ITableRow } from "./types";
-import { inube } from "@inubekit/inubekit";
 
 interface ApplicationProcessUIProps {
   appName: string;
