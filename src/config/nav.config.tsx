@@ -14,6 +14,7 @@ const baseNavLinks = [
     path: "/requests",
     description:
       "Son trámites o gestiones que están en proceso de ser aprobadas o completadas.",
+    order: 1,
   },
 ];
 
@@ -47,21 +48,24 @@ const navConfig = (optionForCustomerPortal: IOptionWithSubOptions[]) => {
     optionForCustomerPortal.some((option) => option.publicCode === link.id),
   );
 
-  return filteredLinks.map((link) => {
-    const option = optionForCustomerPortal.find(
-      (o) => o.publicCode === link.id,
-    );
+  return filteredLinks
+    .map((link) => {
+      const option = optionForCustomerPortal.find(
+        (o) => o.publicCode === link.id,
+      );
 
-    return {
-      ...link,
-      icon: option ? (
-        getIcon(option.iconReference)
-      ) : (
-        <div style={{ width: 24, height: 24 }} />
-      ),
-      isEnabled: true,
-    };
-  });
+      return {
+        ...link,
+        icon: option ? (
+          getIcon(option.iconReference)
+        ) : (
+          <div style={{ width: 24, height: 24 }} />
+        ),
+        isEnabled: true,
+        order: link.order ?? 0,
+      };
+    })
+    .sort((a, b) => a.order - b.order);
 };
 
 const useNavConfig = (optionForCustomerPortal: IOptionWithSubOptions[]) => {
