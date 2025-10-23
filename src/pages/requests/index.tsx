@@ -93,6 +93,7 @@ function Requests() {
   return (
     <RequestsUI
       appName={breadcrumbs.label}
+      appRoute={breadcrumbs.crumbs}
       navigatePage={breadcrumbs.url}
       isFilterModalOpen={isFilterModalOpen}
       isMenuOpen={isMenuOpen}
