@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Stack, Text, useMediaQuery, Button, Select } from "@inubekit/inubekit";
+import {
+  inube,
+  Stack,
+  Text,
+  useMediaQuery,
+  Button,
+  Select,
+} from "@inubekit/inubekit";
 import React from "react";
 import {
   MdAddCircleOutline,
@@ -13,16 +20,13 @@ import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
 import { Fieldset } from "@components/data/Fieldset";
 import { TableBoard } from "@components/data/TableBoard";
-
 import CheckIcon from "@assets/images/CheckIcon.svg";
 import CloseIcon from "@assets/images/CloseIcon.svg";
 import HelpIcon from "@assets/images/HelpIcon.svg";
-
 import {
   titles as tableTitles,
   requirementsMock,
 } from "@mocks/TableBoard/requirements.mock";
-
 import { IAction } from "@components/data/TableBoard/types";
 import { IRoute } from "@pages/requests/types";
 import {
@@ -33,10 +37,9 @@ import {
 import { ManagementUI, ITraceabilityItem } from "./Components/management";
 import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
-import { StyledFieldsetContainer } from "./styles";
+import { StyledFieldsetContainer, StyledDecisionContainer } from "./styles";
 import { useApplicationProcessLogic } from "./interface";
 import { ITableRow } from "./types";
-import { inube } from "@inubekit/inubekit";
 
 interface ApplicationProcessUIProps {
   appName: string;
@@ -60,12 +63,14 @@ const getValidationIcon = (label: string) => {
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const { appRoute, navigatePage } = props;
   const isMobile = useMediaQuery("(max-width: 1000px)");
+  const [showTextAreaModal, setShowTextAreaModal] = useState(false);
 
   const {
     id,
     state,
     decision,
     setDecision,
+    setComment,
     showActions,
     setShowActions,
     requestData,
@@ -84,9 +89,12 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     handleAttach,
     handleSeeAttachments,
     handleSend,
+    loadingUpdate,
   } = useApplicationProcessLogic(appRoute);
 
-  const [showTextAreaModal, setShowTextAreaModal] = useState(false);
+  const [decisionError, setDecisionError] = useState<string | undefined>(
+    undefined,
+  );
 
   const infoItems = [
     { icon: <MdAddCircleOutline />, text: "Adjuntar", appearance: "help" },
@@ -199,6 +207,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
             }}
           />
         )}
+
         <RequestSummary
           requestNumber={
             requestData?.humanResourceRequestNumber ??
@@ -256,17 +265,33 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                       })) ?? []
                     }
                     value={decision}
-                    onChange={(_, value) => setDecision(value)}
-                    size="wide"
+                    onChange={(_, value) => {
+                      setDecision(value);
+                      setDecisionError(undefined);
+                    }}
+                    size="compact"
                     fullwidth
+                    message={decisionError}
+                    invalid={!!decisionError}
                   />
-                  <Button
-                    appearance="primary"
-                    variant="filled"
-                    onClick={() => setShowTextAreaModal(true)}
-                  >
-                    Enviar
-                  </Button>
+                  <StyledDecisionContainer $hasError={!!decisionError}>
+                    <Button
+                      appearance="primary"
+                      variant="filled"
+                      onClick={() => {
+                        if (!decision) {
+                          setDecisionError("Debe seleccionar una decisión.");
+                          return;
+                        }
+
+                        setDecisionError(undefined);
+                        setShowTextAreaModal(true);
+                      }}
+                      disabled={loadingUpdate}
+                    >
+                      {loadingUpdate ? "Enviando..." : "Enviar"}
+                    </Button>
+                  </StyledDecisionContainer>
                 </Stack>
               </Stack>
             </Fieldset>
@@ -316,6 +341,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
               </Fieldset>
             </Stack>
           </StyledFieldsetContainer>
+
           <StyledFieldsetContainer $isMobile={isMobile}>
             <ManagementUI
               isMobile={isMobile}
@@ -341,13 +367,14 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       {showTextAreaModal && (
         <TextAreaModal
           title="Agregar observaciones"
-          buttonText="Confirmar"
+          buttonText="Enviar"
           inputLabel="Observaciones"
           inputPlaceholder="Escribe tus comentarios..."
           description="Por favor, escribe tus observaciones antes de enviar la solicitud."
-          onSubmit={(values) => {
-            console.log("Texto enviado:", values.textarea);
-            handleSend();
+          onSubmit={async (values) => {
+            setComment(values.textarea);
+            await handleSend(values.textarea);
+            setShowTextAreaModal(false);
           }}
           onCloseModal={() => setShowTextAreaModal(false)}
           onSecondaryButtonClick={() => setShowTextAreaModal(false)}
