@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+
 import { encrypt } from "@utils/encrypt";
 import { staffPortalByBusinessManager } from "@services/staffPortal/StaffPortalByBusinessManager";
 import { IStaffPortalByBusinessManager } from "@ptypes/staffPortalBusiness.types";
-import { useErrorFlag } from "./useErrorFlag";
+import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
+import { modalErrorConfig } from "@config/modalErrorConfig";
 
 export const usePortalData = (codeParame: string) => {
   const [portalData, setPortalData] = useState<IStaffPortalByBusinessManager>(
@@ -10,9 +12,8 @@ export const usePortalData = (codeParame: string) => {
   );
   const [hasError, setHasError] = useState<number | null>(1001);
   const [isFetching, setIsFetching] = useState(true);
-  const [flagShown, setFlagShown] = useState(false);
 
-  useErrorFlag({ flagShown });
+  const { showErrorModal } = useErrorModal();
 
   useEffect(() => {
     const fetchPortalData = async () => {
@@ -25,16 +26,21 @@ export const usePortalData = (codeParame: string) => {
         localStorage.setItem("portalCode", encryptedParamValue);
         setHasError(null);
         setPortalData(staffPortalData);
-      } catch {
+      } catch (err) {
+        console.error("❌ Error al obtener datos del portal:", err);
         setHasError(500);
-        setFlagShown(true);
+        const errorConfig = modalErrorConfig[1016];
+        showErrorModal({
+          descriptionText: `${errorConfig.descriptionText}: ${String(err)}`,
+          solutionText: errorConfig.solutionText,
+        });
       } finally {
         setIsFetching(false);
       }
     };
 
     void fetchPortalData();
-  }, [codeParame]);
+  }, [codeParame, showErrorModal]);
 
   return { portalData, hasError, isFetching };
 };

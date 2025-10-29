@@ -42,11 +42,9 @@ const getBusinessManagerByCode = async (
       const data = await res.json();
 
       if (!res.ok) {
-        throw {
-          message: "Error al obtener los datos del operador",
-          status: res.status,
-          data,
-        };
+        const errorMessage =
+          data?.message ?? "Error al obtener los datos del operador";
+        throw new Error(errorMessage);
       }
 
       const businessManager =
@@ -55,10 +53,11 @@ const getBusinessManagerByCode = async (
       return mapBusinessManagerApiToEntity(businessManager);
     } catch (error) {
       if (attempt === maxRetries) {
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new Error(
-          `Todos los intentos fallaron. No se pudieron obtener los datos del operador. Error: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
+          `Todos los intentos fallaron. No se pudieron obtener los datos del operador.`,
         );
       }
       continue;

@@ -7,18 +7,6 @@ import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
 
 import { mapBusinessUnitsApiToEntity } from "./mappers";
 
-class BusinessUnitsError extends Error {
-  public status: number;
-  public data: unknown;
-
-  constructor(message: string, status: number, data: unknown) {
-    super(message);
-    this.name = "BusinessUnitsError";
-    this.status = status;
-    this.data = data;
-  }
-}
-
 const getBusinessUnitsForOfficer = async (
   userAccount: string,
   portalPublicCode: string,
@@ -51,19 +39,20 @@ const getBusinessUnitsForOfficer = async (
       const data = await res.json();
 
       if (!res.ok) {
-        throw new BusinessUnitsError(
-          `Error al obtener las unidades de negocio para el oficial. Código: ${res.status}`,
-          res.status,
-          data,
-        );
+        const errorMessage =
+          data?.message ??
+          `Error al obtener las unidades de negocio para el oficial. Código: ${res.status}`;
+        throw new Error(errorMessage);
       }
 
       return data.map(mapBusinessUnitsApiToEntity);
     } catch (error: unknown) {
       if (attempt === maxRetries) {
-        const errorMsg = error instanceof Error ? error.message : String(error);
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new Error(
-          `Todos los intentos fallaron. No se pudieron obtener las unidades de negocio. Error: ${errorMsg}`,
+          `Todos los intentos fallaron. No se pudieron obtener las unidades de negocio.`,
         );
       }
     } finally {

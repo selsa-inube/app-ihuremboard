@@ -37,30 +37,26 @@ const getEmployeeById = async (
       clearTimeout(timeoutId);
 
       if (res.status === 204) {
-        throw {
-          message: `El empleado con ID ${employeeId} no existe.`,
-          status: 204,
-        };
+        throw new Error(`El empleado con ID ${employeeId} no existe.`);
       }
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw {
-          message: `Error al obtener el empleado ${employeeId}`,
-          status: res.status,
-          data,
-        };
+        const errorMessage =
+          data?.message ?? `Error al obtener el empleado ${employeeId}`;
+        throw new Error(errorMessage);
       }
 
       return mapEmployeeApiToEntity(data);
     } catch (err) {
       if (attempt === maxRetries) {
-        const msg =
-          err instanceof Error
-            ? err.message
-            : `Todos los intentos fallaron. No se pudo obtener el empleado.`;
-        throw new Error(msg);
+        if (err instanceof Error) {
+          throw err;
+        }
+        throw new Error(
+          `Todos los intentos fallaron. No se pudo obtener el empleado.`,
+        );
       }
     }
   }

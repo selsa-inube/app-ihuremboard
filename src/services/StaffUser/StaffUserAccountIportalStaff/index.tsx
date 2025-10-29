@@ -4,6 +4,7 @@ import {
   maxRetriesServices,
 } from "@config/environment";
 import { IStaffUserAccount } from "@ptypes/staffPortalBusiness.types";
+
 import { mapStaffUserAccountApiToEntity } from "./mappers";
 
 const staffUserAccountById = async (
@@ -40,16 +41,17 @@ const staffUserAccountById = async (
 
       const data = await res.json();
       if (!res.ok) {
-        throw {
-          message: "Error al obtener los datos del usuario",
-          status: res.status,
-          data,
-        };
+        const errorMessage =
+          data?.message ?? "Error al obtener los datos del usuario";
+        throw new Error(errorMessage);
       }
       return mapStaffUserAccountApiToEntity(data[0]);
     } catch (error) {
       console.error(`Attempt ${attempt} failed:`, error);
       if (attempt === maxRetries) {
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new Error(
           "Todos los intentos fallaron. No se pudieron obtener los datos del usuario.",
         );

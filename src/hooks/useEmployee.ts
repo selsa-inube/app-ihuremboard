@@ -2,8 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 
 import { getEmployeeById } from "@services/employeeConsultation/getEmployeeById";
 import { Employee } from "@ptypes/employeePortalConsultation.types";
-import { useErrorFlag } from "@hooks/useErrorFlag";
 import { useHeaders } from "@hooks/useHeaders";
+import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
+import { modalErrorConfig } from "@config/modalErrorConfig";
 
 interface UseEmployeeResult {
   employee: Employee;
@@ -18,8 +19,7 @@ export const useEmployee = (initialEmployeeId: string): UseEmployeeResult => {
   const [error, setError] = useState<string | null>(null);
   const [employeeId, setEmployeeId] = useState<string>(initialEmployeeId);
   const { getHeaders } = useHeaders();
-
-  useErrorFlag({ flagShown: !!error, message: error ?? undefined });
+  const { showErrorModal } = useErrorModal();
 
   const fetchEmployee = useCallback(
     async (id = employeeId) => {
@@ -36,11 +36,17 @@ export const useEmployee = (initialEmployeeId: string): UseEmployeeResult => {
             ? err.message
             : "Ocurrió un error desconocido al obtener el empleado";
         setError(errorMessage);
+        console.error("Error al obtener la información del empleado:", err);
+        const errorConfig = modalErrorConfig[1010];
+        showErrorModal({
+          descriptionText: `${errorConfig.descriptionText}: ${String(err)}`,
+          solutionText: errorConfig.solutionText,
+        });
       } finally {
         setLoading(false);
       }
     },
-    [employeeId],
+    [employeeId, getHeaders, showErrorModal],
   );
 
   useEffect(() => {

@@ -3,7 +3,8 @@ import { useState, useCallback } from "react";
 import { updateHumanResourceRequest } from "@services/humanResources/updateHumanResourceRequest";
 import { ITraceability, ITask } from "@ptypes/humanResources.types";
 import { useHeaders } from "@hooks/useHeaders";
-import { useErrorFlag } from "@hooks/useErrorFlag";
+import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
+import { modalErrorConfig } from "@config/modalErrorConfig";
 
 interface IHumanResourceRequestResponse {
   employeeId: string;
@@ -38,18 +39,7 @@ export const useUpdateHumanResourceRequest =
     );
 
     const { getHeaders } = useHeaders();
-
-    useErrorFlag({
-      flagShown: Boolean(error),
-      message: error ?? undefined,
-      isSuccess: false,
-    });
-
-    useErrorFlag({
-      flagShown: Boolean(data),
-      message: "La solicitud fue actualizada correctamente.",
-      isSuccess: true,
-    });
+    const { showErrorModal } = useErrorModal();
 
     const updateRequest = useCallback(
       async (
@@ -81,12 +71,19 @@ export const useUpdateHumanResourceRequest =
             err instanceof Error
               ? err.message
               : "Ocurrió un error al actualizar la solicitud";
+
           setError(errorMessage);
+
+          const errorConfig = modalErrorConfig[1018];
+          showErrorModal({
+            descriptionText: `${errorConfig.descriptionText}: ${errorMessage}`,
+            solutionText: errorConfig.solutionText,
+          });
         } finally {
           setLoading(false);
         }
       },
-      [getHeaders],
+      [getHeaders, showErrorModal],
     );
 
     return { updateRequest, loading, error, data };
