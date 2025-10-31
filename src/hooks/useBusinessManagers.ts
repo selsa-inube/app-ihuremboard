@@ -5,8 +5,8 @@ import {
   IEmployeePortalByBusinessManager,
 } from "@ptypes/employeePortalBusiness.types";
 import { getBusinessManagerByCode } from "@services/businessManagers/getBusinessManagerById";
-
-import { useErrorFlag } from "./useErrorFlag";
+import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
+import { modalErrorConfig } from "@config/modalErrorConfig";
 
 export const useBusinessManagers = (
   portalPublicCode: IEmployeePortalByBusinessManager,
@@ -16,9 +16,7 @@ export const useBusinessManagers = (
   const [hasError, setHasError] = useState(false);
   const [codeError, setCodeError] = useState<number | undefined>(undefined);
   const [isFetching, setIsFetching] = useState(false);
-  const [flagShown, setFlagShown] = useState(false);
-
-  useErrorFlag({ flagShown });
+  const { showErrorModal } = useErrorModal();
 
   useEffect(() => {
     const fetchBusinessManagers = async () => {
@@ -33,8 +31,11 @@ export const useBusinessManagers = (
           !fetchedBusinessManagers ||
           Object.keys(fetchedBusinessManagers).length === 0
         ) {
-          setHasError(true);
-          setCodeError(1002);
+          const errorConfig = modalErrorConfig[1002];
+          showErrorModal({
+            descriptionText: errorConfig.descriptionText,
+            solutionText: errorConfig.solutionText,
+          });
           return;
         }
 
@@ -47,14 +48,18 @@ export const useBusinessManagers = (
         );
         setHasError(true);
         setCodeError(1007);
-        setFlagShown(true);
+        const errorConfig = modalErrorConfig[1007];
+        showErrorModal({
+          descriptionText: `${errorConfig.descriptionText}: ${String(err)}`,
+          solutionText: errorConfig.solutionText,
+        });
       } finally {
         setIsFetching(false);
       }
     };
 
     fetchBusinessManagers();
-  }, [portalPublicCode]);
+  }, [portalPublicCode, showErrorModal]);
 
   return { businessManagersData, hasError, codeError, isFetching };
 };

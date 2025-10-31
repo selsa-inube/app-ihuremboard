@@ -57,17 +57,18 @@ const updateHumanResourceRequest = async (
       const data = await res.json();
 
       if (!res.ok) {
-        throw {
-          message: data?.message ?? "Error al actualizar la solicitud",
-          status: res.status,
-          data,
-        };
+        const errorMessage =
+          data?.message ?? "Error al actualizar la solicitud";
+        throw new Error(errorMessage);
       }
 
       return mapHumanResourceRequestApiToEntity(data);
     } catch (error) {
       console.error(`Intento ${attempt} fallido:`, error);
       if (attempt === maxRetries) {
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new Error(
           "Todos los intentos fallaron. No se pudo actualizar la solicitud.",
         );

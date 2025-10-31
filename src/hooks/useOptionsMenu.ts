@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 import { useAppContext } from "@context/AppContext/useAppContext";
 import { getOptionForCustomerPortal } from "@services/staffPortal/getOptionForCustomerPortal";
 import { IOptionWithSubOptions } from "@ptypes/staffPortalBusiness.types";
-import { useSignOut } from "@hooks/useSignOut";
-
-import { useErrorFlag } from "./useErrorFlag";
+import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
+import { modalErrorConfig } from "@config/modalErrorConfig";
 
 export function useOptionsMenu(
   staffPortalPublicCode: string,
@@ -14,19 +13,10 @@ export function useOptionsMenu(
   const [optionData, setOptionData] = useState<IOptionWithSubOptions[]>([]);
   const [hasError, setHasError] = useState<number | null>(null);
   const [isFetching, setIsFetching] = useState(false);
-  const [flagShown, setFlagShown] = useState(false);
 
   const { provisionedPortal, selectedClient } = useAppContext();
 
-  const { signOut } = useSignOut();
-
-  useErrorFlag({ flagShown });
-
-  useEffect(() => {
-    if (hasError === 500 || hasError === 1001) {
-      signOut(`/error?code=${hasError}`);
-    }
-  }, [hasError, signOut]);
+  const { showErrorModal } = useErrorModal();
 
   useEffect(() => {
     if (!selectedClient || !businessUnitPublicCode) {
@@ -38,7 +28,11 @@ export function useOptionsMenu(
       setIsFetching(true);
       if (!provisionedPortal || !selectedClient) {
         setHasError(1001);
-        setFlagShown(true);
+        const errorConfig = modalErrorConfig[1001];
+        showErrorModal({
+          descriptionText: errorConfig.descriptionText,
+          solutionText: errorConfig.solutionText,
+        });
         setIsFetching(false);
         return;
       }
@@ -51,7 +45,11 @@ export function useOptionsMenu(
 
         if (staffOptionData.length === 0) {
           setHasError(1005);
-          setFlagShown(true);
+          const errorConfig = modalErrorConfig[1005];
+          showErrorModal({
+            descriptionText: errorConfig.descriptionText,
+            solutionText: errorConfig.solutionText,
+          });
           return;
         }
 
@@ -60,7 +58,11 @@ export function useOptionsMenu(
       } catch (err) {
         console.error("❌ Error en fetchOptionData:", err);
         setHasError(500);
-        setFlagShown(true);
+        const errorConfig = modalErrorConfig[1014];
+        showErrorModal({
+          descriptionText: `${errorConfig.descriptionText}: ${String(err)}`,
+          solutionText: errorConfig.solutionText,
+        });
       } finally {
         setIsFetching(false);
       }
@@ -71,6 +73,7 @@ export function useOptionsMenu(
     selectedClient,
     staffPortalPublicCode,
     businessUnitPublicCode,
+    showErrorModal,
   ]);
 
   return { optionData, hasError, isFetching };

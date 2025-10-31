@@ -43,9 +43,11 @@ const getHumanResourceRequests = async (
       }
 
       if (!res.ok) {
-        throw new Error(
-          `Error al obtener la solicitud de recursos humanos (Status: ${res.status})`,
-        );
+        const errorData = await res.json().catch(() => ({}));
+        const errorMessage =
+          errorData?.message ??
+          `Error al obtener la solicitud de recursos humanos (Status: ${res.status})`;
+        throw new Error(errorMessage);
       }
 
       const data = await res.json();
@@ -56,6 +58,9 @@ const getHumanResourceRequests = async (
           "Error al obtener la solicitud de recursos humanos:",
           error,
         );
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new Error(
           "Todos los intentos fallaron. No se pudo obtener la solicitud de recursos humanos.",
         );
