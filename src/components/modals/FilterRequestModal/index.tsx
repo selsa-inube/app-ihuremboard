@@ -15,6 +15,7 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
+import { Logger } from "@utils/logger";
 import { spacing } from "@design/tokens/spacing";
 import { validationMessages } from "@validations/validationMessages";
 import { SelectedFilters } from "@components/cards/SelectedFilters/index.tsx";
@@ -68,8 +69,9 @@ export function FilterRequestModal(props: FilterRequestModalProps) {
       status: "",
     },
     validationSchema,
-    onSubmit: () => {
-      console.log("Form submitted");
+    onSubmit: (values) => {
+      Logger.info("FilterRequestModal form submitted", { values });
+      if (onSubmit) onSubmit(values);
     },
   });
 

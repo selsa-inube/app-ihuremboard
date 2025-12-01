@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Stack } from "@inubekit/inubekit";
 
+import { Logger } from "@utils/logger";
 import { AppMenu } from "@components/layout/AppMenu";
 import { IRoute } from "@components/layout/AppMenu/types";
 import { mockPendingTasks, mockCompletedTasks } from "@config/TaskBoard.config";
@@ -77,11 +78,11 @@ function ExtendedLinkingRequestUI(props: ExtendedLinkingRequestUIProps) {
   };
 
   const handleDiscard = () => {
-    console.log("Discard request");
+    Logger.info("Discard request", { requestId: id });
   };
 
   const handleSeeRequirements = () => {
-    console.log("See Requirements");
+    Logger.info("See Requirements", { requestId: id });
   };
 
   return (

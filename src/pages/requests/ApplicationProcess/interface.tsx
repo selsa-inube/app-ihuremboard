@@ -2,6 +2,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { useIAuth } from "@inube/iauth-react";
 
+import { Logger } from "@utils/logger";
 import { IRoute } from "@components/layout/AppMenu/types";
 import { requestConfigs } from "@config/requests.config";
 import { capitalizeFullName } from "@utils/string";
@@ -174,10 +175,10 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     [decision, requestData, resolvedHeaders, updateRequest, user],
   );
 
-  const handleDiscard = () => console.log("Descartar solicitud");
-  const handleExecute = () => console.log("Ejecutar solicitud");
-  const handleAttach = () => console.log("Adjuntar archivos");
-  const handleSeeAttachments = () => console.log("Ver adjuntos");
+  const handleDiscard = () => Logger.info("Descartar solicitud");
+  const handleExecute = () => Logger.info("Ejecutar solicitud");
+  const handleAttach = () => Logger.info("Adjuntar archivos");
+  const handleSeeAttachments = () => Logger.info("Ver adjuntos");
 
   return {
     id,

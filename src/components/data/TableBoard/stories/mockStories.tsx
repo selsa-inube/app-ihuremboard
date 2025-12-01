@@ -8,6 +8,8 @@ import {
 import { isValidElement } from "react";
 import { Icon, Stack, Tag } from "@inubekit/inubekit";
 
+import { Logger } from "@utils/logger";
+
 import { IAction, IEntries } from "../types";
 
 const appearanceIcon = (tag: string) => {
@@ -74,9 +76,8 @@ export const titlesMock = [
 ];
 
 const receiveData = (data: IEntries) => {
-  console.log(data);
+  Logger.info("receiveData called", { data });
 };
-
 export const actionsMock: IAction[] = [
   {
     id: "agregar",
@@ -119,9 +120,8 @@ export const actionsMock: IAction[] = [
 ];
 
 const resiveDataMobile = (data: IEntries) => {
-  console.log(data, "function que recibe data");
+  Logger.info("resiveDataMobile called", { data });
 };
-
 const iconActionsMobile = (tag: string) => {
   if (tag === "Cumple") {
     return <MdCheck />;
