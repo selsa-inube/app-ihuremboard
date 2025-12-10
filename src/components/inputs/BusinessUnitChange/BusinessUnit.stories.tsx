@@ -1,7 +1,10 @@
 import { Meta, StoryFn } from "@storybook/react";
-import { BusinessUnitChange } from "./index";
-import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
 import { BrowserRouter } from "react-router-dom";
+
+import { Logger } from "@utils/logger";
+import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
+
+import { BusinessUnitChange } from "./index";
 
 const mockBusinessUnits: IBusinessUnit[] = [
   {
@@ -44,5 +47,6 @@ export const Default = Template.bind({});
 Default.args = {
   businessUnits: mockBusinessUnits,
   selectedClient: "Unit 1",
-  onLogoClick: (businessUnit) => console.log("Clicked: ", businessUnit),
+  onLogoClick: (businessUnit) =>
+    Logger.info("Business unit logo clicked", { businessUnit }),
 };

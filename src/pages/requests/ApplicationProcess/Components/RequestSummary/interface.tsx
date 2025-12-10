@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { IOption } from "@inubekit/inubekit";
 
+import { Logger } from "@utils/logger";
+
 import {
   HumanResourceRequestData,
   ERequestType,
@@ -45,7 +47,10 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
       parsedData = {};
     }
   } catch (e) {
-    console.warn("Error parseando humanResourceRequestData:", e, rawData);
+    Logger.warn("Error parseando humanResourceRequestData", {
+      error: e,
+      rawData,
+    });
     parsedData = {};
   }
 
@@ -97,10 +102,10 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
   const [showActions, setShowActions] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
-  const handleDiscard = () => console.log("Descartar solicitud");
-  const handleExecute = () => console.log("Ejecutar solicitud");
-  const handleAttach = () => console.log("Adjuntar archivos");
-  const handleSeeAttachments = () => console.log("Ver adjuntos");
+  const handleDiscard = () => Logger.info("Descartar solicitud");
+  const handleExecute = () => Logger.info("Ejecutar solicitud");
+  const handleAttach = () => Logger.info("Adjuntar archivos");
+  const handleSeeAttachments = () => Logger.info("Ver adjuntos");
 
   return {
     requestNumber,

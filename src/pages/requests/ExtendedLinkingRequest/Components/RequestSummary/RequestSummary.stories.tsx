@@ -1,5 +1,7 @@
 import { Meta } from "@storybook/react";
 
+import { Logger } from "@utils/logger";
+
 import { RequestSummary, RequestSummaryProps } from ".";
 
 const meta: Meta<typeof RequestSummary> = {
@@ -27,8 +29,10 @@ Default.args = {
   staffName: "John Doe",
   requestNumber: "123456",
   requestDate: "2024-03-20",
-  onDiscard: console.log("onDiscard"),
-  onSeeRequirements: console.log("onDiscard"),
+  onDiscard: () =>
+    Logger.info("onDiscard clicked", { requestNumber: "123456" }),
+  onSeeRequirements: () =>
+    Logger.info("onSeeRequirements clicked", { requestNumber: "123456" }),
 };
 
 export const LoadingState = () => <RequestSummary isLoading={true} />;

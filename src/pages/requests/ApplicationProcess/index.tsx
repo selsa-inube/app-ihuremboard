@@ -15,6 +15,7 @@ import {
   MdOutlineHowToReg,
 } from "react-icons/md";
 
+import { Logger } from "@utils/logger";
 import { TextAreaModal } from "@components/modals/TextAreaModal";
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
@@ -152,7 +153,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                 transition: "color 0.2s ease-in-out",
               }}
               onClick={
-                canRegister ? () => console.log("Clic en registrar") : undefined
+                canRegister ? () => Logger.info("Clic en registrar") : undefined
               }
             />
           </Stack>
@@ -304,9 +305,9 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                 activeButton={{
                   title: "Validación humana",
                   titleSistemValidation: "Validación del sistema",
-                  onClick: () => console.log("Validación humana"),
+                  onClick: () => Logger.info("Validación humana"),
                   onClickSistemValidation: () =>
-                    console.log("Validación del sistema"),
+                    Logger.info("Validación del sistema"),
                 }}
               >
                 {requirementsToShow.length > 0 ? (

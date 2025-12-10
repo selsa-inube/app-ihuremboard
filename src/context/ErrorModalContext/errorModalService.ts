@@ -1,5 +1,7 @@
 import { IButtonAppearance } from "@inubekit/inubekit";
 
+import { Logger } from "@utils/logger";
+
 export interface ErrorModalOptions {
   title?: string;
   descriptionText: string;
@@ -23,7 +25,7 @@ export function unregisterErrorModalShow(): void {
 
 export function showErrorModalFromService(opts: ErrorModalOptions): void {
   if (!_show) {
-    console.warn("ErrorModal provider not registered");
+    Logger.warn("ErrorModal provider not registered");
     return;
   }
   _show(opts);

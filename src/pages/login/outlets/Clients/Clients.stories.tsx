@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 
+import { Logger } from "@utils/logger";
 import { clientsDataMock } from "@mocks/login/clients.mock";
 import { IClient } from "@context/AppContext/types";
 
@@ -22,7 +23,7 @@ const story = {
 };
 
 const handleClientChange = (client: IClient) => {
-  console.log("Cliente seleccionado:", client);
+  Logger.info("Cliente seleccionado", { client });
 };
 
 const Default = () => (
