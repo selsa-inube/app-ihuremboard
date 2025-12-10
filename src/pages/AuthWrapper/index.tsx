@@ -2,7 +2,6 @@ import { ReactNode } from "react";
 import { IAuthProvider } from "@inube/iauth-react";
 
 import { environment } from "@config/environment";
-import { decrypt } from "@utils/encrypt";
 import { ErrorPage } from "@components/layout/ErrorPage";
 import { usePortalAuth } from "@hooks/usePortalAuth";
 
@@ -26,9 +25,12 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
       originatorId={environment.ORIGINATOR_ID}
       callbackUrl={environment.REDIRECT_URI}
       iAuthUrl={environment.IAUTH_URL}
-      clientId={decrypt(authConfig.clientId)}
-      clientSecret={decrypt(authConfig.clientSecret)}
       serviceUrl={environment.IAUTH_SERVICE_URL}
+      codeVerifier={environment.CODE_VERIFIER}
+      codeChallenge={environment.CODE_CHALLENGE}
+      state={environment.STATE}
+      applicationName={environment.APPLICATION_NAME}
+      originatorCode={environment.ORIGINATOR_CODE}
     >
       {children}
     </IAuthProvider>
