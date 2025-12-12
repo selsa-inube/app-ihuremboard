@@ -16,6 +16,8 @@ import { InfoModal } from "@components/modals/InfoModal";
 import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
 import { LoadingAppUI } from "@pages/login/outlets/LoadingApp/interface";
 import { ErrorPage } from "@components/layout/ErrorPage";
+import { Logger } from "@utils/logger";
+import { labels } from "@i18n/labels";
 
 import { IBusinessUnit } from "./types";
 
@@ -100,8 +102,17 @@ function AppPage(props: AppPageProps) {
         setClientWithoutPrivileges(businessUnit);
         setLocalModalVisible(true);
       }
-    } catch (error) {
-      console.error("Error al obtener privilegios del portal:", error);
+    } catch (error: unknown) {
+      const normalizedError =
+        error instanceof Error
+          ? error
+          : new Error("Unknown error while getting portal privileges");
+
+      Logger.error("Error al obtener privilegios del portal", normalizedError, {
+        module: "PortalPrivileges",
+        action: "getPrivileges",
+      });
+
       setClientWithoutPrivileges(businessUnit);
       setLocalModalVisible(true);
     }
@@ -152,10 +163,10 @@ function AppPage(props: AppPageProps) {
     <StyledAppPage>
       {localModalVisible && (
         <InfoModal
-          title="Acceso no autorizado"
-          titleDescription="No tienes privilegios en esta unidad de negocio"
-          description="Por favor, selecciona otra."
-          buttonText="Cerrar"
+          title={labels.layout.modals.unauthorizedAccess.title}
+          titleDescription={labels.layout.modals.unauthorizedAccess.description}
+          description={labels.layout.modals.unauthorizedAccess.helperText}
+          buttonText={labels.layout.modals.unauthorizedAccess.button}
           onCloseModal={() => {
             setLocalModalVisible(false);
             setClientWithoutPrivileges(null);

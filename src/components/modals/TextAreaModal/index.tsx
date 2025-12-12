@@ -13,10 +13,14 @@ import { Formik, Form, Field, FieldProps, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { MdClear } from "react-icons/md";
 
+import { labels } from "@i18n/labels";
 import { spacing } from "@design/tokens/spacing";
 
-import { FormValues } from "./types";
 import { StyledModal, StyledContainerClose } from "./styles";
+
+interface FormValues {
+  textarea: string;
+}
 
 export interface TextAreaModalProps {
   title: string;
@@ -56,8 +60,8 @@ export function TextAreaModal(props: TextAreaModalProps) {
     textarea: readOnly
       ? Yup.string()
       : Yup.string()
-          .max(maxLength, "El número de caracteres es demasiado largo")
-          .required("Este campo es obligatorio"),
+          .max(maxLength, labels.modal.validation.textarea.maxLength)
+          .required(labels.modal.validation.textarea.required),
   });
 
   const isMobile = useMediaQuery("(max-width: 700px)");
@@ -77,8 +81,8 @@ export function TextAreaModal(props: TextAreaModalProps) {
             {title}
           </Text>
           <StyledContainerClose onClick={onCloseModal}>
-            <Stack alignItems="center" gap={spacing.s100}>
-              <Text>Cerrar</Text>
+            <Stack alignItems="center" gap="8px">
+              <Text>{labels.modal.generic.close}</Text>
               <Icon
                 icon={<MdClear />}
                 size="24px"
@@ -128,6 +132,7 @@ export function TextAreaModal(props: TextAreaModalProps) {
                 gap={spacing.s250}
               >
                 <Button
+                  type="button"
                   variant="outlined"
                   appearance="gray"
                   onClick={() => {

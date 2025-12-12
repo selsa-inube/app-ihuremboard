@@ -2,6 +2,7 @@ import { Stack, Text, Divider, Icon, useMediaQuery } from "@inubekit/inubekit";
 import { MdOutlinePerson } from "react-icons/md";
 
 import { spacing } from "@design/tokens/spacing";
+import { labels } from "@i18n/labels";
 
 import { StyledRequestCard, StyledTitle } from "./styles";
 
@@ -54,14 +55,14 @@ const RequestCard = (props: RequestCardProps) => {
           <Text size="small" type="label">
             {employeeName?.trim()
               ? `${employeeName} ${employeeSurnames ?? ""}`.trim()
-              : "Sin nombre de empleado"}
+              : labels.cards.employeeWithoutName}
           </Text>
         </Stack>
 
         <Stack direction="column" gap={spacing.s100}>
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">
-              Número
+              {labels.cards.numberLabel}
             </Text>
             <Text size="medium" appearance="gray">
               {id}
@@ -70,7 +71,7 @@ const RequestCard = (props: RequestCardProps) => {
 
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">
-              Tiempo de solicitud
+              {labels.cards.requestTimeLabel}
             </Text>
             <Text size="medium" appearance="gray">
               {requestDate}
@@ -79,16 +80,16 @@ const RequestCard = (props: RequestCardProps) => {
 
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">
-              Estado
+              {labels.cards.statusLabel}
             </Text>
             <Text size="medium" appearance="gray">
-              {taskName ?? "Sin tareas"}
+              {taskName ?? labels.cards.noTasksLabel}
             </Text>
           </Stack>
 
           <Stack direction="column" gap={spacing.s050}>
             <Text type="title" weight="bold" size="small">
-              Responsable
+              {labels.cards.responsibleLabel}
             </Text>
             <Text size="medium" appearance="gray">
               {responsible}

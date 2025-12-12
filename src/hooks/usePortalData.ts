@@ -5,6 +5,7 @@ import { staffPortalByBusinessManager } from "@services/staffPortal/StaffPortalB
 import { IStaffPortalByBusinessManager } from "@ptypes/staffPortalBusiness.types";
 import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
 import { modalErrorConfig } from "@config/modalErrorConfig";
+import { Logger } from "@utils/logger";
 
 export const usePortalData = (codeParame: string) => {
   const [portalData, setPortalData] = useState<IStaffPortalByBusinessManager>(
@@ -20,18 +21,33 @@ export const usePortalData = (codeParame: string) => {
       setIsFetching(true);
       try {
         const staffPortalData = await staffPortalByBusinessManager(codeParame);
-        if (!staffPortalData || Object.keys(staffPortalData).length === 0)
+
+        if (!staffPortalData || Object.keys(staffPortalData).length === 0) {
           return;
+        }
+
         const encryptedParamValue = encrypt(codeParame);
         localStorage.setItem("portalCode", encryptedParamValue);
+
         setHasError(null);
         setPortalData(staffPortalData);
-      } catch (err) {
-        console.error("❌ Error al obtener datos del portal:", err);
+      } catch (error: unknown) {
+        const normalizedError =
+          error instanceof Error
+            ? error
+            : new Error("Unknown error while fetching portal data");
+
+        Logger.error("Error al obtener datos del portal", normalizedError, {
+          module: "usePortalData",
+          action: "staffPortalByBusinessManager",
+          codeParame,
+        });
+
         setHasError(500);
+
         const errorConfig = modalErrorConfig[1016];
         showErrorModal({
-          descriptionText: `${errorConfig.descriptionText}: ${String(err)}`,
+          descriptionText: errorConfig.descriptionText,
           solutionText: errorConfig.solutionText,
         });
       } finally {

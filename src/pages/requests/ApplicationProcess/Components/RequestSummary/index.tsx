@@ -14,6 +14,7 @@ import {
 } from "react-icons/md";
 
 import { spacing } from "@design/tokens/spacing";
+import { labels } from "@i18n/labels";
 
 import {
   StyledRequestSummaryContainer,
@@ -58,7 +59,7 @@ export function RequestSummary(props: RequestSummaryProps) {
       >
         <Stack gap={spacing.s075}>
           <Text type="title" size="medium" weight="bold">
-            Estado:
+            {labels.requests.summary.status}
           </Text>
           <Text type="title" size="medium" appearance="gray">
             {statusLabel}
@@ -72,10 +73,15 @@ export function RequestSummary(props: RequestSummaryProps) {
             onAttach={handleAttach}
             onSeeAttachments={handleSeeAttachments}
             actionDescriptions={{
-              execute: "No puedes ejecutar esta acción ahora",
-              discard: "No puedes descartar esta acción ahora",
-              attach: "No puedes adjuntar archivos en este momento",
-              seeAttachments: "No puedes ver los adjuntos en este momento",
+              execute:
+                labels.requests.applicationProcess.actionsMobile.cannotExecute,
+              discard:
+                labels.requests.applicationProcess.actionsMobile.cannotDiscard,
+              attach:
+                labels.requests.applicationProcess.actionsMobile.cannotAttach,
+              seeAttachments:
+                labels.requests.applicationProcess.actionsMobile
+                  .cannotSeeAttachments,
             }}
           />
         ) : (
@@ -86,7 +92,7 @@ export function RequestSummary(props: RequestSummaryProps) {
               iconBefore={<MdAutorenew />}
               spacing="compact"
             >
-              Ejecutar
+              {labels.requests.actions.execute}
             </Button>
             <Button
               appearance="danger"
@@ -94,18 +100,18 @@ export function RequestSummary(props: RequestSummaryProps) {
               iconBefore={<MdOutlineCancel />}
               spacing="compact"
             >
-              Descartar
+              {labels.requests.actions.discard}
             </Button>
             <VerticalDivider />
             <Button variant="outlined" onClick={handleAttach} spacing="compact">
-              Adjuntar
+              {labels.requests.actions.attach}
             </Button>
             <Button
               variant="outlined"
               onClick={handleSeeAttachments}
               spacing="compact"
             >
-              Ver adjuntos
+              {labels.requests.actions.seeAttachments}
             </Button>
           </Stack>
         )}
@@ -122,7 +128,7 @@ export function RequestSummary(props: RequestSummaryProps) {
           <Stack direction="column" gap={spacing.s075}>
             <Stack gap={spacing.s050}>
               <Text type="label" weight="bold">
-                No. de solicitud
+                {labels.requests.summary.requestNumberLabel}
               </Text>
               <Text appearance="gray" type="label">
                 {requestNumber ?? "N/A"}
@@ -131,7 +137,7 @@ export function RequestSummary(props: RequestSummaryProps) {
 
             <Stack gap={spacing.s050}>
               <Text type="label" weight="bold">
-                Fecha de solicitud
+                {labels.requests.summary.requestDateLabel}
               </Text>
               <Text appearance="gray" type="label">
                 {requestDate ?? "N/A"}
@@ -140,7 +146,7 @@ export function RequestSummary(props: RequestSummaryProps) {
 
             <Stack gap={spacing.s050}>
               <Text type="label" weight="bold">
-                Tipo de solicitud
+                {labels.requests.summary.requestTypeLabel}
               </Text>
               <Text appearance="gray" type="label">
                 {title ?? "N/A"}
@@ -173,7 +179,7 @@ export function RequestSummary(props: RequestSummaryProps) {
             <DetailsGrid>
               <DetailItem>
                 <Text type="label" weight="bold">
-                  Días a pagar
+                  {labels.requests.summary.daysToPay}
                 </Text>
                 <Text appearance="gray" type="label">
                   {daysToPay ?? "N/A"}
@@ -182,7 +188,7 @@ export function RequestSummary(props: RequestSummaryProps) {
 
               <DetailItem>
                 <Text type="label" weight="bold">
-                  Número de contrato
+                  {labels.requests.summary.contractNumber}
                 </Text>
                 <Text appearance="gray" type="label">
                   {contractNumber ?? "N/A"}
@@ -191,7 +197,7 @@ export function RequestSummary(props: RequestSummaryProps) {
 
               <DetailItem>
                 <Text type="label" weight="bold">
-                  Nombre de la empresa
+                  {labels.requests.summary.businessName}
                 </Text>
                 <Text appearance="gray" type="label">
                   {businessName ?? "N/A"}
@@ -200,7 +206,7 @@ export function RequestSummary(props: RequestSummaryProps) {
 
               <DetailItem>
                 <Text type="label" weight="bold">
-                  Tipo de contrato
+                  {labels.requests.summary.contractType}
                 </Text>
                 <Text appearance="gray" type="label">
                   {contractType ?? "N/A"}
@@ -209,7 +215,7 @@ export function RequestSummary(props: RequestSummaryProps) {
 
               <DetailItem>
                 <Text type="label" weight="bold">
-                  Fecha de desembolso
+                  {labels.requests.summary.disbursementDate}
                 </Text>
                 <Text appearance="gray" type="label">
                   {disbursementDate ?? "N/A"}
@@ -219,7 +225,7 @@ export function RequestSummary(props: RequestSummaryProps) {
 
             <DetailItem>
               <Text type="label" weight="bold">
-                Observaciones del empleado
+                {labels.requests.summary.employeeObservations}
               </Text>
               <Text appearance="gray" type="label">
                 {observationEmployee ?? "N/A"}

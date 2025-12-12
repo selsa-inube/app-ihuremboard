@@ -5,6 +5,7 @@ import {
 } from "@config/environment";
 
 import { mapHumanResourceRequestApiToEntity } from "./mappers";
+import { Logger } from "@utils/logger";
 
 const getHumanResourceRequests = async (headers: Record<string, string>) => {
   const maxRetries = maxRetriesServices;
@@ -50,15 +51,17 @@ const getHumanResourceRequests = async (headers: Record<string, string>) => {
       return Array.isArray(data)
         ? data.map((item) => mapHumanResourceRequestApiToEntity(item))
         : [];
-    } catch (error) {
+    } catch (err: unknown) {
+      const normalizedError =
+        err instanceof Error ? err : new Error(String(err));
+
       if (attempt === maxRetries) {
-        console.error(
-          "Error al obtener las solicitudes de recursos humanos:",
-          error,
+        Logger.error(
+          "Error al obtener las solicitudes de recursos humanos después de varios intentos",
+          normalizedError,
+          { module: "getHumanResourceRequests", attempt },
         );
-        throw new Error(
-          "Todos los intentos fallaron. No se pudo obtener las solicitudes de recursos humanos.",
-        );
+        throw normalizedError;
       }
     }
   }

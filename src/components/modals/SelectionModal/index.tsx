@@ -10,6 +10,7 @@ import {
   useMediaQuery,
 } from "@inubekit/inubekit";
 
+import { labels } from "@i18n/labels";
 import { spacing } from "@design/tokens/spacing";
 
 import { StyledModal, StyledContainerClose } from "./styles";
@@ -55,7 +56,7 @@ export function SelectionModal(props: SelectionModalProps) {
           </Text>
           <StyledContainerClose onClick={onCloseModal}>
             <Stack alignItems="center" gap={spacing.s100}>
-              <Text>Cerrar</Text>
+              <Text>{labels.modal.generic.close}</Text>
               <Icon
                 icon={<MdClear />}
                 size="24px"

@@ -11,6 +11,7 @@
       "@design/*": ["src/design/*"],
       "@components/*": ["src/components/*"],
       "@config/*": ["src/config/*"],
+      "@i18n/*": ["src/i18n/*"],
       "@pages/*": ["src/pages/*"],
       "@hooks/*": ["src/hooks/*"],
       "@mocks/*": ["src/mocks/*"],

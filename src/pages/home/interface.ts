@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { getOptionForCustomerPortal } from "@services/staffPortal/getOptionForCustomerPortal";
 import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
 import { useAppContext } from "@context/AppContext";
+import { Logger } from "@utils/logger";
 
 export interface IBusinessUnitFixed {
   businessUnitPublicCode: string;
@@ -57,15 +58,30 @@ export const useHome = () => {
           );
 
           setOptionForCustomerPortal(options);
-        } catch (error) {
-          console.error("Error obteniendo opciones:", error);
+        } catch (error: unknown) {
+          const normalizedError =
+            error instanceof Error
+              ? error
+              : new Error("Unknown error while fetching options");
+
+          Logger.error(
+            "Error obteniendo opciones del portal",
+            normalizedError,
+            {
+              module: "useHome",
+              action: "getOptionForCustomerPortal",
+              staffPortalPublicCode,
+              businessUnitPublicCode: selectedClient?.id,
+              userId: user?.id,
+            },
+          );
         } finally {
           setLoading(false);
         }
       }
     };
 
-    fetchOptions();
+    void fetchOptions();
   }, [
     user,
     optionForCustomerPortal,
@@ -139,8 +155,20 @@ export const useHome = () => {
         setClientWithoutPrivileges(businessUnit);
         setLocalModalVisible(true);
       }
-    } catch (error) {
-      console.error("Error al obtener privilegios del portal:", error);
+    } catch (error: unknown) {
+      const normalizedError =
+        error instanceof Error
+          ? error
+          : new Error("Unknown error while fetching use cases");
+
+      Logger.error("Error al obtener privilegios del portal", normalizedError, {
+        module: "useHome",
+        action: "getUseCasesByStaff",
+        businessUnitPublicCode: businessUnit.businessUnitPublicCode,
+        userId: user?.id,
+        staffPortalPublicCode,
+      });
+
       setClientWithoutPrivileges(businessUnit);
       setLocalModalVisible(true);
     } finally {

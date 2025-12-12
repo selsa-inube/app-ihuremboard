@@ -7,6 +7,7 @@ import {
   useMediaQueries,
 } from "@inubekit/inubekit";
 
+import { labels } from "@i18n/labels";
 import { spacing } from "@design/tokens/spacing";
 import selsaLogo from "@assets/images/logoInube.png";
 import errorImage from "@assets/images/img-team-building-68.png";
@@ -45,11 +46,11 @@ const ListContent = ({ items }: { items: string[] }) => (
 function ErrorPage(props: ErrorPageProps) {
   const {
     logo = selsaLogo,
-    logoAlt = "Sistemas Enlinea",
-    heading = "¡Ups! Algo salió mal...",
+    logoAlt = labels.layout.errorPage.defaultLogoAlt,
+    heading = labels.layout.errorPage.defaultHeading,
     image = errorImage,
-    imageAlt = "Ha surgido un error. Revisa la descripción",
-    nameButton = "Regresar",
+    imageAlt = labels.layout.errorPage.defaultImageAlt,
+    nameButton = labels.layout.errorPage.defaultButtonName,
     errorCode = 0,
     onClick,
   } = props;
@@ -59,8 +60,8 @@ function ErrorPage(props: ErrorPageProps) {
   const isMobile = matches["(max-width: 600px)"];
 
   const errorDetail = errorCodes[errorCode] ?? {
-    whatWentWrong: ["No se proporcionó información sobre el error."],
-    howToFix: ["Intenta nuevamente más tarde."],
+    whatWentWrong: labels.layout.errorPage.defaultWhatWentWrong,
+    howToFix: labels.layout.errorPage.defaultHowToFix,
   };
 
   return (
@@ -116,7 +117,7 @@ function ErrorPage(props: ErrorPageProps) {
               >
                 <Stack direction="column" gap={spacing.s300} width="100%">
                   <Text type="headline" size="medium" weight="bold">
-                    ¿Qué salió mal?
+                    {labels.layout.errorPage.whatWentWrongTitle}
                   </Text>
                   <StyledDiv>
                     <ListContent items={errorDetail.whatWentWrong} />
@@ -126,7 +127,7 @@ function ErrorPage(props: ErrorPageProps) {
                 {isMobile && <Divider dashed />}
                 <Stack direction="column" gap={spacing.s300} width="100%">
                   <Text type="headline" size="medium" weight="bold">
-                    ¿Cómo solucionarlo?
+                    {labels.layout.errorPage.howToFixTitle}
                   </Text>
                   <StyledDiv>
                     <ListContent items={errorDetail.howToFix} />
@@ -148,7 +149,7 @@ function ErrorPage(props: ErrorPageProps) {
       </StyledMainContent>
       <StyledFooter>
         <Text appearance="gray" textAlign="center" size="small" weight="bold">
-          © 2024 Inube
+          {labels.layout.errorPage.footerText}
         </Text>
       </StyledFooter>
     </StyledContainer>

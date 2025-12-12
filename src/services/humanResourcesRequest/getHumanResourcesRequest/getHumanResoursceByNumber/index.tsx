@@ -5,8 +5,8 @@ import {
 } from "@config/environment";
 
 import { HumanResourceRequest } from "@ptypes/humanResourcesRequest.types";
-
 import { mapHumanResourceRequestApiToEntity } from "../mappers";
+import { Logger } from "@utils/logger";
 
 const getHumanResourceRequests = async (
   humanResourceRequestNumber: string,
@@ -52,18 +52,21 @@ const getHumanResourceRequests = async (
 
       const data = await res.json();
       return mapHumanResourceRequestApiToEntity(data[0]);
-    } catch (error) {
+    } catch (err: unknown) {
+      const normalizedError =
+        err instanceof Error ? err : new Error(String(err));
+
       if (attempt === maxRetries) {
-        console.error(
-          "Error al obtener la solicitud de recursos humanos:",
-          error,
+        Logger.error(
+          "Error al obtener la solicitud de recursos humanos después de varios intentos",
+          normalizedError,
+          {
+            module: "getHumanResourceRequests",
+            attempt,
+            requestNumber: humanResourceRequestNumber,
+          },
         );
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error(
-          "Todos los intentos fallaron. No se pudo obtener la solicitud de recursos humanos.",
-        );
+        throw normalizedError;
       }
     }
   }

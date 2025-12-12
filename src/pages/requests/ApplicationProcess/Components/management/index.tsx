@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { MdOutlineSend, MdAttachFile } from "react-icons/md";
 import { Stack, Icon, Textfield } from "@inubekit/inubekit";
 
+import { labels } from "@i18n/labels";
 import { Fieldset } from "@components/data/Fieldset";
 import { Message } from "@components/data/Message";
 
@@ -56,7 +57,7 @@ export const ManagementUI = ({
           {
             id: "0",
             type: "system" as const,
-            text: "No hay trazabilidad disponible para esta solicitud.",
+            text: labels.requests.management.noTraceability,
             date: new Date().toISOString(),
           },
         ]),
@@ -85,7 +86,7 @@ export const ManagementUI = ({
 
   return (
     <Fieldset
-      title="Gestión de Solicitud"
+      title={labels.requests.management.fieldsetTitle}
       heightFieldset="472px"
       aspectRatio={isMobile ? "auto" : "1"}
     >
@@ -121,7 +122,7 @@ export const ManagementUI = ({
             />
             <Textfield
               id="text"
-              placeholder="Ej.: Escribe tu mensaje"
+              placeholder={labels.requests.management.placeholderMessage}
               fullwidth
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}

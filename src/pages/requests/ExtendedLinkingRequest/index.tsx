@@ -1,25 +1,24 @@
 import { useParams } from "react-router-dom";
-import { useMediaQuery } from "@inubekit/inubekit";
+
+import { labels } from "@i18n/labels";
 
 import { ExtendedLinkingRequestUI } from "./interface";
 
 function ExtendedLinkingRequest() {
   const { id } = useParams();
 
-  const isTablet = useMediaQuery("(max-width: 1100px)");
-
   const breadcrumbs = {
     label: "Trámite de solicitud",
     crumbs: [
       {
         path: "/",
-        label: "Inicio",
+        label: labels.requests.breadcrumbs.home,
         id: "/",
         isActive: false,
       },
       {
         path: "/requests",
-        label: isTablet ? "..." : "Solicitudes en trámite",
+        label: labels.requests.breadcrumbs.list,
         id: "/requests",
         isActive: false,
       },
@@ -34,7 +33,7 @@ function ExtendedLinkingRequest() {
         ...breadcrumbs.crumbs,
         {
           path: `/requests/linking-request/${id}`,
-          label: "Trámite de solicitud",
+          label: labels.requests.breadcrumbs.applicationProcess,
           id: `/requests/linking-request/${id}`,
           isActive: true,
         },

@@ -6,6 +6,7 @@ import { useAppContext } from "@context/AppContext/useAppContext";
 import { useHeaders } from "@hooks/useHeaders";
 import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
 import { modalErrorConfig } from "@config/modalErrorConfig";
+import { Logger } from "@utils/logger";
 
 export const useHumanResourceRequest = (
   requestNumber: string | null | undefined,
@@ -28,22 +29,42 @@ export const useHumanResourceRequest = (
     try {
       const headers = await getHeaders();
       const response = await getHumanResourceRequests(requestNumber, headers);
+
       if (!response || Object.keys(response).length === 0) {
         setError(1013);
+
         const errorConfig = modalErrorConfig[1013];
         showErrorModal({
           descriptionText: errorConfig.descriptionText,
           solutionText: errorConfig.solutionText,
         });
+
         return;
       }
+
       setData(response);
-    } catch (err) {
-      console.error("Error al obtener la solicitud de recursos humanos:", err);
+    } catch (error: unknown) {
+      const normalizedError =
+        error instanceof Error
+          ? error
+          : new Error("Unknown error while fetching HR request");
+
+      Logger.error(
+        "Error al obtener la solicitud de recursos humanos",
+        normalizedError,
+        {
+          module: "useHumanResourceRequest",
+          action: "getHumanResourceRequests",
+          requestNumber,
+          selectedClientId: selectedClient?.id,
+        },
+      );
+
       setError(1008);
+
       const errorConfig = modalErrorConfig[1008];
       showErrorModal({
-        descriptionText: `${errorConfig.descriptionText}: ${String(err)}`,
+        descriptionText: errorConfig.descriptionText,
         solutionText: errorConfig.solutionText,
       });
     } finally {
@@ -52,7 +73,7 @@ export const useHumanResourceRequest = (
   };
 
   useEffect(() => {
-    fetchData();
+    void fetchData();
   }, [requestNumber, selectedClient?.id]);
 
   return { data, isLoading, error, refetch: fetchData };

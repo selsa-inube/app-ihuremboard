@@ -9,6 +9,7 @@ import {
   IApiErrorResponse,
 } from "@ptypes/humanResources.types";
 import { mapHumanDecisionTasksApiToEntity } from "./mappers";
+import { Logger } from "@utils/logger";
 
 const getHumanDecisionTasks = async (
   requestType: string,
@@ -47,9 +48,22 @@ const getHumanDecisionTasks = async (
 
       const data = await res.json();
       return mapHumanDecisionTasksApiToEntity(data);
-    } catch (error) {
+    } catch (err: unknown) {
       if (attempt === maxRetries) {
-        console.error("❌ Error al obtener human decisions tasks:", error);
+        const normalizedError =
+          err instanceof Error ? err : new Error("Unknown fetch error");
+
+        Logger.error(
+          "Error al obtener human decisions tasks",
+          normalizedError,
+          {
+            module: "getHumanDecisionTasks",
+            requestType,
+            businessUnits,
+            attempt,
+          },
+        );
+
         throw new Error(
           "Todos los intentos fallaron. No se pudieron obtener las decisiones humanas.",
         );

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Stack } from "@inubekit/inubekit";
 
+import { labels } from "@i18n/labels";
 import { Logger } from "@utils/logger";
 import { AppMenu } from "@components/layout/AppMenu";
 import { IRoute } from "@components/layout/AppMenu/types";
@@ -34,8 +35,8 @@ function ExtendedLinkingRequestUI(props: ExtendedLinkingRequestUIProps) {
 
   useErrorFlag({
     flagShown: showSuccessFlag,
-    message: "El nuevo responsable se asignó con éxito.",
-    title: "Responsable asignado.",
+    message: labels.requests.flags.assignResponsibleSuccess.message,
+    title: labels.requests.flags.assignResponsibleSuccess.title,
     isSuccess: true,
     duration: 5000,
   });
@@ -103,7 +104,7 @@ function ExtendedLinkingRequestUI(props: ExtendedLinkingRequestUIProps) {
 
         {showStaffModal && (
           <SelectStaffModal
-            title="Cambiar responsable"
+            title={labels.requests.modals.selectStaff.title}
             portalId="portal"
             loading={false}
             selectionOptions={mockStaffMembers}

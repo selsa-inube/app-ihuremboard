@@ -1,6 +1,8 @@
 import { MdAutorenew, MdOutlineCancel, MdAttachFile } from "react-icons/md";
 import { FaRegFileLines } from "react-icons/fa6";
 
+import { labels } from "@i18n/labels";
+
 import { IAction } from "./types";
 
 interface ActionsProps {
@@ -40,7 +42,7 @@ export const Actions = (props: ActionsProps): IAction[] => {
       id: "execute",
       icon: <MdAutorenew />,
       appearance: "primary",
-      label: "Ejecutar",
+      label: labels.requests.actions.execute,
       onClick: onExecute,
       isDisabled: disableExecute ?? false,
     },
@@ -48,7 +50,7 @@ export const Actions = (props: ActionsProps): IAction[] => {
       id: "discard",
       icon: <MdOutlineCancel />,
       appearance: "danger",
-      label: "Descartar",
+      label: labels.requests.actions.discard,
       onClick: onDiscard,
       isDisabled: disableDiscard ?? false,
     },
@@ -56,7 +58,7 @@ export const Actions = (props: ActionsProps): IAction[] => {
       id: "attach",
       icon: <MdAttachFile />,
       appearance: "primary",
-      label: "Adjuntar",
+      label: labels.requests.actions.attach,
       onClick: onAttach,
       isDisabled: disableAttach ?? false,
     },
@@ -64,7 +66,7 @@ export const Actions = (props: ActionsProps): IAction[] => {
       id: "seeAttachments",
       icon: <FaRegFileLines />,
       appearance: "dark",
-      label: "Ver adjuntos",
+      label: labels.requests.actions.seeAttachments,
       onClick: onSeeAttachments,
       isDisabled: disableSeeAttachments ?? false,
     },

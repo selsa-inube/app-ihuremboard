@@ -7,6 +7,7 @@ import {
   MdClear,
 } from "react-icons/md";
 
+import { labels } from "@i18n/labels";
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
 import { BoardSection } from "@components/layout/BoardSection";
@@ -257,7 +258,10 @@ function RequestsUI(props: RequestsUIProps) {
                         size="24px"
                       />
                       <Text size="medium">
-                        Filtrar ({selectedFilters.length})
+                        {labels.requests.filters.filterWithCount.replace(
+                          "{count}",
+                          selectedFilters.length.toString(),
+                        )}
                       </Text>
                       <Stack
                         margin={`${spacing.s0} ${spacing.s0} ${spacing.s0} ${spacing.s300}`}
@@ -305,7 +309,7 @@ function RequestsUI(props: RequestsUIProps) {
                 disabled={selectedFilters.length === 0}
                 onClick={() => setSelectedFilters([])}
               >
-                Quitar
+                {labels.requests.filters.remove}
               </Button>
               <Button
                 appearance="primary"
@@ -315,7 +319,7 @@ function RequestsUI(props: RequestsUIProps) {
                 variant="outlined"
                 onClick={openFilterModal}
               >
-                Filtrar
+                {labels.requests.filters.filter}
               </Button>
             </StyledRequestsContainer>
           )}
@@ -410,10 +414,7 @@ function RequestsUI(props: RequestsUIProps) {
                     },
                   )
                 ) : (
-                  <Text>
-                    No hay solicitudes que coincidan con los filtros
-                    seleccionados.
-                  </Text>
+                  <Text>{labels.requests.board.emptyState}</Text>
                 )}
               </BoardSection>
             );

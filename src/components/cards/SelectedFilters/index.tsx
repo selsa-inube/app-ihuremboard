@@ -11,6 +11,8 @@ import {
 } from "./styles";
 import { useSelectedFilters, SelectedFiltersProps } from "./interface";
 
+import { labels } from "@i18n/labels";
+
 function SelectedFilters({ filters, onRemove }: SelectedFiltersProps) {
   const {
     containerRef,
@@ -43,7 +45,7 @@ function SelectedFilters({ filters, onRemove }: SelectedFiltersProps) {
             >
               <Tag
                 appearance="primary"
-                label="..."
+                label={labels.cards.moreFilters}
                 removable={false}
                 displayIcon={false}
               />
@@ -77,7 +79,7 @@ function SelectedFilters({ filters, onRemove }: SelectedFiltersProps) {
         </Stack>
       ) : (
         <Text type="label" size="small" appearance="gray">
-          Sin filtros aún.
+          {labels.cards.noFiltersYet}
         </Text>
       )}
     </StyledContainerFilters>

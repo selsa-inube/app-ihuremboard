@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
 import { IUseCasesByRole } from "@ptypes/staffPortalBusiness.types";
+import { Logger } from "@utils/logger";
 
 interface UseCasesProps {
   userName: string;
@@ -42,16 +43,32 @@ export const useUseCasesByStaff = ({
 
         setUseCases(data);
         onUseCasesLoaded?.(data);
-      } catch (error) {
-        console.error("❌ Error al obtener casos de uso:", error);
+      } catch (error: unknown) {
+        const normalizedError =
+          error instanceof Error
+            ? error
+            : new Error("Unknown error while fetching use cases");
+
+        Logger.error(
+          "Error al obtener casos de uso del staff",
+          normalizedError,
+          {
+            module: "useUseCasesByStaff",
+            action: "getUseCasesByStaff",
+            userName,
+            businessManagerCode,
+            businessUnitCode,
+          },
+        );
+
         setHasError(500);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUseCases();
-  }, [userName, businessManagerCode, businessUnitCode]);
+    void fetchUseCases();
+  }, [userName, businessManagerCode, businessUnitCode, onUseCasesLoaded]);
 
   return { useCases, loading, hasError };
 };

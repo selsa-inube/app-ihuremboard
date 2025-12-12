@@ -3,6 +3,7 @@ import { getHumanResourceRequests } from "@services/humanResourcesRequest/getHum
 import { HumanResourceRequest } from "@ptypes/humanResourcesRequest.types";
 import { useHeaders } from "@hooks/useHeaders";
 import { useAppContext } from "@context/AppContext/useAppContext";
+import { Logger } from "@utils/logger";
 
 export const useHumanResourceRequests = <T>(
   formatData: (data: HumanResourceRequest[]) => T[],
@@ -16,19 +17,31 @@ export const useHumanResourceRequests = <T>(
 
   const fetchData = async () => {
     setIsLoading(true);
+
     try {
       const headers = await getHeaders();
       const requests = await getHumanResourceRequests(headers);
+
       setData(formatData(requests ?? []));
       setError(null);
-    } catch (err) {
-      const finalError = err instanceof Error ? err : new Error(String(err));
-      setError(finalError);
-      setData([]);
-      console.error(
-        "Error al obtener solicitudes de recursos humanos:",
-        finalError,
+    } catch (error: unknown) {
+      const normalizedError =
+        error instanceof Error
+          ? error
+          : new Error("Unknown error while fetching HR requests");
+
+      Logger.error(
+        "Error al obtener solicitudes de recursos humanos",
+        normalizedError,
+        {
+          module: "useHumanResourceRequests",
+          action: "getHumanResourceRequests",
+          selectedClientId: selectedClient?.id,
+        },
       );
+
+      setError(normalizedError);
+      setData([]);
     } finally {
       setIsLoading(false);
     }
@@ -36,7 +49,7 @@ export const useHumanResourceRequests = <T>(
 
   useEffect(() => {
     if (selectedClient?.id) {
-      fetchData();
+      void fetchData();
     }
   }, [selectedClient?.id]);
 

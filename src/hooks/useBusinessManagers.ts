@@ -7,6 +7,7 @@ import {
 import { getBusinessManagerByCode } from "@services/businessManagers/getBusinessManagerById";
 import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
 import { modalErrorConfig } from "@config/modalErrorConfig";
+import { Logger } from "@utils/logger";
 
 export const useBusinessManagers = (
   portalPublicCode: IEmployeePortalByBusinessManager,
@@ -27,6 +28,7 @@ export const useBusinessManagers = (
         const fetchedBusinessManagers = await getBusinessManagerByCode(
           portalPublicCode.businessManagerCode,
         );
+
         if (
           !fetchedBusinessManagers ||
           Object.keys(fetchedBusinessManagers).length === 0
@@ -41,16 +43,28 @@ export const useBusinessManagers = (
 
         setHasError(false);
         setBusinessManagersData(fetchedBusinessManagers);
-      } catch (err) {
-        console.error(
-          "Error al obtener los datos del gestor de negocios:",
-          err,
+      } catch (error: unknown) {
+        const normalizedError =
+          error instanceof Error
+            ? error
+            : new Error("Unknown error while fetching business manager");
+
+        Logger.error(
+          "Error al obtener los datos del gestor de negocios",
+          normalizedError,
+          {
+            module: "useBusinessManagers",
+            action: "getBusinessManagerByCode",
+            businessManagerCode: portalPublicCode.businessManagerCode,
+          },
         );
+
         setHasError(true);
         setCodeError(1007);
+
         const errorConfig = modalErrorConfig[1007];
         showErrorModal({
-          descriptionText: `${errorConfig.descriptionText}: ${String(err)}`,
+          descriptionText: errorConfig.descriptionText,
           solutionText: errorConfig.solutionText,
         });
       } finally {

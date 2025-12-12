@@ -4,8 +4,8 @@ import {
   maxRetriesServices,
 } from "@config/environment";
 import { IOptionWithSubOptions } from "@ptypes/staffPortalBusiness.types";
-
 import { mapOptionForCustomerPortalApiToEntities } from "./mappers";
+import { Logger } from "@utils/logger";
 
 const getOptionForCustomerPortal = async (
   staffPortalPublicCode: string,
@@ -55,15 +55,22 @@ const getOptionForCustomerPortal = async (
       return Array.isArray(data)
         ? mapOptionForCustomerPortalApiToEntities(data)
         : [];
-    } catch (error) {
-      console.error(`Attempt ${attempt} failed:`, error);
+    } catch (err: unknown) {
+      const normalizedError =
+        err instanceof Error ? err : new Error(String(err));
+
       if (attempt === maxRetries) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error(
-          "Todos los intentos fallaron. No se pudieron obtener los datos del portal.",
+        Logger.error(
+          "Error obteniendo opciones del portal después de varios intentos",
+          normalizedError,
+          {
+            module: "getOptionForCustomerPortal",
+            attempt,
+            staffPortalPublicCode,
+            businessUnitPublicCode,
+          },
         );
+        throw normalizedError;
       }
     }
   }

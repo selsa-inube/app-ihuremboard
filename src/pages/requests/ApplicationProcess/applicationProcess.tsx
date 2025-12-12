@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
-import { useMediaQuery } from "@inubekit/inubekit";
 
+import { labels } from "@i18n/labels";
 import { requestConfigs } from "@config/requests.config";
 import { ERequestType } from "@ptypes/humanResourcesRequest.types";
 
@@ -8,15 +8,14 @@ import { ApplicationProcessUI } from "./index";
 
 function ApplicationProcess() {
   const { id } = useParams<{ id?: keyof typeof ERequestType }>();
-  const isTablet = useMediaQuery("(max-width: 1100px)");
 
   const safeId = String(id ?? "");
 
   const config = id ? requestConfigs[id] : null;
 
   const description = id
-    ? (ERequestType[id] ?? "Descripción no disponible")
-    : "Descripción no disponible";
+    ? (ERequestType[id] ?? labels.requests.general.descripcionNoDisponible)
+    : labels.requests.general.descripcionNoDisponible;
 
   const requestLabel = config?.label ?? "Solicitud";
 
@@ -27,10 +26,15 @@ function ApplicationProcess() {
 
   const breadcrumbs = {
     crumbs: [
-      { path: "/", label: "Inicio", id: "/", isActive: false },
+      {
+        path: "/",
+        label: labels.requests.breadcrumbs.home,
+        id: "/",
+        isActive: false,
+      },
       {
         path: "/requests",
-        label: isTablet ? "..." : "Solicitudes",
+        label: labels.requests.breadcrumbs.process,
         id: "/requests",
         isActive: false,
       },
