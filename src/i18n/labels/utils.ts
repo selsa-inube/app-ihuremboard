@@ -1,0 +1,24 @@
+export const utils = {
+  date: {
+    months: [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ],
+    am: "AM",
+    pm: "PM",
+    unknown: "Fecha desconocida",
+    today: "Hoy",
+    yesterday: "Ayer",
+    daysAgo: (days: number) => `Hace ${days} día${days === 1 ? "" : "s"}`,
+  },
+};

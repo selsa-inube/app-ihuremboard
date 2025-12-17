@@ -131,7 +131,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                 {labels.requests.summary.requestNumberLabel}
               </Text>
               <Text appearance="gray" type="label">
-                {requestNumber ?? "N/A"}
+                {requestNumber ?? labels.requests.summary.notAvailable}
               </Text>
             </Stack>
 
@@ -140,7 +140,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                 {labels.requests.summary.requestDateLabel}
               </Text>
               <Text appearance="gray" type="label">
-                {requestDate ?? "N/A"}
+                {requestDate ?? labels.requests.summary.notAvailable}
               </Text>
             </Stack>
 
@@ -149,7 +149,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                 {labels.requests.summary.requestTypeLabel}
               </Text>
               <Text appearance="gray" type="label">
-                {title ?? "N/A"}
+                {title ?? labels.requests.summary.notAvailable}
               </Text>
             </Stack>
           </Stack>
@@ -182,7 +182,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                   {labels.requests.summary.daysToPay}
                 </Text>
                 <Text appearance="gray" type="label">
-                  {daysToPay ?? "N/A"}
+                  {daysToPay ?? labels.requests.summary.notAvailable}
                 </Text>
               </DetailItem>
 
@@ -191,7 +191,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                   {labels.requests.summary.contractNumber}
                 </Text>
                 <Text appearance="gray" type="label">
-                  {contractNumber ?? "N/A"}
+                  {contractNumber ?? labels.requests.summary.notAvailable}
                 </Text>
               </DetailItem>
 
@@ -200,7 +200,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                   {labels.requests.summary.businessName}
                 </Text>
                 <Text appearance="gray" type="label">
-                  {businessName ?? "N/A"}
+                  {businessName ?? labels.requests.summary.notAvailable}
                 </Text>
               </DetailItem>
 
@@ -209,7 +209,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                   {labels.requests.summary.contractType}
                 </Text>
                 <Text appearance="gray" type="label">
-                  {contractType ?? "N/A"}
+                  {contractType ?? labels.requests.summary.notAvailable}
                 </Text>
               </DetailItem>
 
@@ -218,7 +218,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                   {labels.requests.summary.disbursementDate}
                 </Text>
                 <Text appearance="gray" type="label">
-                  {disbursementDate ?? "N/A"}
+                  {disbursementDate ?? labels.requests.summary.notAvailable}
                 </Text>
               </DetailItem>
             </DetailsGrid>
@@ -228,7 +228,7 @@ export function RequestSummary(props: RequestSummaryProps) {
                 {labels.requests.summary.employeeObservations}
               </Text>
               <Text appearance="gray" type="label">
-                {observationEmployee ?? "N/A"}
+                {observationEmployee ?? labels.requests.summary.notAvailable}
               </Text>
             </DetailItem>
           </>

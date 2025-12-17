@@ -52,13 +52,18 @@ interface ApplicationProcessUIProps {
 }
 
 const getValidationIcon = (label: string) => {
+  const { comply, notComply, pending } =
+    labels.requests.applicationProcess.validationStatus;
+
   switch (label) {
-    case "Cumple":
-      return <img src={CheckIcon} alt="Cumple" width={14} height={14} />;
-    case "No Cumple":
-      return <img src={CloseIcon} alt="No Cumple" width={14} height={14} />;
+    case comply:
+      return <img src={CheckIcon} alt={comply} width={14} height={14} />;
+
+    case notComply:
+      return <img src={CloseIcon} alt={notComply} width={14} height={14} />;
+
     default:
-      return <img src={HelpIcon} alt="Sin Evaluar" width={14} height={14} />;
+      return <img src={HelpIcon} alt={pending} width={14} height={14} />;
   }
 };
 
@@ -170,13 +175,19 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const getActionsMobileIconStatus = (): IAction[] => [
     {
       id: "status",
-      actionName: "Estado",
+      actionName: labels.requests.summary.status,
       content: (row: ITableRow) => {
         if (row.isSubTitle) return null;
-        let label = "Sin Evaluar";
-        if (typeof row?.status === "string") label = row.status;
-        else if (React.isValidElement(row?.tag))
+
+        const { pending } = labels.requests.applicationProcess.validationStatus;
+
+        let label = pending;
+
+        if (typeof row?.status === "string") {
+          label = row.status;
+        } else if (React.isValidElement(row?.tag)) {
           label = row.tag.props.label ?? label;
+        }
 
         return (
           <Stack direction="column" alignItems="center" justifyContent="center">

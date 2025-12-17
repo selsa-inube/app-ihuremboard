@@ -1,27 +1,16 @@
+import { labels } from "@i18n/labels";
+
 export const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
 
   const day = date.getUTCDate().toString().padStart(2, "0");
-  const monthNames = [
-    "Ene",
-    "Feb",
-    "Mar",
-    "Abr",
-    "May",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dic",
-  ];
-  const month = monthNames[date.getUTCMonth()];
+  const month = labels.utils.date.months[date.getUTCMonth()];
   const year = date.getUTCFullYear();
 
   let hours = date.getHours();
   const minutes = date.getMinutes().toString().padStart(2, "0");
-  const ampm = hours >= 12 ? "PM" : "AM";
+  const ampm = hours >= 12 ? labels.utils.date.pm : labels.utils.date.am;
+
   hours = hours % 12 || 12;
 
   return `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
@@ -36,9 +25,11 @@ export const parseFormattedDate = (dateStr: string): Date => {
   if (parts.length !== 3) {
     return new Date(dateStr);
   }
+
   const day = parseInt(parts[0], 10);
   const monthAbbr = parts[1].toLowerCase();
   const year = parseInt(parts[2], 10);
+
   const monthMap: Record<string, number> = {
     ene: 0,
     feb: 1,
@@ -53,6 +44,7 @@ export const parseFormattedDate = (dateStr: string): Date => {
     nov: 10,
     dic: 11,
   };
+
   const month = monthMap[monthAbbr] ?? 0;
   return new Date(year, month, day);
 };
@@ -60,10 +52,12 @@ export const parseFormattedDate = (dateStr: string): Date => {
 export const formatRequestTime = (
   dateString: string | undefined | null,
 ): string => {
-  if (!dateString) return "Fecha desconocida";
+  if (!dateString) return labels.utils.date.unknown;
 
   const requestDate = parseFormattedDate(dateString);
-  if (isNaN(requestDate.getTime())) return "Fecha desconocida";
+  if (isNaN(requestDate.getTime())) {
+    return labels.utils.date.unknown;
+  }
 
   const now = new Date();
 
@@ -78,11 +72,8 @@ export const formatRequestTime = (
     (today.getTime() - requestDay.getTime()) / (1000 * 60 * 60 * 24),
   );
 
-  if (diffDays === 0) {
-    return "Hoy";
-  } else if (diffDays === 1) {
-    return "Ayer";
-  } else {
-    return `Hace ${diffDays} día${diffDays === 1 ? "" : "s"}`;
-  }
+  if (diffDays === 0) return labels.utils.date.today;
+  if (diffDays === 1) return labels.utils.date.yesterday;
+
+  return labels.utils.date.daysAgo(diffDays);
 };

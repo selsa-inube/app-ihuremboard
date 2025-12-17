@@ -104,7 +104,7 @@ export const requests = {
     requestNumberLabel: "No. de solicitud:",
     requestDateLabel: "Fecha de solicitud:",
     noDate: "Sin Fecha",
-
+    notAvailable: "N/A",
     infoTitle: "Información",
     infoReasonTitle: "¿Por qué está inhabilitado?",
     requestTypeLabel: "Tipo de solicitud",
@@ -153,6 +153,12 @@ export const requests = {
       errorLoadingOptions: "Error al cargar",
       sending: "Enviando...",
       send: "Enviar",
+    },
+
+    validationStatus: {
+      comply: "Cumple",
+      notComply: "No Cumple",
+      pending: "Sin Evaluar",
     },
 
     requirements: {

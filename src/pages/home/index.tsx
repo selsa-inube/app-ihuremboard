@@ -129,7 +129,8 @@ function Home() {
           <StyledMain $isTablet={isTablet}>
             <Stack gap={spacing.s300} direction="column">
               <Text size={isTablet ? "medium" : "large"} type="headline">
-                {labels.home.main.welcome}, {user?.username ?? "Usuario"}
+                {labels.home.main.welcome},{" "}
+                {user?.username ?? labels.home.main.defaultUser}
               </Text>
               <Text
                 type="title"
