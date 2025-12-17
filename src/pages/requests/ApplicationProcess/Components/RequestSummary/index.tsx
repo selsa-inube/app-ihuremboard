@@ -9,7 +9,6 @@ import {
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
-  MdAutorenew,
   MdOutlineCancel,
 } from "react-icons/md";
 
@@ -80,14 +79,6 @@ export function RequestSummary(props: RequestSummaryProps) {
           />
         ) : (
           <Stack direction="row" gap={spacing.s075} alignItems="center">
-            <Button
-              appearance="primary"
-              onClick={handleExecute}
-              iconBefore={<MdAutorenew />}
-              spacing="compact"
-            >
-              Ejecutar
-            </Button>
             <Button
               appearance="danger"
               onClick={handleDiscard}
