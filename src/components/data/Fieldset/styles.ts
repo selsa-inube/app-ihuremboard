@@ -27,22 +27,19 @@ export const StyledContainerFieldset = styled.div<IStyledContainerFieldset>`
   box-sizing: border-box;
   height: ${({ $height }) => $height};
   border-radius: ${spacing.s100};
+  border: 1px solid;
   padding: ${({ $hasTable }) =>
     !$hasTable ? `${spacing.s200} ${spacing.s100}` : "0"};
   aspect-ratio: ${({ $aspectRatio }) => $aspectRatio};
-
   background-color: ${({ theme, $isSelected }) =>
     !$isSelected
       ? theme?.palette?.neutral?.N0 || inube.palette.neutral.N0
       : theme?.palette?.blue?.B50 || inube.palette.blue.B50};
-
   border: 1px solid
     ${({ theme }) => theme?.palette?.neutral?.N40 || inube.palette.neutral.N40};
-
   box-shadow: ${({ theme, $isSelected }) =>
     $isSelected &&
     `-12px 0px 0px ${theme?.palette?.blue?.B400 || inube.palette.blue.B400}`};
-
   transition:
     background-color 0.3s ease,
     box-shadow 0.3s ease;
@@ -97,35 +94,23 @@ export const StyledMenuDropdown = styled.div<Menu>`
   flex-direction: column;
   min-width: 160px;
   gap: ${spacing.s050};
-
   background-color: ${({ theme }) =>
     theme?.palette?.neutral?.N10 || inube.palette.neutral.N10};
-
   border: 1px solid
     ${({ theme }) => theme?.palette?.neutral?.N30 || inube.palette.neutral.N30};
 `;
 
-export const StyledMobileMenuItem = styled.div<{
-  $disabled?: boolean;
-  theme: typeof inube;
-}>`
+export const StyledMobileMenuItem = styled.div<Menu>`
+  cursor: pointer;
   padding: ${spacing.s050} ${spacing.s100};
   border-radius: ${spacing.s025};
   font-size: 14px;
-
-  cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : "pointer")};
-
-  opacity: ${({ $disabled }) => ($disabled ? 0.5 : 1)};
-
   color: ${({ theme }) =>
     theme?.palette?.neutral?.N900 || inube.palette.neutral.N900};
-
   transition: background 0.2s ease;
 
   &:hover {
-    background-color: ${({ $disabled, theme }) =>
-      $disabled
-        ? "transparent"
-        : theme?.palette?.neutral?.N10 || inube.palette.neutral.N10};
+    background-color: ${({ theme }) =>
+      theme?.palette?.neutral?.N10 || inube.palette.neutral.N10};
   }
 `;

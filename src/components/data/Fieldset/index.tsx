@@ -71,7 +71,6 @@ export function Fieldset(props: FieldsetProps) {
           <Text type="title" size={isMobile ? "medium" : "large"}>
             {title}
           </Text>
-
           {descriptionTitle && (
             <Text
               type="title"
@@ -95,41 +94,24 @@ export function Fieldset(props: FieldsetProps) {
                   cursorHover
                   onClick={() => setMobileMenuOpen((prev) => !prev)}
                 />
-
                 {mobileMenuOpen && (
                   <StyledMenuDropdown>
                     <StyledMobileMenuItem
-                      $disabled={activeButton.disabled}
                       onClick={() => {
-                        if (activeButton.disabled) return;
                         activeButton.onClick();
                         setMobileMenuOpen(false);
                       }}
                     >
-                      <Text
-                        size="small"
-                        appearance={activeButton.disabled ? "gray" : "dark"}
-                      >
-                        {activeButton.title}
-                      </Text>
+                      <Text size="small">{activeButton.title}</Text>
                     </StyledMobileMenuItem>
 
                     <StyledMobileMenuItem
-                      $disabled={activeButton.disabledSistemValidation}
                       onClick={() => {
-                        if (activeButton.disabledSistemValidation) return;
                         activeButton.onClickSistemValidation();
                         setMobileMenuOpen(false);
                       }}
                     >
-                      <Text
-                        size="small"
-                        appearance={
-                          activeButton.disabledSistemValidation
-                            ? "gray"
-                            : "dark"
-                        }
-                      >
+                      <Text size="small">
                         {activeButton.titleSistemValidation}
                       </Text>
                     </StyledMobileMenuItem>
@@ -141,19 +123,16 @@ export function Fieldset(props: FieldsetProps) {
                 <Button
                   iconBefore={<MdAdd />}
                   spacing="compact"
-                  variant="outlined"
                   onClick={activeButton.onClick}
-                  disabled={activeButton.disabled}
+                  variant="outlined"
                 >
                   {activeButton.title}
                 </Button>
-
                 <Button
                   iconBefore={<MdAdd />}
                   spacing="compact"
-                  variant="outlined"
                   onClick={activeButton.onClickSistemValidation}
-                  disabled={activeButton.disabledSistemValidation}
+                  variant="outlined"
                 >
                   {activeButton.titleSistemValidation}
                 </Button>
