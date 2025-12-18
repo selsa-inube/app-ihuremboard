@@ -52,6 +52,7 @@ export interface RequestsUIProps {
   setIsMenuOpen: (isOpen: boolean) => void;
   setSearchTerm: (term: string) => void;
   setSelectedFilters: (filters: IOption[]) => void;
+  onDeleteSuccess?: (deletedId: string) => void;
 }
 
 function RequestsUI(props: RequestsUIProps) {

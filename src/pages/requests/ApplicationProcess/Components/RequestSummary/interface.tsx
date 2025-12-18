@@ -22,6 +22,10 @@ export interface RequestSummaryProps {
   statusOptions?: IOption[];
   humanResourceRequestData?: HumanResourceRequestData;
   requestType?: string;
+  handleDiscard?: () => void;
+  handleExecute?: () => void;
+  handleAttach?: () => void;
+  handleSeeAttachments?: () => void;
 }
 
 export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
@@ -102,10 +106,14 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
   const [showActions, setShowActions] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
-  const handleDiscard = () => Logger.info("Descartar solicitud");
-  const handleExecute = () => Logger.info("Ejecutar solicitud");
-  const handleAttach = () => Logger.info("Adjuntar archivos");
-  const handleSeeAttachments = () => Logger.info("Ver adjuntos");
+  const handleDiscard =
+    props.handleDiscard ?? (() => Logger.info("Descartar solicitud"));
+  const handleExecute =
+    props.handleExecute ?? (() => Logger.info("Ejecutar solicitud"));
+  const handleAttach =
+    props.handleAttach ?? (() => Logger.info("Adjuntar archivos"));
+  const handleSeeAttachments =
+    props.handleSeeAttachments ?? (() => Logger.info("Ver adjuntos"));
 
   return {
     requestNumber,
