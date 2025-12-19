@@ -147,6 +147,7 @@ function AppPage(props: AppPageProps) {
   }
 
   const showBusinessUnitSelector = businessUnits.length > 1;
+  const finalLogo = businessManagers?.urlLogo ?? logoUrl;
 
   return (
     <StyledAppPage>
@@ -211,7 +212,13 @@ function AppPage(props: AppPageProps) {
             height="95vh"
           >
             {withNav && !isTablet && (
-              <Nav navigation={navConfig} actions={actions} collapse={true} />
+              <Nav
+                navigation={navConfig}
+                actions={actions}
+                collapse={true}
+                footerLogo={finalLogo}
+                footerLogoWidth="55%"
+              />
             )}
             <StyledMainScroll>
               <StyledMain $fullWidth={fullWidth}>
