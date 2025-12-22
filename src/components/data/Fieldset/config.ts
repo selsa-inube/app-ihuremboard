@@ -1,7 +1,8 @@
+import { labels } from "@i18n/labels";
+
 export const titlesModal = {
-  title: "Información",
-  subTitle: "¿Porque está deshabilitado?",
-  description:
-    "No cuenta con los privilegios necesarios para ejecutar esta acción.",
-  textButtonNext: "Entendido",
+  title: labels.data.infoModal.title,
+  subTitle: labels.data.infoModal.subTitle,
+  description: labels.data.infoModal.description,
+  textButtonNext: labels.data.infoModal.buttonText,
 };

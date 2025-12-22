@@ -1,6 +1,8 @@
 import { MdOutlineCheckCircle, MdClose } from "react-icons/md";
 import { IIconAppearance } from "@inubekit/inubekit";
 
+import { labels } from "@i18n/labels";
+
 interface Action {
   label: string;
   icon: JSX.Element;
@@ -14,13 +16,13 @@ export const Actions = (
   onDiscard?: () => void,
 ): Action[] => [
   {
-    label: "Requisitos",
+    label: labels.requests.actions.seeRequirements,
     icon: <MdOutlineCheckCircle />,
     appearance: "primary",
     onClick: onSeeRequirements,
   },
   {
-    label: "Descartar",
+    label: labels.requests.actions.discard,
     icon: <MdClose />,
     appearance: "danger",
     onClick: onDiscard,

@@ -5,6 +5,7 @@ import { Employee } from "@ptypes/employeePortalConsultation.types";
 import { useHeaders } from "@hooks/useHeaders";
 import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
 import { modalErrorConfig } from "@config/modalErrorConfig";
+import { Logger } from "@utils/logger";
 
 interface UseEmployeeResult {
   employee: Employee;
@@ -30,16 +31,26 @@ export const useEmployee = (initialEmployeeId: string): UseEmployeeResult => {
         const headers = await getHeaders();
         const data = await getEmployeeById(id, headers);
         setEmployee(data);
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error
-            ? err.message
-            : "Ocurrió un error desconocido al obtener el empleado";
-        setError(errorMessage);
-        console.error("Error al obtener la información del empleado:", err);
+      } catch (error: unknown) {
+        const normalizedError =
+          error instanceof Error
+            ? error
+            : new Error("Unknown error while fetching employee");
+
+        Logger.error(
+          "Error al obtener la información del empleado",
+          normalizedError,
+          {
+            module: "useEmployee",
+            action: "getEmployeeById",
+            employeeId: id,
+          },
+        );
+        setError("No fue posible obtener la información del empleado");
+
         const errorConfig = modalErrorConfig[1010];
         showErrorModal({
-          descriptionText: `${errorConfig.descriptionText}: ${String(err)}`,
+          descriptionText: errorConfig.descriptionText,
           solutionText: errorConfig.solutionText,
         });
       } finally {

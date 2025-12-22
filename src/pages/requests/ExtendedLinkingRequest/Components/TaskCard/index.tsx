@@ -1,6 +1,7 @@
 import { Stack, Text, Divider, Icon, useMediaQuery } from "@inubekit/inubekit";
 import { MdInfoOutline } from "react-icons/md";
 
+import { labels } from "@i18n/labels";
 import { spacing } from "@design/tokens/spacing";
 import { truncateText } from "@utils/string";
 
@@ -68,7 +69,7 @@ function TaskCard(props: TaskCardProps) {
             disabled={hasNoPrivileges}
           />
           <Text type="label" weight="bold" size="small" appearance="gray">
-            No tienes privilegios para ejecutar esta tarea.
+            {labels.requests.taskCard.noPrivileges}
           </Text>
         </Stack>
       )}
@@ -82,7 +83,7 @@ function TaskCard(props: TaskCardProps) {
             disabled={isNotResponsible}
           />
           <Text type="label" weight="bold" size="small" appearance="gray">
-            Debes ser responsable de esta solicitud.
+            {labels.requests.taskCard.notResponsible}
           </Text>
         </Stack>
       )}

@@ -4,6 +4,7 @@ import { staffUserAccountById } from "@services/StaffUser/StaffUserAccountIporta
 import { IStaffUserAccount } from "@ptypes/staffPortalBusiness.types";
 import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
 import { modalErrorConfig } from "@config/modalErrorConfig";
+import { Logger } from "@utils/logger";
 
 interface UseStaffUserAccountProps {
   userAccountId?: string;
@@ -26,15 +27,27 @@ export const useStaffUserAccount = ({
         setLoading(false);
         return;
       }
+
       try {
         const data = await staffUserAccountById(userAccountId);
         setUserAccount(data);
-      } catch (err) {
-        console.error("❌ Error al obtener cuenta de usuario:", err);
-        setHasError(500);
+      } catch (error: unknown) {
+        const normalizedError =
+          error instanceof Error
+            ? error
+            : new Error("Unknown error while fetching staff user account");
+
+        Logger.error("Error al obtener cuenta de usuario", normalizedError, {
+          module: "useStaffUserAccount",
+          action: "staffUserAccountById",
+          userAccountId,
+        });
+
+        setHasError(1018);
         const errorConfig = modalErrorConfig[1018];
+
         showErrorModal({
-          descriptionText: `${errorConfig.descriptionText}: ${String(err)}`,
+          descriptionText: errorConfig.descriptionText,
           solutionText: errorConfig.solutionText,
         });
       } finally {
@@ -42,7 +55,7 @@ export const useStaffUserAccount = ({
       }
     };
 
-    fetchUserAccount();
+    void fetchUserAccount();
   }, [userAccountId, showErrorModal]);
 
   return { userAccount, loading, hasError };

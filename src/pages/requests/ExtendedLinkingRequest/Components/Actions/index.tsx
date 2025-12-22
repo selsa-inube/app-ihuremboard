@@ -1,6 +1,8 @@
 import { Stack, Text, Icon } from "@inubekit/inubekit";
 import { MdOutlineInfo, MdClose } from "react-icons/md";
 
+import { labels } from "@i18n/labels";
+
 import {
   StyledContainer,
   StyledLi,
@@ -33,9 +35,9 @@ export function ActionModal(props: ActionModalProps) {
 
   const modifiedActions = actionsLi.map((action) => {
     const isDisabled =
-      action.label === "Requisitos"
+      action.label === labels.requests.actions.seeRequirements
         ? disableRequirementsAction
-        : action.label === "Descartar"
+        : action.label === labels.requests.actions.discard
           ? disableDiscardAction
           : false;
 

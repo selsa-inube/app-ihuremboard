@@ -4,8 +4,8 @@ import {
   maxRetriesServices,
 } from "@config/environment";
 import { IHumanResourceRequestResponse } from "@ptypes/humanResources.types";
-
 import { mapHumanResourceRequestApiToEntity } from "./mappers";
+import { Logger } from "@utils/logger";
 
 const updateHumanResourceRequest = async (
   requestId: string,
@@ -63,12 +63,23 @@ const updateHumanResourceRequest = async (
       }
 
       return mapHumanResourceRequestApiToEntity(data);
-    } catch (error) {
-      console.error(`Intento ${attempt} fallido:`, error);
+    } catch (err: unknown) {
+      const normalizedError =
+        err instanceof Error ? err : new Error(String(err));
+
+      Logger.error(
+        `Intento ${attempt} fallido al actualizar la solicitud`,
+        normalizedError,
+        {
+          module: "updateHumanResourceRequest",
+          requestId,
+          actionExecuted,
+          businessUnit,
+          attempt,
+        },
+      );
+
       if (attempt === maxRetries) {
-        if (error instanceof Error) {
-          throw error;
-        }
         throw new Error(
           "Todos los intentos fallaron. No se pudo actualizar la solicitud.",
         );

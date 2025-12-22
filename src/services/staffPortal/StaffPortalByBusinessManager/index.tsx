@@ -5,6 +5,7 @@ import {
 } from "@config/environment";
 import { IStaffPortalByBusinessManager } from "@ptypes/staffPortalBusiness.types";
 import { mapStaffPortalByBusinessManagerApiToEntities } from "./mappers";
+import { Logger } from "@utils/logger";
 
 const staffPortalByBusinessManager = async (
   codeParame: string,
@@ -17,6 +18,7 @@ const staffPortalByBusinessManager = async (
       const queryParams = new URLSearchParams({
         publicCode: codeParame,
       });
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
 
@@ -53,15 +55,21 @@ const staffPortalByBusinessManager = async (
         : [];
 
       return normalizedEmployeePortal[0];
-    } catch (error) {
-      console.error(`Attempt ${attempt} failed:`, error);
+    } catch (err: unknown) {
+      const normalizedError =
+        err instanceof Error ? err : new Error(String(err));
+
       if (attempt === maxRetries) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error(
-          "Todos los intentos fallaron. No se pudieron obtener los datos del portal.",
+        Logger.error(
+          "Error obteniendo staff portal by business manager después de varios intentos",
+          normalizedError,
+          {
+            module: "staffPortalByBusinessManager",
+            attempt,
+            codeParame,
+          },
         );
+        throw normalizedError;
       }
     }
   }

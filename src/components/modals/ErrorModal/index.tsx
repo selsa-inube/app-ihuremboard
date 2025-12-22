@@ -11,6 +11,7 @@ import {
 import { createPortal } from "react-dom";
 import { MdClear, MdOutlineReport } from "react-icons/md";
 
+import { labels } from "@i18n/labels";
 import { spacing } from "@design/tokens/spacing";
 
 import { StyledModal, StyledContainerClose } from "./styles";
@@ -28,23 +29,28 @@ export interface ErrorModalProps {
 
 export function ErrorModal(props: ErrorModalProps) {
   const {
-    buttonText = "Entendido",
-    title = "Error",
+    buttonText,
+    title,
     portalId = "portal",
     appearance = "warning",
-    descriptionText = "*Descripción general del error. Incluye código identificador.",
-    solutionText = "*Cómo solucionarlo: Instrucciones generales que podrían conducir a la solución del error.",
+    descriptionText,
+    solutionText,
     onCloseModal,
     onSubmitButtonClick,
   } = props;
+
+  const buttonTextFinal = buttonText ?? labels.modal.generic.understood;
+  const titleFinal = title ?? labels.modal.generic.errorTitle;
+  const descriptionFinal =
+    descriptionText ?? labels.modal.generic.errorDescription;
+  const solutionFinal = solutionText ?? labels.modal.generic.errorSolution;
+  const portalErrorText = labels.modal.requestDetail.errorPortalNode;
 
   const isMobile = useMediaQuery("(max-width: 700px)");
   const portalNode = document.getElementById(portalId);
 
   if (!portalNode) {
-    throw new Error(
-      "The portal node is not defined. Ensure the specific node exists in the DOM.",
-    );
+    throw new Error(portalErrorText);
   }
 
   return createPortal(
@@ -52,11 +58,11 @@ export function ErrorModal(props: ErrorModalProps) {
       <StyledModal $smallScreen={isMobile}>
         <Stack alignItems="center" justifyContent="space-between">
           <Text type="headline" size="small">
-            {title}
+            {titleFinal}
           </Text>
           <StyledContainerClose onClick={onCloseModal}>
             <Stack alignItems="center" gap={spacing.s100}>
-              <Text>Cerrar</Text>
+              <Text>{labels.modal.generic.close}</Text>
               <Icon
                 icon={<MdClear />}
                 size="24px"
@@ -66,7 +72,9 @@ export function ErrorModal(props: ErrorModalProps) {
             </Stack>
           </StyledContainerClose>
         </Stack>
+
         <Divider />
+
         <Stack direction="column" gap={spacing.s200}>
           <Stack justifyContent="center">
             <Icon
@@ -75,15 +83,19 @@ export function ErrorModal(props: ErrorModalProps) {
               appearance={appearance}
             />
           </Stack>
+
           <Text size="medium" appearance="gray">
-            {descriptionText}
+            {descriptionFinal}
           </Text>
+
           <Divider dashed />
-          <Text size="medium">{solutionText}</Text>
+
+          <Text size="medium">{solutionFinal}</Text>
         </Stack>
+
         <Stack justifyContent="end">
           <Button onClick={onSubmitButtonClick} appearance={appearance}>
-            {buttonText}
+            {buttonTextFinal}
           </Button>
         </Stack>
       </StyledModal>

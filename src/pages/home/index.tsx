@@ -9,6 +9,7 @@ import {
   useMediaQuery,
 } from "@inubekit/inubekit";
 
+import { labels } from "@i18n/labels";
 import { AppCard } from "@components/feedback/AppCard";
 import { spacing } from "@design/tokens/spacing";
 import { BusinessUnitChange } from "@components/inputs/BusinessUnitChange";
@@ -75,10 +76,10 @@ function Home() {
     <StyledAppPage>
       {localModalVisible && (
         <InfoModal
-          title="Acceso no autorizado"
-          titleDescription="No tienes privilegios en esta unidad de negocio"
-          description="Por favor, selecciona otra."
-          buttonText="Cerrar"
+          title={labels.home.modals.unauthorizedAccessTitle}
+          titleDescription={labels.home.modals.unauthorizedAccessDescription}
+          description={labels.home.modals.unauthorizedAccessInstruction}
+          buttonText={labels.home.modals.closeButton}
           onCloseModal={() => setLocalModalVisible(false)}
         />
       )}
@@ -88,11 +89,11 @@ function Home() {
           navigation={{ nav: configHeader, breakpoint: "800px" }}
           logoURL={renderLogo(
             selectedClient?.logo ?? logoUrl,
-            selectedClient?.name ?? "Sin unidad seleccionada",
+            selectedClient?.name ?? labels.home.header.noUnitSelected,
           )}
           user={{
-            username: user?.username ?? "Nombre de usuario",
-            client: selectedClient?.name ?? "Sin unidad seleccionada",
+            username: user?.username ?? labels.home.header.defaultUsername,
+            client: selectedClient?.name ?? labels.home.header.noUnitSelected,
             breakpoint: "800px",
           }}
           menu={userMenu}
@@ -128,14 +129,15 @@ function Home() {
           <StyledMain $isTablet={isTablet}>
             <Stack gap={spacing.s300} direction="column">
               <Text size={isTablet ? "medium" : "large"} type="headline">
-                Bienvenido(a), {user?.username ?? "Usuario"}
+                {labels.home.main.welcome},{" "}
+                {user?.username ?? labels.home.main.defaultUser}
               </Text>
               <Text
                 type="title"
                 appearance="gray"
                 size={isTablet ? "medium" : "large"}
               >
-                Aquí tienes las funcionalidades disponibles.
+                {labels.home.main.subtitle}
               </Text>
               <StyledQuickAccessContainer $isTablet={isTablet}>
                 {navConfig(optionData).map((link, index) => (

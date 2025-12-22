@@ -6,6 +6,7 @@ import { useHeaders } from "@hooks/useHeaders";
 import { useAppContext } from "@context/AppContext/useAppContext";
 import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
 import { modalErrorConfig } from "@config/modalErrorConfig";
+import { Logger } from "@utils/logger";
 
 export const useHumanEmployeeResourceRequests = <T>(
   formatData: (data: HumanEmployeeResourceRequest[]) => T[],
@@ -20,27 +21,35 @@ export const useHumanEmployeeResourceRequests = <T>(
 
   const fetchData = async () => {
     setIsLoading(true);
+
     try {
       const headers = await getHeaders();
       const requests = await getHumanEmployeeResourceRequests(headers);
+
       setData(formatData(requests ?? []));
       setError(null);
-    } catch (err) {
-      const finalError = err instanceof Error ? err : new Error(String(err));
-      setError(finalError);
-      setData([]);
-      console.error(
-        "Error al obtener solicitudes de recursos humanos:",
-        finalError,
+    } catch (error: unknown) {
+      const normalizedError =
+        error instanceof Error
+          ? error
+          : new Error("Unknown error while fetching HR requests");
+
+      Logger.error(
+        "Error al obtener solicitudes de recursos humanos",
+        normalizedError,
+        {
+          module: "useHumanEmployeeResourceRequests",
+          action: "getHumanEmployeeResourceRequests",
+          selectedClientId: selectedClient?.id,
+        },
       );
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "Ocurrió un error al actualizar la solicitud";
+
+      setError(normalizedError);
+      setData([]);
 
       const errorConfig = modalErrorConfig[1013];
       showErrorModal({
-        descriptionText: `${errorConfig.descriptionText}: ${errorMessage}`,
+        descriptionText: errorConfig.descriptionText,
         solutionText: errorConfig.solutionText,
       });
     } finally {
@@ -50,7 +59,7 @@ export const useHumanEmployeeResourceRequests = <T>(
 
   useEffect(() => {
     if (selectedClient?.id) {
-      fetchData();
+      void fetchData();
     }
   }, [selectedClient?.id]);
 

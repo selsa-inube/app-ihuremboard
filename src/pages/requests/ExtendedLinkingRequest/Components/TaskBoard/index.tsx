@@ -1,6 +1,7 @@
 import { useMediaQuery, Text, Stack } from "@inubekit/inubekit";
 
 import { spacing } from "@design/tokens/spacing";
+import { labels } from "@i18n/labels";
 
 import { TaskCard, TaskCardProps } from "../TaskCard";
 import {
@@ -50,9 +51,9 @@ function TaskBoard(props: TaskBoardProps) {
           ) : (
             <Stack width={isMobile ? "auto" : "100%"}>
               <Text size="small" appearance="gray">
-                {title === "Tareas por hacer"
-                  ? "No hay ninguna tarea pendiente por ahora."
-                  : "Ninguna tarea está hecha por ahora."}
+                {title === labels.requests.taskBoard.pendingTitle
+                  ? labels.requests.taskBoard.emptyState.pending
+                  : labels.requests.taskBoard.emptyState.completed}
               </Text>
             </Stack>
           )}
@@ -65,10 +66,20 @@ function TaskBoard(props: TaskBoardProps) {
     return (
       <Stack direction="column" gap={spacing.s300}>
         <StyledMobileBoard>
-          {renderTaskSection("Tareas por hacer", pendingTasks, false, true)}
+          {renderTaskSection(
+            labels.requests.taskBoard.pendingTitle,
+            pendingTasks,
+            false,
+            true,
+          )}
         </StyledMobileBoard>
         <StyledMobileBoard>
-          {renderTaskSection("Tareas hechas", completedTasks, false, true)}
+          {renderTaskSection(
+            labels.requests.taskBoard.completedTitle,
+            completedTasks,
+            false,
+            true,
+          )}
         </StyledMobileBoard>
       </Stack>
     );
@@ -76,8 +87,12 @@ function TaskBoard(props: TaskBoardProps) {
 
   return (
     <StyledTaskBoardContainer>
-      {renderTaskSection("Tareas por hacer", pendingTasks)}
-      {renderTaskSection("Tareas hechas", completedTasks, true)}
+      {renderTaskSection(labels.requests.taskBoard.pendingTitle, pendingTasks)}
+      {renderTaskSection(
+        labels.requests.taskBoard.completedTitle,
+        completedTasks,
+        true,
+      )}
     </StyledTaskBoardContainer>
   );
 }

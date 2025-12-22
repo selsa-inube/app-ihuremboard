@@ -1,6 +1,7 @@
 import CheckIcon from "@assets/images/CheckIcon.svg";
 import CloseIcon from "@assets/images/CloseIcon.svg";
 import HelpIcon from "@assets/images/HelpIcon.svg";
+import { labels } from "@i18n/labels";
 
 import { IAction } from "./type";
 
@@ -19,7 +20,7 @@ export const Actions = (
         />
       ),
       appearance: "success",
-      label: "Si cumple",
+      label: labels.modal.actions.yes,
       onClick: onClickCheck,
     },
     {
@@ -31,7 +32,7 @@ export const Actions = (
         />
       ),
       appearance: "danger",
-      label: "No cumple",
+      label: labels.modal.actions.no,
       onClick: onClickClose,
     },
     {
@@ -43,7 +44,7 @@ export const Actions = (
         />
       ),
       appearance: "warning",
-      label: "Sin evaluar",
+      label: labels.modal.actions.pending,
       onClick: onClickHelp,
     },
   ];

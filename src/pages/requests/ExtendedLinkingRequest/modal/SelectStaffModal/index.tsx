@@ -16,6 +16,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
 
+import { labels } from "@i18n/labels";
 import { spacing } from "@design/tokens/spacing";
 import { validationMessages } from "@validations/validationMessages";
 import { IUser } from "@context/AppContext/types";
@@ -114,7 +115,7 @@ export function SelectStaffModal(props: SelectStaffModalProps) {
               gap={spacing.s100}
               padding={isMobile ? "0px 0px 0px 10px" : "0px"}
             >
-              <Text>Cerrar</Text>
+              <Text>{labels.requests.modals.selectStaff.close}</Text>
               <Icon
                 icon={<MdClear />}
                 size="24px"
@@ -133,9 +134,9 @@ export function SelectStaffModal(props: SelectStaffModalProps) {
             direction="column"
           >
             <Select
-              placeholder="Selecciona un responsable"
+              placeholder={labels.requests.modals.selectStaff.selectPlaceholder}
               name="selection"
-              label="Responsable"
+              label={labels.requests.modals.selectStaff.selectLabel}
               id="selection"
               value={formik.values.selection}
               message={
@@ -162,7 +163,7 @@ export function SelectStaffModal(props: SelectStaffModalProps) {
                 size="medium"
                 appearance={toggleInitiallyDisabled ? "gray" : "dark"}
               >
-                Asignarme a mí como responsable.
+                {labels.requests.modals.selectStaff.assignMe}
               </Text>
             </Stack>
 
@@ -173,10 +174,10 @@ export function SelectStaffModal(props: SelectStaffModalProps) {
                 appearance="gray"
                 variant="outlined"
               >
-                Cancelar
+                {labels.requests.modals.selectStaff.cancel}
               </Button>
               <Button type="submit" disabled={isButtonDisabled()}>
-                Guardar
+                {labels.requests.modals.selectStaff.save}
               </Button>
             </Stack>
           </Stack>

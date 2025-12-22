@@ -10,6 +10,7 @@ import {
   useMediaQuery,
 } from "@inubekit/inubekit";
 
+import { labels } from "@i18n/labels";
 import { spacing } from "@design/tokens/spacing";
 
 import { StyledModal, StyledContainerClose } from "./styles";
@@ -25,10 +26,10 @@ export interface InfoModalProps {
 
 export function InfoModal(props: InfoModalProps) {
   const {
-    buttonText = "Entendido",
-    description = "Descripcion por defecto",
-    titleDescription = "Titulo de la descripcion",
-    title = "Información",
+    buttonText = labels.modal.infoModal.buttonText,
+    description = labels.modal.infoModal.description,
+    titleDescription = labels.modal.infoModal.titleDescription,
+    title = labels.modal.infoModal.title,
     portalId = "portal",
     onCloseModal,
   } = props;
@@ -37,9 +38,7 @@ export function InfoModal(props: InfoModalProps) {
   const portalNode = document.getElementById(portalId);
 
   if (!portalNode) {
-    throw new Error(
-      "The portal node is not defined. Ensure the specific node exists in the DOM.",
-    );
+    throw new Error(labels.modal.requestDetail.errorPortalNode);
   }
 
   return createPortal(
@@ -51,7 +50,7 @@ export function InfoModal(props: InfoModalProps) {
           </Text>
           <StyledContainerClose onClick={onCloseModal}>
             <Stack alignItems="center" gap={spacing.s100}>
-              <Text>Cerrar</Text>
+              <Text>{labels.modal.infoModal.close}</Text>
               <Icon
                 icon={<MdClear />}
                 size="24px"

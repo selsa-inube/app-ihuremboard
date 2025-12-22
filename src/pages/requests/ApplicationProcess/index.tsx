@@ -16,6 +16,7 @@ import {
   MdOutlineHowToReg,
 } from "react-icons/md";
 
+import { labels } from "@i18n/labels";
 import { Logger } from "@utils/logger";
 import { useDeleteRequest } from "@hooks/useDeleteRequest";
 import { TextAreaModal } from "@components/modals/TextAreaModal";
@@ -54,13 +55,18 @@ interface ApplicationProcessUIProps {
 }
 
 const getValidationIcon = (label: string) => {
+  const { comply, notComply, pending } =
+    labels.requests.applicationProcess.validationStatus;
+
   switch (label) {
-    case "Cumple":
-      return <img src={CheckIcon} alt="Cumple" width={14} height={14} />;
-    case "No Cumple":
-      return <img src={CloseIcon} alt="No Cumple" width={14} height={14} />;
+    case comply:
+      return <img src={CheckIcon} alt={comply} width={14} height={14} />;
+
+    case notComply:
+      return <img src={CloseIcon} alt={notComply} width={14} height={14} />;
+
     default:
-      return <img src={HelpIcon} alt="Sin Evaluar" width={14} height={14} />;
+      return <img src={HelpIcon} alt={pending} width={14} height={14} />;
   }
 };
 
@@ -98,6 +104,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     handleAttach,
     handleSeeAttachments,
     handleSend,
+    loadingUpdate,
   } = useApplicationProcessLogic(appRoute);
 
   const [decisionError, setDecisionError] = useState<string | undefined>(
@@ -105,10 +112,14 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   );
 
   const infoItems = [
-    { icon: <MdAddCircleOutline />, text: "Adjuntar", appearance: "help" },
+    {
+      icon: <MdAddCircleOutline />,
+      text: labels.requests.applicationProcess.infoItems.attach,
+      appearance: "help",
+    },
     {
       icon: <MdOutlineCheckCircle />,
-      text: "Forzar Aprobación",
+      text: labels.requests.applicationProcess.infoItems.forceApproval,
       appearance: "help",
     },
   ];
@@ -172,13 +183,19 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const getActionsMobileIconStatus = (): IAction[] => [
     {
       id: "status",
-      actionName: "Estado",
+      actionName: labels.requests.summary.status,
       content: (row: ITableRow) => {
         if (row.isSubTitle) return null;
-        let label = "Sin Evaluar";
-        if (typeof row?.status === "string") label = row.status;
-        else if (React.isValidElement(row?.tag))
+
+        const { pending } = labels.requests.applicationProcess.validationStatus;
+
+        let label = pending;
+
+        if (typeof row?.status === "string") {
+          label = row.status;
+        } else if (React.isValidElement(row?.tag)) {
           label = row.tag.props.label ?? label;
+        }
 
         return (
           <Stack direction="column" alignItems="center" justifyContent="center">
@@ -213,10 +230,15 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
             onSeeAttachments={handleSeeAttachments}
             onClose={() => setShowActions(false)}
             actionDescriptions={{
-              execute: "No puedes ejecutar esta acción ahora",
-              discard: "No puedes descartar esta acción ahora",
-              attach: "No puedes adjuntar archivos en este momento",
-              seeAttachments: "No puedes ver los adjuntos en este momento",
+              execute:
+                labels.requests.applicationProcess.actionsMobile.cannotExecute,
+              discard:
+                labels.requests.applicationProcess.actionsMobile.cannotDiscard,
+              attach:
+                labels.requests.applicationProcess.actionsMobile.cannotAttach,
+              seeAttachments:
+                labels.requests.applicationProcess.actionsMobile
+                  .cannotSeeAttachments,
             }}
           />
         )}
@@ -232,7 +254,9 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           }
           title={displayRequestLabel}
           status={requestData?.humanResourceRequestStatus ?? state?.status}
-          fullStaffName={state?.fullStaffName ?? "Sin responsable"}
+          fullStaffName={
+            state?.fullStaffName ?? labels.requests.summary.noResponsible
+          }
           humanResourceRequestData={requestData?.humanResourceRequestData}
           requestType={requestData?.humanResourceRequestType}
           isLoading={isLoadingRequest}
@@ -249,28 +273,35 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
         >
           <StyledFieldsetContainer $isMobile={isMobile}>
             <Fieldset
-              title="Por hacer"
+              title={labels.requests.applicationProcess.fieldset.toDoTitle}
               descriptionTitle={
                 loading
-                  ? "Cargando..."
+                  ? labels.requests.general.loading
                   : error
-                    ? "Error al cargar"
+                    ? labels.requests.general.errorLoading
                     : responsibleLabel
               }
             >
               <Stack direction="column" gap={spacing.s150}>
-                <Text>Verificar viabilidad de la solicitud.</Text>
+                <Text>
+                  {labels.requests.applicationProcess.fieldset.verifyingText}
+                </Text>
                 <Stack alignItems="flex-end" gap={spacing.s150}>
                   <Select
                     name="decision"
                     id="decision"
-                    label="Decisión"
+                    label={
+                      labels.requests.applicationProcess.fieldset.decisionLabel
+                    }
                     placeholder={
                       loadingDecisions
-                        ? "Cargando opciones..."
+                        ? labels.requests.applicationProcess.fieldset
+                            .loadingOptions
                         : errorDecisions
-                          ? "Error al cargar"
-                          : "Seleccione una opción"
+                          ? labels.requests.applicationProcess.fieldset
+                              .errorLoadingOptions
+                          : labels.requests.applicationProcess.fieldset
+                              .selectOptionPlaceholder
                     }
                     options={
                       decisionsData?.decisions.map((opt) => ({
@@ -297,7 +328,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                       variant="filled"
                       onClick={() => {
                         if (!decision) {
-                          setDecisionError("Debe seleccionar una decisión.");
+                          setDecisionError(
+                            labels.requests.applicationProcess.validations
+                              .mustSelectDecision,
+                          );
                           return;
                         }
 
@@ -305,7 +339,9 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                         setShowTextAreaModal(true);
                       }}
                     >
-                      Enviar
+                      {loadingUpdate
+                        ? labels.requests.applicationProcess.fieldset.sending
+                        : labels.requests.applicationProcess.fieldset.send}
                     </Button>
                   </StyledDecisionContainer>
                 </Stack>
@@ -314,12 +350,18 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
 
             <Stack margin={`${spacing.s200} ${spacing.s0}`}>
               <Fieldset
-                title="Requisitos"
+                title={
+                  labels.requests.applicationProcess.fieldset.requirementsTitle
+                }
                 heightFieldset={hasRequirements ? "325px" : "326px"}
                 hasOverflow={hasRequirements}
                 activeButton={{
-                  title: "Validación humana",
-                  titleSistemValidation: "Validación del sistema",
+                  title:
+                    labels.requests.applicationProcess.requirements
+                      .humanValidation,
+                  titleSistemValidation:
+                    labels.requests.applicationProcess.requirements
+                      .systemValidation,
                   onClick: () => Logger.info("Validación humana"),
                   onClickSistemValidation: () =>
                     Logger.info("Validación del sistema"),
@@ -352,7 +394,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                     height="100%"
                   >
                     <Text appearance="gray" size="medium">
-                      No hay requisitos para mostrar
+                      {
+                        labels.requests.applicationProcess.requirements
+                          .emptyState
+                      }
                     </Text>
                   </Stack>
                 )}
@@ -384,11 +429,13 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
 
       {showTextAreaModal && (
         <TextAreaModal
-          title="Agregar observaciones"
-          buttonText="Enviar"
-          inputLabel="Observaciones"
-          inputPlaceholder="Escribe tus comentarios..."
-          description="Por favor, escribe tus observaciones antes de enviar la solicitud."
+          title={labels.requests.applicationProcess.modal.title}
+          buttonText={labels.requests.applicationProcess.modal.buttonText}
+          inputLabel={labels.requests.applicationProcess.modal.inputLabel}
+          inputPlaceholder={
+            labels.requests.applicationProcess.modal.inputPlaceholder
+          }
+          description={labels.requests.applicationProcess.modal.description}
           onSubmit={async (values) => {
             setComment(values.textarea);
             await handleSend(values.textarea);

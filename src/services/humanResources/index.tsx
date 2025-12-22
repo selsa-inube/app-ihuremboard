@@ -1,5 +1,6 @@
 import { environment } from "@config/environment";
 import { IEvaluateResponsibleOfTasks } from "@ptypes/humanResources.types";
+import { Logger } from "@utils/logger";
 
 import { mapEvaluateResponsibleOfTasksApiToEntity } from "./mappers";
 
@@ -29,8 +30,19 @@ export async function postEvaluateResponsibleOfTasks(
     try {
       const error = await response.json();
       errorMessage = error.message ?? errorMessage;
-    } catch (err) {
-      console.error("Error parsing JSON:", err);
+    } catch (err: unknown) {
+      const normalizedError =
+        err instanceof Error ? err : new Error("Unknown error parsing JSON");
+
+      Logger.error(
+        "Error parsing JSON in postEvaluateResponsibleOfTasks",
+        normalizedError,
+        {
+          module: "postEvaluateResponsibleOfTasks",
+          requestBody,
+          headers,
+        },
+      );
     }
     throw new Error(`Error ${response.status}: ${errorMessage}`);
   }

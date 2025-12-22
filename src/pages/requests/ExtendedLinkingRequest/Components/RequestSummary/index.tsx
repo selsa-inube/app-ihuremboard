@@ -16,6 +16,7 @@ import {
 } from "react-icons/md";
 import { useState } from "react";
 
+import { labels } from "@i18n/labels";
 import { spacing } from "@design/tokens/spacing";
 import { InfoModal } from "@components/modals/InfoModal";
 
@@ -51,17 +52,25 @@ function RequestSummary(props: RequestSummaryProps) {
     open: boolean;
     title: string;
     description: string;
-  }>({ open: false, title: "Información", description: "" });
+  }>({
+    open: false,
+    title: labels.requests.summary.infoTitle,
+    description: "",
+  });
 
   const isMobile = useMediaQuery("(max-width: 710px)");
 
   const openInfoModal = (description: string) => {
-    setInfoModal({ open: true, title: "Información", description });
+    setInfoModal({
+      open: true,
+      title: labels.requests.summary.infoTitle,
+      description,
+    });
   };
 
   const actionDescriptions = {
-    Discard: "No tiene privilegios para descartar solicitudes.",
-    Requirements: "No tiene privilegios para ver requisitos.",
+    Discard: labels.requests.summary.permissions.discard,
+    Requirements: labels.requests.summary.permissions.requirements,
   };
 
   return (
@@ -86,7 +95,7 @@ function RequestSummary(props: RequestSummaryProps) {
             <Stack gap={spacing.s050}>
               <Icon icon={<MdOutlinePerson />} appearance="dark" size="20px" />
               <Text type="label" weight="bold">
-                Responsable:
+                {labels.requests.summary.responsible}
               </Text>
             </Stack>
 
@@ -118,7 +127,7 @@ function RequestSummary(props: RequestSummaryProps) {
                   variant="outlined"
                   onClick={canSeeRequirements ? onSeeRequirements : undefined}
                 >
-                  Requisitos
+                  {labels.requests.actions.seeRequirements}
                 </Button>
                 {!canSeeRequirements && (
                   <Icon
@@ -142,7 +151,7 @@ function RequestSummary(props: RequestSummaryProps) {
                   variant="outlined"
                   onClick={canDiscard ? onDiscard : undefined}
                 >
-                  Descartar
+                  {labels.requests.actions.discard}
                 </Button>
                 {!canDiscard && (
                   <Icon
@@ -161,7 +170,7 @@ function RequestSummary(props: RequestSummaryProps) {
         <Stack direction="column" gap={spacing.s050}>
           <Stack gap={spacing.s050}>
             <Text type="label" size="medium">
-              No. de solicitud:
+              {labels.requests.summary.requestNumberLabel}
             </Text>
             <Text appearance="gray" type="label" size="small">
               {requestNumber ?? "XXXXXX"}
@@ -169,7 +178,7 @@ function RequestSummary(props: RequestSummaryProps) {
           </Stack>
           <Stack gap={spacing.s050}>
             <Text type="label" size="medium">
-              Fecha de solicitud:
+              {labels.requests.summary.requestDateLabel}
             </Text>
             <Text appearance="gray" type="label" size="small">
               {requestDate ?? "Sin Fecha"}
@@ -181,7 +190,7 @@ function RequestSummary(props: RequestSummaryProps) {
       {infoModal.open && (
         <InfoModal
           title={infoModal.title}
-          titleDescription="¿Por qué está inhabilitado?"
+          titleDescription={labels.requests.summary.infoReasonTitle}
           description={infoModal.description}
           onCloseModal={() =>
             setInfoModal({ open: false, title: "", description: "" })

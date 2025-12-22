@@ -1,15 +1,17 @@
+import { labels } from "@i18n/labels";
+
 export const breadcrumbs = {
   label: "Solicitudes en trámite",
   crumbs: [
     {
       path: "/",
-      label: "Inicio",
+      label: labels.requests.breadcrumbs.home,
       id: "/",
       isActive: false,
     },
     {
       path: "/requests",
-      label: "Solicitudes en trámite",
+      label: labels.requests.breadcrumbs.list,
       id: "/requests",
       isActive: true,
     },
