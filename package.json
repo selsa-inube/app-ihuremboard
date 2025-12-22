@@ -13,7 +13,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@inube/iauth-react": "^3.0.1",
+    "@inube/iauth-react": "^3.0.3",
     "@inubekit/inubekit": "^6.4.0",
     "crypto-js": "^4.2.0",
     "formik": "^2.4.6",
