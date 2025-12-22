@@ -5,7 +5,7 @@ import {
 } from "@config/environment";
 import { IStaffUserAccount } from "@ptypes/staffPortalBusiness.types";
 import { mapStaffUserAccountApiToEntity } from "./mappers";
-import { Logger } from "@utils/logger"; // ajusta la ruta según tu proyecto
+import { Logger } from "@utils/logger";
 
 const staffUserAccountById = async (
   userAccountId: string,
