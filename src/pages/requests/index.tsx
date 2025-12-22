@@ -41,6 +41,7 @@ function Requests() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<IOption[]>([]);
+  const [requestsData, setRequestsData] = useState<IRequest[]>([]);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -50,6 +51,10 @@ function Requests() {
   const { data, isLoading } = useHumanEmployeeResourceRequests<IRequest>(
     formatHumanResourceRequests,
   );
+
+  useEffect(() => {
+    if (data) setRequestsData(data);
+  }, [data]);
 
   const debouncedSearchTerm = useDebouncedSearch(searchTerm);
   useOutsideClick(menuRef, isMenuOpen, () => setIsMenuOpen(false));
@@ -82,9 +87,9 @@ function Requests() {
       sectionTitle: sectionTitles[status],
       value: status,
       sectionBackground: backgroundMap[status],
-      sectionInformation: data.filter((req) => req.status === status),
+      sectionInformation: requestsData.filter((req) => req.status === status),
     }));
-  }, [data]);
+  }, [requestsData]);
 
   const openFilterModal = useCallback(() => {
     setIsFilterModalOpen(true);
@@ -92,6 +97,10 @@ function Requests() {
   }, []);
 
   const closeFilterModal = useCallback(() => setIsFilterModalOpen(false), []);
+
+  const handleDeleteSuccess = useCallback((deletedId: string) => {
+    setRequestsData((prev) => prev.filter((r) => r.id !== deletedId));
+  }, []);
 
   return (
     <RequestsUI
@@ -115,6 +124,7 @@ function Requests() {
       setIsMenuOpen={setIsMenuOpen}
       boardSections={boardSections}
       isLoadingRequests={isLoading}
+      onDeleteSuccess={handleDeleteSuccess}
     />
   );
 }

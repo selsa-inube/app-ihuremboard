@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   inube,
   Stack,
@@ -17,6 +18,7 @@ import {
 
 import { labels } from "@i18n/labels";
 import { Logger } from "@utils/logger";
+import { useDeleteRequest } from "@hooks/useDeleteRequest";
 import { TextAreaModal } from "@components/modals/TextAreaModal";
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
@@ -41,7 +43,7 @@ import { RequestSummary } from "./Components/RequestSummary";
 import { ActionModal } from "./Components/Actions";
 import { StyledFieldsetContainer, StyledDecisionContainer } from "./styles";
 import { useApplicationProcessLogic } from "./interface";
-import { ITableRow } from "./types";
+import { ITableRow, IRequest } from "./types";
 
 interface ApplicationProcessUIProps {
   appName: string;
@@ -49,6 +51,7 @@ interface ApplicationProcessUIProps {
   navigatePage: string;
   description: string;
   requestLabel: string;
+  onDeleteSuccess?: (deletedId: string) => void;
 }
 
 const getValidationIcon = (label: string) => {
@@ -68,9 +71,15 @@ const getValidationIcon = (label: string) => {
 };
 
 function ApplicationProcessUI(props: ApplicationProcessUIProps) {
-  const { appRoute, navigatePage } = props;
+  const navigate = useNavigate();
+  const { appRoute, navigatePage, onDeleteSuccess } = props;
   const isMobile = useMediaQuery("(max-width: 1000px)");
   const [showTextAreaModal, setShowTextAreaModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { handleDelete } = useDeleteRequest<IRequest>(() => {
+    Logger.info("Elemento eliminado");
+  });
 
   const {
     id,
@@ -91,7 +100,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     updatedAppRoute,
     displayRequestLabel,
     displayDescription,
-    handleDiscard,
     handleExecute,
     handleAttach,
     handleSeeAttachments,
@@ -202,6 +210,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const requirementsToShow = showRequirements ? requirementsMock : [];
   const hasRequirements = requirementsToShow.length > 0;
 
+  const handleDiscard = () => {
+    setIsModalOpen(true);
+  };
+
   return (
     <AppMenu
       appName={displayRequestLabel}
@@ -248,6 +260,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           humanResourceRequestData={requestData?.humanResourceRequestData}
           requestType={requestData?.humanResourceRequestType}
           isLoading={isLoadingRequest}
+          handleDiscard={handleDiscard}
+          handleExecute={handleExecute}
+          handleAttach={handleAttach}
+          handleSeeAttachments={handleSeeAttachments}
         />
 
         <Stack
@@ -322,7 +338,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                         setDecisionError(undefined);
                         setShowTextAreaModal(true);
                       }}
-                      disabled={loadingUpdate}
                     >
                       {loadingUpdate
                         ? labels.requests.applicationProcess.fieldset.sending
@@ -393,20 +408,20 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           <StyledFieldsetContainer $isMobile={isMobile}>
             <ManagementUI
               isMobile={isMobile}
-              traceabilityData={(
-                requestData?.humanResourceRequestTraceabilities ?? []
-              ).map(
-                (t): ITraceabilityItem => ({
-                  id: t.traceabilityId,
-                  action:
-                    HumanDecisionTranslations[
-                      t.actionExecuted?.toLowerCase() as HumanDecision
-                    ] ?? t.actionExecuted,
-                  date: t.executionDate,
-                  user: t.userWhoExecutedAction,
-                  comments: t.description,
-                }),
-              )}
+              traceabilityData={
+                requestData?.humanResourceRequestTraceabilities?.map(
+                  (t): ITraceabilityItem => ({
+                    id: t.traceabilityId,
+                    action:
+                      HumanDecisionTranslations[
+                        t.actionExecuted?.toLowerCase() as HumanDecision
+                      ] ?? t.actionExecuted,
+                    date: t.executionDate,
+                    user: t.userWhoExecutedAction,
+                    comments: t.description,
+                  }),
+                ) ?? []
+              }
             />
           </StyledFieldsetContainer>
         </Stack>
@@ -428,6 +443,33 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           }}
           onCloseModal={() => setShowTextAreaModal(false)}
           onSecondaryButtonClick={() => setShowTextAreaModal(false)}
+        />
+      )}
+
+      {isModalOpen && (
+        <TextAreaModal
+          title="Descartar Solicitud"
+          buttonText="Descartar"
+          inputLabel="Justificación"
+          inputPlaceholder="Ingresa el motivo de la cancelación"
+          maxLength={200}
+          onCloseModal={() => setIsModalOpen(false)}
+          onSubmit={async (values) => {
+            if (!id || !requestData?.humanResourceRequestNumber) return;
+
+            const success = await handleDelete(
+              requestData.humanResourceRequestId,
+              values.textarea,
+              requestData.humanResourceRequestNumber,
+            );
+
+            if (success) {
+              setIsModalOpen(false);
+              if (onDeleteSuccess)
+                onDeleteSuccess(requestData.humanResourceRequestId);
+              navigate("/requests");
+            }
+          }}
         />
       )}
     </AppMenu>

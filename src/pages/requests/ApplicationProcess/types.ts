@@ -7,3 +7,8 @@ export interface IStaffInfo {
 export interface ITableRow extends IEntries {
   isSubTitle?: boolean;
 }
+
+export interface IRequest {
+  id: string;
+  requestId?: string;
+}
