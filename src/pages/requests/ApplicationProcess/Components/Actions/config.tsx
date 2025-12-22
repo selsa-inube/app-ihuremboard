@@ -1,4 +1,4 @@
-import { MdAutorenew, MdOutlineCancel, MdAttachFile } from "react-icons/md";
+import { MdOutlineCancel, MdAttachFile } from "react-icons/md";
 import { FaRegFileLines } from "react-icons/fa6";
 
 import { labels } from "@i18n/labels";
@@ -27,25 +27,15 @@ interface ActionItem {
 
 export const Actions = (props: ActionsProps): IAction[] => {
   const {
-    disableExecute,
     disableDiscard,
     disableAttach,
     disableSeeAttachments,
-    onExecute,
     onDiscard,
     onAttach,
     onSeeAttachments,
   } = props;
 
   const actionItems: ActionItem[] = [
-    {
-      id: "execute",
-      icon: <MdAutorenew />,
-      appearance: "primary",
-      label: labels.requests.actions.execute,
-      onClick: onExecute,
-      isDisabled: disableExecute ?? false,
-    },
     {
       id: "discard",
       icon: <MdOutlineCancel />,

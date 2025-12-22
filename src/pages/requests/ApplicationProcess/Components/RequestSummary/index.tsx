@@ -9,8 +9,8 @@ import {
 import {
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
-  MdAutorenew,
   MdOutlineCancel,
+  MdAutorenew,
 } from "react-icons/md";
 
 import { spacing } from "@design/tokens/spacing";

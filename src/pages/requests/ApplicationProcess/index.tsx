@@ -198,8 +198,9 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     },
   ];
 
-  const showRequirements = true;
+  const showRequirements = false;
   const requirementsToShow = showRequirements ? requirementsMock : [];
+  const hasRequirements = requirementsToShow.length > 0;
 
   return (
     <AppMenu
@@ -337,8 +338,8 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                 title={
                   labels.requests.applicationProcess.fieldset.requirementsTitle
                 }
-                heightFieldset="314px"
-                hasOverflow={true}
+                heightFieldset={hasRequirements ? "325px" : "326px"}
+                hasOverflow={hasRequirements}
                 activeButton={{
                   title:
                     labels.requests.applicationProcess.requirements
@@ -349,6 +350,8 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                   onClick: () => Logger.info("Validación humana"),
                   onClickSistemValidation: () =>
                     Logger.info("Validación del sistema"),
+                  disabled: true,
+                  disabledSistemValidation: true,
                 }}
               >
                 {requirementsToShow.length > 0 ? (

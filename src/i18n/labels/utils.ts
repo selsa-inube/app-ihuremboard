@@ -17,6 +17,7 @@ export const utils = {
     am: "AM",
     pm: "PM",
     unknown: "Fecha desconocida",
+    unknownType: "Tipo desconocido",
     today: "Hoy",
     yesterday: "Ayer",
     daysAgo: (days: number) => `Hace ${days} día${days === 1 ? "" : "s"}`,
