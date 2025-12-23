@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 
-import { useIAuth } from "@inube/iauth-react";
+import { useSignOut } from "@hooks/useSignOut";
 
 export function LogOut() {
-  const { logout } = useIAuth();
+  const { signOut } = useSignOut();
+
   useEffect(() => {
-    logout();
-  }, [logout]);
+    signOut("/error?code=1002");
+  }, [signOut]);
+
   return null;
 }
