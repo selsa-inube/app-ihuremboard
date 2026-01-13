@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { IBusinessUnit } from "@ptypes/employeePortalBusiness.types";
 import { getBusinessUnitsForOfficer } from "@services/businessUnits/getBusinessUnits";
@@ -23,25 +23,32 @@ export const useBusinessUnits = (
   const { getHeaders } = useHeaders();
   const { showErrorModal } = useErrorModal();
 
+  const getHeadersRef = useRef(getHeaders);
+  const showErrorModalRef = useRef(showErrorModal);
+
+  useEffect(() => {
+    getHeadersRef.current = getHeaders;
+  }, [getHeaders]);
+
+  useEffect(() => {
+    showErrorModalRef.current = showErrorModal;
+  }, [showErrorModal]);
+
   useEffect(() => {
     let isMounted = true;
 
     if (!userAccount || !portalPublicCode) {
-      if (isMounted) {
-        setBusinessUnitsData([]);
-        setHasError(false);
-        setIsFetching(false);
-      }
-      return () => {
-        isMounted = false;
-      };
+      setBusinessUnitsData([]);
+      setHasError(false);
+      setIsFetching(false);
+      return;
     }
 
     const fetchBusinessUnits = async () => {
       setIsFetching(true);
 
       try {
-        const headers = await getHeaders();
+        const headers = await getHeadersRef.current();
 
         const fetchedBusinessUnits = await getBusinessUnitsForOfficer(
           userAccount,
@@ -56,7 +63,7 @@ export const useBusinessUnits = (
           setCodeError(ERROR_CODE_EMPTY_DATA);
 
           const errorConfig = modalErrorConfig[ERROR_CODE_EMPTY_DATA];
-          showErrorModal({
+          showErrorModalRef.current({
             descriptionText: errorConfig.descriptionText,
             solutionText: errorConfig.solutionText,
           });
@@ -89,7 +96,7 @@ export const useBusinessUnits = (
           setCodeError(ERROR_CODE_FETCH_FAILED);
 
           const errorConfig = modalErrorConfig[ERROR_CODE_FETCH_FAILED];
-          showErrorModal({
+          showErrorModalRef.current({
             descriptionText: errorConfig.descriptionText,
             solutionText: errorConfig.solutionText,
           });
@@ -108,7 +115,7 @@ export const useBusinessUnits = (
     return () => {
       isMounted = false;
     };
-  }, [userAccount, portalPublicCode, getHeaders, showErrorModal]);
+  }, [userAccount, portalPublicCode]);
 
   return { businessUnitsData, hasError, codeError, isFetching };
 };
