@@ -10,8 +10,9 @@ import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
 import { useEvaluateResponsibleOfTasks } from "@hooks/useEvaluateResponsibleOfTasks";
 import { useHeaders } from "@hooks/useHeaders";
 import { useHumanDecisionTasks } from "@hooks/useHumanDecisionTasks";
-import { useUpdateHumanResourceRequest } from "@hooks/useUpdateHumanResourceRequest";
+import { useApprovalHumanResourceRequestAPI } from "@hooks/useApprovalHumanResourceRequestAPI";
 import { useErrorFlag } from "@hooks/useErrorFlag";
+import { ApprovalAction } from "@services/employeeConsultation/postApprovalHumanResourceRequest/types";
 
 export interface ApplicationProcessUIProps {
   appName: string;
@@ -41,19 +42,29 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
 
   const { user } = useIAuth();
 
-  const [showActions, setShowActions] = useState(false);
   const [decision, setDecision] = useState<string>("");
   const [comment, setComment] = useState<string>("");
 
   const requestNumberParam = state?.requestNumber ?? id ?? "";
-  const { data: requestData, isLoading: isLoadingRequest } =
-    useHumanResourceRequest(requestNumberParam);
 
-  const taskNameToUse =
-    requestData?.tasksToManageTheHumanResourcesRequests?.[0]?.taskName ?? "";
+  const {
+    data: requestData,
+    isLoading: isLoadingRequest,
+    refetch,
+  } = useHumanResourceRequest(requestNumberParam);
+
+  const assignedTask =
+    requestData?.tasksToManageTheHumanResourcesRequests?.find(
+      (task) => task.taskStatus === "assigned",
+    ) ?? null;
+
+  const taskNameToUse = assignedTask?.taskName ?? "";
+  const taskCodeToUse = assignedTask?.taskCode ?? "";
+  const taskManagingId = assignedTask?.taskManagingId ?? "";
 
   const rawLabel =
     requestData?.humanResourceRequestDescription ?? state?.title ?? "";
+
   const parts = rawLabel.trim().split(" ");
   const keyCandidate = parts[parts.length - 1];
 
@@ -102,6 +113,15 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     enabled: !!resolvedHeaders && !!requestData?.humanResourceRequestId,
   });
 
+  const firstGroup = responsibleData?.[0] ?? null;
+
+  const responsibleLabel =
+    firstGroup?.responsible?.length !== 1
+      ? "Sin responsable"
+      : capitalizeFullName(
+          `${firstGroup.responsible[0].names.trim()} ${firstGroup.responsible[0].surnames.trim()}`,
+        );
+
   const {
     data: decisionsData,
     loading: loadingDecisions,
@@ -110,69 +130,55 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     taskNameToUse,
     resolvedHeaders?.["X-Business-Unit"] ?? "",
     !!resolvedHeaders && !!taskNameToUse,
+    taskCodeToUse,
   );
 
-  const firstGroup =
-    responsibleData && responsibleData.length > 0 ? responsibleData[0] : null;
-
-  const responsibleLabel =
-    !firstGroup || firstGroup.responsible.length !== 1
-      ? "Sin responsable"
-      : capitalizeFullName(
-          `${firstGroup.responsible[0].names.trim()} ${firstGroup.responsible[0].surnames.trim()}`,
-        );
-
   const {
-    updateRequest,
-    loading: loadingUpdate,
+    submitApproval,
+    isLoading: loadingUpdate,
     error: errorUpdate,
-  } = useUpdateHumanResourceRequest();
+  } = useApprovalHumanResourceRequestAPI();
 
   useErrorFlag({
     flagShown: !!errorUpdate,
-    message: errorUpdate ?? undefined,
+    message: errorUpdate?.message ?? undefined,
   });
 
   const handleSend = useCallback(
     async (commentToSend?: string) => {
-      if (!decision) {
-        useErrorFlag({
-          flagShown: true,
-          message: "Debes seleccionar una decisión antes de enviar",
-        });
-        return;
-      }
-
-      if (!requestData?.humanResourceRequestId) {
-        useErrorFlag({
-          flagShown: true,
-          message: "No se encontró el ID de la solicitud",
-        });
+      if (!decision || !requestData?.humanResourceRequestId || !assignedTask) {
         return;
       }
 
       try {
-        await updateRequest(
-          requestData.humanResourceRequestId,
-          decision,
-          commentToSend ?? "Sin observaciones",
-          user?.id ?? "Sin identificación",
-          resolvedHeaders?.["X-Business-Unit"],
-        );
-
-        setShowActions(false);
-        setComment("");
-      } catch (err) {
-        useErrorFlag({
-          flagShown: true,
-          message:
-            err instanceof Error
-              ? err.message
-              : "Ocurrió un error al enviar la solicitud",
+        await submitApproval({
+          humanResourceRequestId: requestData.humanResourceRequestId,
+          taskManagingId,
+          actionExecuted: decision as ApprovalAction,
+          description: commentToSend ?? "Sin observaciones",
+          userWhoExecutedAction: user?.id ?? "Sin identificación",
+          onSuccess: () => {
+            setComment("");
+            setDecision("");
+            void refetch();
+          },
         });
+      } catch (err) {
+        Logger.error(
+          "Error sending approval",
+          err instanceof Error ? err : new Error(String(err)),
+        );
       }
     },
-    [decision, requestData, resolvedHeaders, updateRequest, user],
+    [
+      decision,
+      requestData,
+      assignedTask,
+      submitApproval,
+      taskManagingId,
+      user,
+      refetch,
+    ],
   );
 
   const handleDiscard = () => Logger.info("Descartar solicitud");
@@ -187,8 +193,7 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     setDecision,
     comment,
     setComment,
-    showActions,
-    setShowActions,
+    showActions: Boolean(assignedTask),
     requestData,
     isLoadingRequest,
     responsibleLabel,

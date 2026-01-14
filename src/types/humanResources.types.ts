@@ -90,3 +90,21 @@ export const HumanDecisionTranslations: Record<HumanDecision, string> = {
   [HumanDecision.CERTIFICATION_DECLINED]: "Certificación rechazada",
   [HumanDecision.CONFIRM_THE_PERIOD_OF_USE]: "Confirmar el periodo de disfrute",
 };
+
+export const taskCodeDecisionsMap: Record<string, string[]> = {
+  approve_request: [
+    "approve_the_request",
+    "reject_the_request_as_unfeasible",
+    "make_the_request_feasible",
+  ],
+  verify_viability_of_request: [
+    "make_the_request_feasible",
+    "reject_the_request_as_unfeasible",
+  ],
+  payment_processing: ["payment_completed", "payment_declined"],
+  certification_process: ["certification_generated", "certification_declined"],
+  confirm_period_of_use: [
+    "confirm_the_period_of_use",
+    "cancel_the_request_at_employees_request",
+  ],
+};

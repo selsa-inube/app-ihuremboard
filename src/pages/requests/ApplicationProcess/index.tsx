@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   inube,
@@ -88,7 +89,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     setDecision,
     setComment,
     showActions,
-    setShowActions,
     requestData,
     isLoadingRequest,
     responsibleLabel,
@@ -106,6 +106,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     handleSend,
     loadingUpdate,
   } = useApplicationProcessLogic(appRoute);
+
+  useEffect(() => {
+    setDecisionError(undefined);
+  }, [decisionsData]);
 
   const [decisionError, setDecisionError] = useState<string | undefined>(
     undefined,
@@ -214,6 +218,13 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     setIsModalOpen(true);
   };
 
+  const decisionOptions =
+    decisionsData?.decisions?.map((opt) => ({
+      id: opt,
+      value: opt,
+      label: HumanDecisionTranslations[opt as HumanDecision] ?? opt,
+    })) ?? [];
+
   return (
     <AppMenu
       appName={displayRequestLabel}
@@ -228,7 +239,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
             onDiscard={handleDiscard}
             onAttach={handleAttach}
             onSeeAttachments={handleSeeAttachments}
-            onClose={() => setShowActions(false)}
             actionDescriptions={{
               execute:
                 labels.requests.applicationProcess.actionsMobile.cannotExecute,
@@ -303,15 +313,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                           : labels.requests.applicationProcess.fieldset
                               .selectOptionPlaceholder
                     }
-                    options={
-                      decisionsData?.decisions.map((opt) => ({
-                        id: opt,
-                        value: opt,
-                        label:
-                          HumanDecisionTranslations[opt as HumanDecision] ??
-                          opt,
-                      })) ?? []
-                    }
+                    options={decisionOptions}
                     value={decision}
                     onChange={(_, value) => {
                       setDecision(value);

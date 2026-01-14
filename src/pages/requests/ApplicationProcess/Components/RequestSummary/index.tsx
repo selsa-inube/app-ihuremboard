@@ -213,14 +213,16 @@ export function RequestSummary(props: RequestSummaryProps) {
                 </Text>
               </DetailItem>
 
-              <DetailItem>
-                <Text type="label" weight="bold">
-                  {labels.requests.summary.disbursementDate}
-                </Text>
-                <Text appearance="gray" type="label">
-                  {disbursementDate ?? labels.requests.summary.notAvailable}
-                </Text>
-              </DetailItem>
+              {disbursementDate && (
+                <DetailItem>
+                  <Text type="label" weight="bold">
+                    {labels.requests.summary.disbursementDate}
+                  </Text>
+                  <Text appearance="gray" type="label">
+                    {disbursementDate}
+                  </Text>
+                </DetailItem>
+              )}
             </DetailsGrid>
 
             <DetailItem>

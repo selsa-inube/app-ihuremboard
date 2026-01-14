@@ -79,10 +79,11 @@ export enum ERequestType {
 }
 
 export enum ETaskStatus {
-  assigned = "Asignada",
-  executed = "Ejecutada",
-  manually_locked = "Bloqueada Manualmente",
-  system_locked = "Bloqueada por Sistema",
+  assigned = "assigned",
+  executed = "executed",
+  pending = "PENDING",
+  completed = "COMPLETED",
+  failed = "FAILED",
 }
 
 export enum EContractType {
