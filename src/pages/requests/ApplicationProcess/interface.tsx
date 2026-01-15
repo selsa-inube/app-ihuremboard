@@ -1,5 +1,5 @@
-import { useParams, useLocation } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useIAuth } from "@inube/iauth-react";
 
 import { Logger } from "@utils/logger";
@@ -7,20 +7,13 @@ import { IRoute } from "@components/layout/AppMenu/types";
 import { requestConfigs } from "@config/requests.config";
 import { capitalizeFullName } from "@utils/string";
 import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
-import { useEvaluateResponsibleOfTasks } from "@hooks/useEvaluateResponsibleOfTasks";
 import { useHeaders } from "@hooks/useHeaders";
 import { useHumanDecisionTasks } from "@hooks/useHumanDecisionTasks";
 import { useApprovalHumanResourceRequestAPI } from "@hooks/useApprovalHumanResourceRequestAPI";
 import { useErrorFlag } from "@hooks/useErrorFlag";
 import { ApprovalAction } from "@services/employeeConsultation/postApprovalHumanResourceRequest/types";
-
-export interface ApplicationProcessUIProps {
-  appName: string;
-  appRoute: IRoute[];
-  navigatePage: string;
-  description: string;
-  requestLabel: string;
-}
+import { useHumanEmployeeResourceRequests } from "@hooks/useHumanEmployeeResourceRequests";
+import { HumanEmployeeResourceRequest } from "@ptypes/humanEmployeeResourcesRequest.types";
 
 function isRequestConfigKey(
   value: string,
@@ -41,6 +34,7 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
   };
 
   const { user } = useIAuth();
+  const navigate = useNavigate();
 
   const [decision, setDecision] = useState<string>("");
   const [comment, setComment] = useState<string>("");
@@ -53,10 +47,40 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     refetch,
   } = useHumanResourceRequest(requestNumberParam);
 
+  const { data: employeeRequests } =
+    useHumanEmployeeResourceRequests<HumanEmployeeResourceRequest>(
+      (data) => data,
+    );
+
+  const employeeRequest = employeeRequests.find(
+    (req) => req.humanResourceRequestId === requestData?.humanResourceRequestId,
+  );
+
   const assignedTask =
     requestData?.tasksToManageTheHumanResourcesRequests?.find(
       (task) => task.taskStatus === "assigned",
     ) ?? null;
+
+  const responsibleLabel = useMemo(() => {
+    if (assignedTask?.staffName && assignedTask?.staffLastName) {
+      return capitalizeFullName(
+        `${assignedTask.staffName.trim()} ${assignedTask.staffLastName.trim()}`,
+      );
+    }
+
+    if (employeeRequest?.staffName && employeeRequest?.staffLastName) {
+      return capitalizeFullName(
+        `${employeeRequest.staffName.trim()} ${employeeRequest.staffLastName.trim()}`,
+      );
+    }
+
+    return "Sin responsable";
+  }, [
+    assignedTask?.staffName,
+    assignedTask?.staffLastName,
+    employeeRequest?.staffName,
+    employeeRequest?.staffLastName,
+  ]);
 
   const allTasksCompleted =
     requestData?.tasksToManageTheHumanResourcesRequests?.every(
@@ -109,25 +133,6 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
   }, []);
 
   const {
-    data: responsibleData,
-    loading,
-    error,
-  } = useEvaluateResponsibleOfTasks({
-    requestId: requestData?.humanResourceRequestId ?? "",
-    headers: resolvedHeaders ?? {},
-    enabled: !!resolvedHeaders && !!requestData?.humanResourceRequestId,
-  });
-
-  const firstGroup = responsibleData?.[0] ?? null;
-
-  const responsibleLabel =
-    firstGroup?.responsible?.length !== 1
-      ? "Sin responsable"
-      : capitalizeFullName(
-          `${firstGroup.responsible[0].names.trim()} ${firstGroup.responsible[0].surnames.trim()}`,
-        );
-
-  const {
     data: decisionsData,
     loading: loadingDecisions,
     error: errorDecisions,
@@ -166,6 +171,7 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
             setComment("");
             setDecision("");
             void refetch();
+            navigate("/requests");
           },
         });
       } catch (err) {
@@ -183,10 +189,10 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
       taskManagingId,
       user,
       refetch,
+      navigate,
     ],
   );
 
-  const handleDiscard = () => Logger.info("Descartar solicitud");
   const handleExecute = () => Logger.info("Ejecutar solicitud");
   const handleAttach = () => Logger.info("Adjuntar archivos");
   const handleSeeAttachments = () => Logger.info("Ver adjuntos");
@@ -202,15 +208,12 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     requestData,
     isLoadingRequest,
     responsibleLabel,
-    loading,
-    error,
     loadingDecisions,
     errorDecisions,
     decisionsData,
     updatedAppRoute,
     displayRequestLabel,
     displayDescription,
-    handleDiscard,
     handleExecute,
     handleAttach,
     handleSeeAttachments,
