@@ -33,12 +33,16 @@ export interface HumanResourceRequestTraceability {
 }
 
 export interface TaskToManageHumanResourceRequest {
-  taskManagingId: string;
+  description: string;
   humanResourceRequestId: string;
   taskCode: string;
-  taskName: keyof typeof TaskNameMapping;
+  taskManagingId: string;
+  taskName: string;
   taskStatus: ETaskStatus;
-  description: string;
+  staffName?: string;
+  staffLastName?: string;
+  identificationDocumentNumber?: string;
+  positionName?: string;
 }
 
 export interface HumanResourceRequestBlockingPerTask {

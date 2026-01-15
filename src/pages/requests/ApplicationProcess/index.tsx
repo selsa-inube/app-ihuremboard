@@ -92,8 +92,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     requestData,
     isLoadingRequest,
     responsibleLabel,
-    loading,
-    error,
     loadingDecisions,
     errorDecisions,
     decisionsData,
@@ -105,6 +103,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     handleSeeAttachments,
     handleSend,
     loadingUpdate,
+    allTasksCompleted,
   } = useApplicationProcessLogic(appRoute);
 
   useEffect(() => {
@@ -284,13 +283,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           <StyledFieldsetContainer $isMobile={isMobile}>
             <Fieldset
               title={labels.requests.applicationProcess.fieldset.toDoTitle}
-              descriptionTitle={
-                loading
-                  ? labels.requests.general.loading
-                  : error
-                    ? labels.requests.general.errorLoading
-                    : responsibleLabel
-              }
+              descriptionTitle={responsibleLabel}
             >
               <Stack direction="column" gap={spacing.s150}>
                 <Text>
@@ -304,14 +297,16 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                       labels.requests.applicationProcess.fieldset.decisionLabel
                     }
                     placeholder={
-                      loadingDecisions
-                        ? labels.requests.applicationProcess.fieldset
-                            .loadingOptions
-                        : errorDecisions
+                      allTasksCompleted
+                        ? "Todas las tareas completadas"
+                        : loadingDecisions
                           ? labels.requests.applicationProcess.fieldset
-                              .errorLoadingOptions
-                          : labels.requests.applicationProcess.fieldset
-                              .selectOptionPlaceholder
+                              .loadingOptions
+                          : errorDecisions
+                            ? labels.requests.applicationProcess.fieldset
+                                .errorLoadingOptions
+                            : labels.requests.applicationProcess.fieldset
+                                .selectOptionPlaceholder
                     }
                     options={decisionOptions}
                     value={decision}
@@ -323,11 +318,13 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                     fullwidth
                     message={decisionError}
                     invalid={!!decisionError}
+                    disabled={allTasksCompleted ?? loadingDecisions}
                   />
                   <StyledDecisionContainer $hasError={!!decisionError}>
                     <Button
                       appearance="primary"
                       variant="filled"
+                      disabled={allTasksCompleted ?? loadingUpdate}
                       onClick={() => {
                         if (!decision) {
                           setDecisionError(

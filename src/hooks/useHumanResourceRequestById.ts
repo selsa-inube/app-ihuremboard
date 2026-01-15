@@ -30,6 +30,8 @@ export const useHumanResourceRequest = (
       const headers = await getHeaders();
       const response = await getHumanResourceRequests(requestNumber, headers);
 
+      console.log("🧪 RESPONSE RAW (backend):", response);
+
       if (!response || Object.keys(response).length === 0) {
         setError(1013);
 
@@ -42,7 +44,24 @@ export const useHumanResourceRequest = (
         return;
       }
 
-      setData(response);
+      // ✅ EL BACKEND DEVUELVE ARRAY → TOMAMOS EL PRIMERO
+      const request = Array.isArray(response) ? response[0] : response;
+
+      console.log("🧪 REQUEST NORMALIZADO:", request);
+      console.log("🧪 TASKS:", request?.tasksToManageTheHumanResourcesRequests);
+
+      // ✅ PARSEAR humanResourceRequestData (viene como string)
+      const normalizedRequest: HumanResourceRequest = {
+        ...request,
+        humanResourceRequestData:
+          typeof request.humanResourceRequestData === "string"
+            ? JSON.parse(request.humanResourceRequestData)
+            : request.humanResourceRequestData,
+      };
+
+      console.log("✅ REQUEST FINAL SETEADO:", normalizedRequest);
+
+      setData(normalizedRequest);
     } catch (error: unknown) {
       const normalizedError =
         error instanceof Error

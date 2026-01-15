@@ -58,6 +58,11 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
       (task) => task.taskStatus === "assigned",
     ) ?? null;
 
+  const allTasksCompleted =
+    requestData?.tasksToManageTheHumanResourcesRequests?.every(
+      (task) => task.taskStatus !== "assigned",
+    ) ?? false;
+
   const taskNameToUse = assignedTask?.taskName ?? "";
   const taskCodeToUse = assignedTask?.taskCode ?? "";
   const taskManagingId = assignedTask?.taskManagingId ?? "";
@@ -211,5 +216,6 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     handleSeeAttachments,
     handleSend,
     loadingUpdate,
+    allTasksCompleted,
   };
 }
