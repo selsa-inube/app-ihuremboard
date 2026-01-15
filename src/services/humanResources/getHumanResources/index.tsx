@@ -8,22 +8,26 @@ import {
   IHumanDecisionTasksResponse,
   IApiErrorResponse,
 } from "@ptypes/humanResources.types";
-import { mapHumanDecisionTasksApiToEntity } from "./mappers";
 import { Logger } from "@utils/logger";
+
+import { mapHumanDecisionTasksApiToEntity } from "./mappers";
 
 const getHumanDecisionTasks = async (
   requestType: string,
   businessUnits: string,
+  taskCode?: string,
 ): Promise<IHumanDecisionTasksResponse> => {
   const maxRetries = maxRetriesServices;
   const fetchTimeout = fetchTimeoutServices;
+
+  const parameterToUse = taskCode ?? requestType;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
 
-      const url = `${environment.IVITE_IPORTAL_EMPLOYEE_QUERY_PROCESS_SERVICE}/enumerators/human-decisions-tasks/${requestType}`;
+      const url = `${environment.IVITE_IPORTAL_EMPLOYEE_QUERY_PROCESS_SERVICE}/enumerators/human-decisions-tasks/${parameterToUse}`;
 
       const res = await fetch(url, {
         method: "GET",
@@ -59,6 +63,7 @@ const getHumanDecisionTasks = async (
           {
             module: "getHumanDecisionTasks",
             requestType,
+            taskCode,
             businessUnits,
             attempt,
           },

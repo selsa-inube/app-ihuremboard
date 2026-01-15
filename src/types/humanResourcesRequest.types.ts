@@ -33,12 +33,16 @@ export interface HumanResourceRequestTraceability {
 }
 
 export interface TaskToManageHumanResourceRequest {
-  taskManagingId: string;
+  description: string;
   humanResourceRequestId: string;
   taskCode: string;
-  taskName: keyof typeof TaskNameMapping;
+  taskManagingId: string;
+  taskName: string;
   taskStatus: ETaskStatus;
-  description: string;
+  staffName?: string;
+  staffLastName?: string;
+  identificationDocumentNumber?: string;
+  positionName?: string;
 }
 
 export interface HumanResourceRequestBlockingPerTask {
@@ -79,10 +83,11 @@ export enum ERequestType {
 }
 
 export enum ETaskStatus {
-  assigned = "Asignada",
-  executed = "Ejecutada",
-  manually_locked = "Bloqueada Manualmente",
-  system_locked = "Bloqueada por Sistema",
+  assigned = "assigned",
+  executed = "executed",
+  pending = "PENDING",
+  completed = "COMPLETED",
+  failed = "FAILED",
 }
 
 export enum EContractType {

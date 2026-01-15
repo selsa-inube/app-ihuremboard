@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getHumanDecisionTasks } from "@services/humanResources/getHumanResources";
+import { taskCodeDecisionsMap } from "@ptypes/humanResources.types";
 
 interface IHumanDecisionTasksResponse {
   decisions: string[];
@@ -11,6 +12,7 @@ export function useHumanDecisionTasks(
   requestType: string,
   businessUnits: string,
   enabled = true,
+  taskCode?: string,
 ) {
   const [data, setData] = useState<IHumanDecisionTasksResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,8 +29,21 @@ export function useHumanDecisionTasks(
         const response = await getHumanDecisionTasks(
           requestType,
           businessUnits,
+          taskCode,
         );
-        setData(response);
+
+        if (taskCode && taskCodeDecisionsMap[taskCode]) {
+          const allowedDecisions = taskCodeDecisionsMap[taskCode];
+          const filteredDecisions = response.decisions.filter((decision) =>
+            allowedDecisions.includes(decision.toLowerCase()),
+          );
+          setData({
+            ...response,
+            decisions: filteredDecisions,
+          });
+        } else {
+          setData(response);
+        }
       } catch (err: unknown) {
         setError(err instanceof Error ? err : new Error("Unknown error"));
       } finally {
@@ -37,7 +52,7 @@ export function useHumanDecisionTasks(
     };
 
     fetchData();
-  }, [requestType, businessUnits, enabled]);
+  }, [requestType, businessUnits, enabled, taskCode]);
 
   return { data, loading, error };
 }

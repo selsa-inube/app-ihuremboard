@@ -1,5 +1,5 @@
-import { useParams, useLocation } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useIAuth } from "@inube/iauth-react";
 
 import { Logger } from "@utils/logger";
@@ -7,19 +7,13 @@ import { IRoute } from "@components/layout/AppMenu/types";
 import { requestConfigs } from "@config/requests.config";
 import { capitalizeFullName } from "@utils/string";
 import { useHumanResourceRequest } from "@hooks/useHumanResourceRequestById";
-import { useEvaluateResponsibleOfTasks } from "@hooks/useEvaluateResponsibleOfTasks";
 import { useHeaders } from "@hooks/useHeaders";
 import { useHumanDecisionTasks } from "@hooks/useHumanDecisionTasks";
-import { useUpdateHumanResourceRequest } from "@hooks/useUpdateHumanResourceRequest";
+import { useApprovalHumanResourceRequestAPI } from "@hooks/useApprovalHumanResourceRequestAPI";
 import { useErrorFlag } from "@hooks/useErrorFlag";
-
-export interface ApplicationProcessUIProps {
-  appName: string;
-  appRoute: IRoute[];
-  navigatePage: string;
-  description: string;
-  requestLabel: string;
-}
+import { ApprovalAction } from "@services/employeeConsultation/postApprovalHumanResourceRequest/types";
+import { useHumanEmployeeResourceRequests } from "@hooks/useHumanEmployeeResourceRequests";
+import { HumanEmployeeResourceRequest } from "@ptypes/humanEmployeeResourcesRequest.types";
 
 function isRequestConfigKey(
   value: string,
@@ -40,20 +34,66 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
   };
 
   const { user } = useIAuth();
+  const navigate = useNavigate();
 
-  const [showActions, setShowActions] = useState(false);
   const [decision, setDecision] = useState<string>("");
   const [comment, setComment] = useState<string>("");
 
   const requestNumberParam = state?.requestNumber ?? id ?? "";
-  const { data: requestData, isLoading: isLoadingRequest } =
-    useHumanResourceRequest(requestNumberParam);
 
-  const taskNameToUse =
-    requestData?.tasksToManageTheHumanResourcesRequests?.[0]?.taskName ?? "";
+  const {
+    data: requestData,
+    isLoading: isLoadingRequest,
+    refetch,
+  } = useHumanResourceRequest(requestNumberParam);
+
+  const { data: employeeRequests } =
+    useHumanEmployeeResourceRequests<HumanEmployeeResourceRequest>(
+      (data) => data,
+    );
+
+  const employeeRequest = employeeRequests.find(
+    (req) => req.humanResourceRequestId === requestData?.humanResourceRequestId,
+  );
+
+  const assignedTask =
+    requestData?.tasksToManageTheHumanResourcesRequests?.find(
+      (task) => task.taskStatus === "assigned",
+    ) ?? null;
+
+  const responsibleLabel = useMemo(() => {
+    if (assignedTask?.staffName && assignedTask?.staffLastName) {
+      return capitalizeFullName(
+        `${assignedTask.staffName.trim()} ${assignedTask.staffLastName.trim()}`,
+      );
+    }
+
+    if (employeeRequest?.staffName && employeeRequest?.staffLastName) {
+      return capitalizeFullName(
+        `${employeeRequest.staffName.trim()} ${employeeRequest.staffLastName.trim()}`,
+      );
+    }
+
+    return "Sin responsable";
+  }, [
+    assignedTask?.staffName,
+    assignedTask?.staffLastName,
+    employeeRequest?.staffName,
+    employeeRequest?.staffLastName,
+  ]);
+
+  const allTasksCompleted =
+    requestData?.tasksToManageTheHumanResourcesRequests?.every(
+      (task) => task.taskStatus !== "assigned",
+    ) ?? false;
+
+  const taskNameToUse = assignedTask?.taskName ?? "";
+  const taskCodeToUse = assignedTask?.taskCode ?? "";
+  const taskManagingId = assignedTask?.taskManagingId ?? "";
 
   const rawLabel =
     requestData?.humanResourceRequestDescription ?? state?.title ?? "";
+
   const parts = rawLabel.trim().split(" ");
   const keyCandidate = parts[parts.length - 1];
 
@@ -93,16 +133,6 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
   }, []);
 
   const {
-    data: responsibleData,
-    loading,
-    error,
-  } = useEvaluateResponsibleOfTasks({
-    requestId: requestData?.humanResourceRequestId ?? "",
-    headers: resolvedHeaders ?? {},
-    enabled: !!resolvedHeaders && !!requestData?.humanResourceRequestId,
-  });
-
-  const {
     data: decisionsData,
     loading: loadingDecisions,
     error: errorDecisions,
@@ -110,72 +140,59 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     taskNameToUse,
     resolvedHeaders?.["X-Business-Unit"] ?? "",
     !!resolvedHeaders && !!taskNameToUse,
+    taskCodeToUse,
   );
 
-  const firstGroup =
-    responsibleData && responsibleData.length > 0 ? responsibleData[0] : null;
-
-  const responsibleLabel =
-    !firstGroup || firstGroup.responsible.length !== 1
-      ? "Sin responsable"
-      : capitalizeFullName(
-          `${firstGroup.responsible[0].names.trim()} ${firstGroup.responsible[0].surnames.trim()}`,
-        );
-
   const {
-    updateRequest,
-    loading: loadingUpdate,
+    submitApproval,
+    isLoading: loadingUpdate,
     error: errorUpdate,
-  } = useUpdateHumanResourceRequest();
+  } = useApprovalHumanResourceRequestAPI();
 
   useErrorFlag({
     flagShown: !!errorUpdate,
-    message: errorUpdate ?? undefined,
+    message: errorUpdate?.message ?? undefined,
   });
 
   const handleSend = useCallback(
     async (commentToSend?: string) => {
-      if (!decision) {
-        useErrorFlag({
-          flagShown: true,
-          message: "Debes seleccionar una decisión antes de enviar",
-        });
-        return;
-      }
-
-      if (!requestData?.humanResourceRequestId) {
-        useErrorFlag({
-          flagShown: true,
-          message: "No se encontró el ID de la solicitud",
-        });
+      if (!decision || !requestData?.humanResourceRequestId || !assignedTask) {
         return;
       }
 
       try {
-        await updateRequest(
-          requestData.humanResourceRequestId,
-          decision,
-          commentToSend ?? "Sin observaciones",
-          user?.id ?? "Sin identificación",
-          resolvedHeaders?.["X-Business-Unit"],
-        );
-
-        setShowActions(false);
-        setComment("");
-      } catch (err) {
-        useErrorFlag({
-          flagShown: true,
-          message:
-            err instanceof Error
-              ? err.message
-              : "Ocurrió un error al enviar la solicitud",
+        await submitApproval({
+          humanResourceRequestId: requestData.humanResourceRequestId,
+          taskManagingId,
+          actionExecuted: decision as ApprovalAction,
+          description: commentToSend ?? "Sin observaciones",
+          userWhoExecutedAction: user?.id ?? "Sin identificación",
+          onSuccess: () => {
+            setComment("");
+            setDecision("");
+            void refetch();
+            navigate("/requests");
+          },
         });
+      } catch (err) {
+        Logger.error(
+          "Error sending approval",
+          err instanceof Error ? err : new Error(String(err)),
+        );
       }
     },
-    [decision, requestData, resolvedHeaders, updateRequest, user],
+    [
+      decision,
+      requestData,
+      assignedTask,
+      submitApproval,
+      taskManagingId,
+      user,
+      refetch,
+      navigate,
+    ],
   );
 
-  const handleDiscard = () => Logger.info("Descartar solicitud");
   const handleExecute = () => Logger.info("Ejecutar solicitud");
   const handleAttach = () => Logger.info("Adjuntar archivos");
   const handleSeeAttachments = () => Logger.info("Ver adjuntos");
@@ -187,24 +204,21 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     setDecision,
     comment,
     setComment,
-    showActions,
-    setShowActions,
+    showActions: Boolean(assignedTask),
     requestData,
     isLoadingRequest,
     responsibleLabel,
-    loading,
-    error,
     loadingDecisions,
     errorDecisions,
     decisionsData,
     updatedAppRoute,
     displayRequestLabel,
     displayDescription,
-    handleDiscard,
     handleExecute,
     handleAttach,
     handleSeeAttachments,
     handleSend,
     loadingUpdate,
+    allTasksCompleted,
   };
 }
