@@ -2,6 +2,10 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useIAuth } from "@inube/iauth-react";
 
+import {
+  HumanResourceRequest,
+  HumanResourceRequestData,
+} from "@ptypes/humanResourcesRequest.types";
 import { Logger } from "@utils/logger";
 import { IRoute } from "@components/layout/AppMenu/types";
 import { requestConfigs } from "@config/requests.config";
@@ -14,11 +18,34 @@ import { useErrorFlag } from "@hooks/useErrorFlag";
 import { ApprovalAction } from "@services/employeeConsultation/postApprovalHumanResourceRequest/types";
 import { useHumanEmployeeResourceRequests } from "@hooks/useHumanEmployeeResourceRequests";
 import { HumanEmployeeResourceRequest } from "@ptypes/humanEmployeeResourcesRequest.types";
+import { ERequestStatus } from "@ptypes/humanResourcesRequest.types";
 
 function isRequestConfigKey(
   value: string,
 ): value is keyof typeof requestConfigs {
   return value in requestConfigs;
+}
+
+function getVacationEndDate(requestData: HumanResourceRequest): Date | null {
+  if (!requestData?.humanResourceRequestData) return null;
+
+  const data: HumanResourceRequestData =
+    typeof requestData.humanResourceRequestData === "string"
+      ? JSON.parse(requestData.humanResourceRequestData)
+      : requestData.humanResourceRequestData;
+
+  const startDateStr = data.startDateEnyoment;
+  const daysOff = Number(data.daysOff);
+
+  if (!startDateStr || isNaN(daysOff)) return null;
+
+  const startDate = new Date(startDateStr);
+  startDate.setHours(0, 0, 0, 0);
+
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + daysOff);
+
+  return endDate;
 }
 
 export function useApplicationProcessLogic(appRoute: IRoute[]) {
@@ -36,8 +63,10 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
   const { user } = useIAuth();
   const navigate = useNavigate();
 
-  const [decision, setDecision] = useState<string>("");
-  const [comment, setComment] = useState<string>("");
+  const [decision, setDecision] = useState("");
+  const [comment, setComment] = useState("");
+
+  const [showVacationInfo, setShowVacationInfo] = useState(false);
 
   const requestNumberParam = state?.requestNumber ?? id ?? "";
 
@@ -86,6 +115,50 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     requestData?.tasksToManageTheHumanResourcesRequests?.every(
       (task) => task.taskStatus !== "assigned",
     ) ?? false;
+
+  const vacationValidation = useMemo(() => {
+    const currentStatus = requestData?.humanResourceRequestStatus;
+
+    const assignedTask =
+      requestData?.tasksToManageTheHumanResourcesRequests?.find(
+        (task) => task.taskStatus === "assigned",
+      ) ?? null;
+
+    const isConfirmationStatus =
+      currentStatus === ERequestStatus.confirmation_of_vacation_taken ||
+      assignedTask?.taskName === "confirm_vacation_completion" ||
+      (assignedTask?.description?.toLowerCase().includes("confirmar") &&
+        assignedTask?.description?.toLowerCase().includes("disfrute"));
+
+    if (!isConfirmationStatus) {
+      return { shouldDisable: false, endDate: null, message: null };
+    }
+
+    const endDate = getVacationEndDate(requestData);
+    if (!endDate) {
+      return { shouldDisable: false, endDate: null, message: null };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+
+    const shouldDisable = today < endDate;
+
+    return {
+      shouldDisable,
+      endDate,
+      message: shouldDisable
+        ? `La decisión estará habilitada después del ${endDate.toLocaleDateString(
+            "es-CO",
+            { year: "numeric", month: "long", day: "numeric" },
+          )}`
+        : null,
+    };
+  }, [requestData]);
+
+  const openVacationInfo = () => setShowVacationInfo(true);
+  const closeVacationInfo = () => setShowVacationInfo(false);
 
   const taskNameToUse = assignedTask?.taskName ?? "";
   const taskCodeToUse = assignedTask?.taskCode ?? "";
@@ -220,5 +293,9 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     handleSend,
     loadingUpdate,
     allTasksCompleted,
+    vacationValidation,
+    showVacationInfo,
+    openVacationInfo,
+    closeVacationInfo,
   };
 }
