@@ -16,6 +16,7 @@ const getHumanDecisionTasks = async (
   requestType: string,
   businessUnits: string,
   taskCode?: string,
+  headers?: Record<string, string>,
 ): Promise<IHumanDecisionTasksResponse> => {
   const maxRetries = maxRetriesServices;
   const fetchTimeout = fetchTimeoutServices;
@@ -32,7 +33,7 @@ const getHumanDecisionTasks = async (
       const res = await fetch(url, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json; charset=UTF-8",
+          ...headers,
           "X-Action": "GetByHumanDecisionTasks",
           "X-Business-Unit": businessUnits,
         },

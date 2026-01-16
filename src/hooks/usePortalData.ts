@@ -6,6 +6,7 @@ import { IStaffPortalByBusinessManager } from "@ptypes/staffPortalBusiness.types
 import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
 import { modalErrorConfig } from "@config/modalErrorConfig";
 import { Logger } from "@utils/logger";
+import { getPreAuthHeaders } from "@utils/preAuthHeaders";
 
 export const usePortalData = (codeParame: string) => {
   const [portalData, setPortalData] = useState<IStaffPortalByBusinessManager>(
@@ -20,7 +21,12 @@ export const usePortalData = (codeParame: string) => {
     const fetchPortalData = async () => {
       setIsFetching(true);
       try {
-        const staffPortalData = await staffPortalByBusinessManager(codeParame);
+        const headers = getPreAuthHeaders();
+
+        const staffPortalData = await staffPortalByBusinessManager(
+          codeParame,
+          headers,
+        );
 
         if (!staffPortalData || Object.keys(staffPortalData).length === 0) {
           return;

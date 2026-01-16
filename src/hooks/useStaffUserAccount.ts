@@ -5,6 +5,7 @@ import { IStaffUserAccount } from "@ptypes/staffPortalBusiness.types";
 import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
 import { modalErrorConfig } from "@config/modalErrorConfig";
 import { Logger } from "@utils/logger";
+import { useHeaders } from "@hooks/useHeaders";
 
 interface UseStaffUserAccountProps {
   userAccountId?: string;
@@ -19,6 +20,7 @@ export const useStaffUserAccount = ({
   const [hasError, setHasError] = useState<number | null>(null);
 
   const { showErrorModal } = useErrorModal();
+  const { getHeaders } = useHeaders();
 
   useEffect(() => {
     const fetchUserAccount = async () => {
@@ -29,7 +31,9 @@ export const useStaffUserAccount = ({
       }
 
       try {
-        const data = await staffUserAccountById(userAccountId);
+        const headers = await getHeaders();
+
+        const data = await staffUserAccountById(userAccountId, headers);
         setUserAccount(data);
       } catch (error: unknown) {
         const normalizedError =
@@ -56,7 +60,7 @@ export const useStaffUserAccount = ({
     };
 
     void fetchUserAccount();
-  }, [userAccountId, showErrorModal]);
+  }, [userAccountId, showErrorModal, getHeaders]);
 
   return { userAccount, loading, hasError };
 };

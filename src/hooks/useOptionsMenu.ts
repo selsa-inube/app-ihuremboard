@@ -6,6 +6,7 @@ import { IOptionWithSubOptions } from "@ptypes/staffPortalBusiness.types";
 import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
 import { modalErrorConfig } from "@config/modalErrorConfig";
 import { Logger } from "@utils/logger";
+import { useHeaders } from "@hooks/useHeaders";
 
 export function useOptionsMenu(
   staffPortalPublicCode: string,
@@ -17,6 +18,7 @@ export function useOptionsMenu(
 
   const { provisionedPortal, selectedClient } = useAppContext();
   const { showErrorModal } = useErrorModal();
+  const { getHeaders } = useHeaders();
 
   useEffect(() => {
     if (!selectedClient || !businessUnitPublicCode) {
@@ -41,9 +43,12 @@ export function useOptionsMenu(
       }
 
       try {
+        const headers = await getHeaders();
+
         const staffOptionData = await getOptionForCustomerPortal(
           staffPortalPublicCode,
           businessUnitPublicCode,
+          headers,
         );
 
         if (staffOptionData.length === 0) {
@@ -97,6 +102,7 @@ export function useOptionsMenu(
     staffPortalPublicCode,
     businessUnitPublicCode,
     showErrorModal,
+    getHeaders,
   ]);
 
   return { optionData, hasError, isFetching };

@@ -8,6 +8,7 @@ import { getBusinessManagerByCode } from "@services/businessManagers/getBusiness
 import { useErrorModal } from "@context/ErrorModalContext/ErrorModalContext";
 import { modalErrorConfig } from "@config/modalErrorConfig";
 import { Logger } from "@utils/logger";
+import { getPreAuthHeaders } from "@utils/preAuthHeaders";
 
 export const useBusinessManagers = (
   portalPublicCode: IEmployeePortalByBusinessManager,
@@ -25,8 +26,11 @@ export const useBusinessManagers = (
 
       setIsFetching(true);
       try {
+        const headers = getPreAuthHeaders();
+
         const fetchedBusinessManagers = await getBusinessManagerByCode(
           portalPublicCode.businessManagerCode,
+          headers,
         );
 
         if (

@@ -10,6 +10,7 @@ import { Logger } from "@utils/logger";
 const getOptionForCustomerPortal = async (
   staffPortalPublicCode: string,
   businessUnitPublicCode: string,
+  headers?: Record<string, string>,
 ): Promise<IOptionWithSubOptions[]> => {
   const maxRetries = maxRetriesServices;
   const fetchTimeout = fetchTimeoutServices;
@@ -27,6 +28,7 @@ const getOptionForCustomerPortal = async (
       const options: RequestInit = {
         method: "GET",
         headers: {
+          ...headers,
           "Content-Type": "application/json; charset=UTF-8",
           "x-action": "SearchOptionsStaffPortalByBusinessUnit",
         },

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getUseCasesByStaff } from "@services/StaffUser/staffPortalBusiness";
 import { IUseCasesByRole } from "@ptypes/staffPortalBusiness.types";
 import { Logger } from "@utils/logger";
+import { useHeaders } from "@hooks/useHeaders";
 
 interface UseCasesProps {
   userName: string;
@@ -22,6 +23,8 @@ export const useUseCasesByStaff = ({
   const [loading, setLoading] = useState(true);
   const [hasError, setHasError] = useState<number | null>(null);
 
+  const { getHeaders } = useHeaders();
+
   useEffect(() => {
     const fetchUseCases = async () => {
       if (!userName || !businessManagerCode || !businessUnitCode) {
@@ -35,10 +38,13 @@ export const useUseCasesByStaff = ({
       setHasError(null);
 
       try {
+        const headers = await getHeaders();
+
         const data = await getUseCasesByStaff(
           userName,
           businessManagerCode,
           businessUnitCode,
+          headers,
         );
 
         setUseCases(data);
@@ -68,7 +74,13 @@ export const useUseCasesByStaff = ({
     };
 
     void fetchUseCases();
-  }, [userName, businessManagerCode, businessUnitCode, onUseCasesLoaded]);
+  }, [
+    userName,
+    businessManagerCode,
+    businessUnitCode,
+    onUseCasesLoaded,
+    getHeaders,
+  ]);
 
   return { useCases, loading, hasError };
 };
