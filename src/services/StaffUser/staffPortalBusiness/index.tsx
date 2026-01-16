@@ -11,6 +11,7 @@ const getUseCasesByStaff = async (
   userName: string,
   businessManagerCode: string,
   businessUnitCode: string,
+  headers?: Record<string, string>,
 ): Promise<IUseCasesByRole> => {
   const maxRetries = maxRetriesServices;
   const fetchTimeout = fetchTimeoutServices;
@@ -20,8 +21,8 @@ const getUseCasesByStaff = async (
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), fetchTimeout);
 
-      const headers = {
-        "Content-Type": "application/json; charset=UTF-8",
+      const requestHeaders = {
+        ...headers,
         "X-Action": "SearchUseCaseForStaff",
         "X-User-Name": userName,
       };
@@ -35,7 +36,7 @@ const getUseCasesByStaff = async (
 
       const res = await fetch(url, {
         method: "GET",
-        headers,
+        headers: requestHeaders,
         signal: controller.signal,
       });
       clearTimeout(timeoutId);
