@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { getHumanDecisionTasks } from "@services/humanResources/getHumanResources";
 import { taskCodeDecisionsMap } from "@ptypes/humanResources.types";
+import { useHeaders } from "@hooks/useHeaders";
 
 interface IHumanDecisionTasksResponse {
   decisions: string[];
@@ -17,6 +18,7 @@ export function useHumanDecisionTasks(
   const [data, setData] = useState<IHumanDecisionTasksResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const { getHeaders } = useHeaders();
 
   useEffect(() => {
     if (!enabled || !requestType || !businessUnits) return;
@@ -26,10 +28,13 @@ export function useHumanDecisionTasks(
       setError(null);
 
       try {
+        const headers = await getHeaders();
+
         const response = await getHumanDecisionTasks(
           requestType,
           businessUnits,
           taskCode,
+          headers,
         );
 
         if (taskCode && taskCodeDecisionsMap[taskCode]) {
@@ -52,7 +57,7 @@ export function useHumanDecisionTasks(
     };
 
     fetchData();
-  }, [requestType, businessUnits, enabled, taskCode]);
+  }, [requestType, businessUnits, enabled, taskCode, getHeaders]);
 
   return { data, loading, error };
 }
