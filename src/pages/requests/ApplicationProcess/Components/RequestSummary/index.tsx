@@ -227,7 +227,6 @@ export function RequestSummary(props: RequestSummaryProps) {
                 </DetailItem>
               )}
 
-              {/* Nuevos campos solo para vacaciones disfrutadas */}
               {isVacationsEnjoyed && startDateEnjoyment && (
                 <DetailItem>
                   <Text type="label" weight="bold">

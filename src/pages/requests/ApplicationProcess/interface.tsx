@@ -22,10 +22,6 @@ function isRequestConfigKey(
   return value in requestConfigs;
 }
 
-/**
- * Formatea fecha a:
- * YYYY-MM-DDT00:00:00.000-05:00
- */
 function formatDateWithOffset(date: string): string {
   const d = new Date(date);
 
