@@ -42,6 +42,11 @@ export const requestConfigs: Record<keyof typeof ERequestType, IRequestConfig> =
       description:
         "Trámite para gestionar un cambio de cargo dentro de la organización.",
     },
+    manage_vacation_pay: {
+      label: "Gestión de pago de vacaciones",
+      description:
+        "Proceso para gestionar el pago correspondiente a las vacaciones.",
+    },
     pqr: {
       label: "PQR",
       description: "Radicación de peticiones, quejas o reclamos.",

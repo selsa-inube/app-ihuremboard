@@ -44,6 +44,9 @@ export function RequestSummary(props: RequestSummaryProps) {
     handleExecute,
     handleAttach,
     handleSeeAttachments,
+    startDateEnjoyment,
+    endDateEnjoyment,
+    isVacationsEnjoyed,
   } = useRequestSummaryLogic(props);
 
   const isMobile = useMediaQuery("(max-width: 1100px)");
@@ -211,6 +214,28 @@ export function RequestSummary(props: RequestSummaryProps) {
                   </Text>
                   <Text appearance="gray" type="label">
                     {disbursementDate}
+                  </Text>
+                </DetailItem>
+              )}
+
+              {isVacationsEnjoyed && startDateEnjoyment && (
+                <DetailItem>
+                  <Text type="label" weight="bold">
+                    Fecha de inicio de disfrute
+                  </Text>
+                  <Text appearance="gray" type="label">
+                    {startDateEnjoyment}
+                  </Text>
+                </DetailItem>
+              )}
+
+              {isVacationsEnjoyed && endDateEnjoyment && (
+                <DetailItem>
+                  <Text type="label" weight="bold">
+                    Fecha de finalización de disfrute
+                  </Text>
+                  <Text appearance="gray" type="label">
+                    {endDateEnjoyment}
                   </Text>
                 </DetailItem>
               )}

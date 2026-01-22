@@ -38,6 +38,7 @@ import {
   HumanDecision,
   HumanDecisionTranslations,
 } from "@ptypes/humanResources.types";
+import { DisbursementDateModal } from "@components/modals/DisbursementDateModal";
 
 import { ManagementUI, ITraceabilityItem } from "./Components/management";
 import { RequestSummary } from "./Components/RequestSummary";
@@ -76,6 +77,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const { appRoute, navigatePage, onDeleteSuccess } = props;
   const isMobile = useMediaQuery("(max-width: 1000px)");
   const [showTextAreaModal, setShowTextAreaModal] = useState(false);
+  const [showDisbursementModal, setShowDisbursementModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { handleDelete } = useDeleteRequest<IRequest>(() => {
@@ -102,8 +104,11 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     handleAttach,
     handleSeeAttachments,
     handleSend,
+    handleSaveDisbursementDate,
     loadingUpdate,
     allTasksCompleted,
+    shouldShowDisbursementDateField,
+    isUpdatingDisbursement,
   } = useApplicationProcessLogic(appRoute);
 
   useEffect(() => {
@@ -335,7 +340,12 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                         }
 
                         setDecisionError(undefined);
-                        setShowTextAreaModal(true);
+
+                        if (shouldShowDisbursementDateField) {
+                          setShowDisbursementModal(true);
+                        } else {
+                          setShowTextAreaModal(true);
+                        }
                       }}
                     >
                       {loadingUpdate
@@ -425,6 +435,21 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           </StyledFieldsetContainer>
         </Stack>
       </Stack>
+
+      {showDisbursementModal && (
+        <DisbursementDateModal
+          onCloseModal={() => setShowDisbursementModal(false)}
+          isLoading={isUpdatingDisbursement}
+          onSubmit={async (disbursementDate) => {
+            const success = await handleSaveDisbursementDate(disbursementDate);
+
+            if (success) {
+              setShowDisbursementModal(false);
+              setShowTextAreaModal(true);
+            }
+          }}
+        />
+      )}
 
       {showTextAreaModal && (
         <TextAreaModal

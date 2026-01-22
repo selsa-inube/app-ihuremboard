@@ -58,10 +58,12 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
     parsedData = {};
   }
 
+  const isVacationsEnjoyed = requestType === "vacations_enjoyed";
+
   let daysToPay = "";
   if (requestType === "certification") {
     daysToPay = "-";
-  } else if (requestType === "vacations_enjoyed") {
+  } else if (isVacationsEnjoyed) {
     daysToPay = parsedData.daysOff?.toString() ?? "";
   } else {
     daysToPay =
@@ -76,6 +78,16 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
     parsedData.disbursementDate ?? parsedData.startDateEnyoment;
   const disbursementDate = disbursementDateRaw
     ? formatDate(disbursementDateRaw)
+    : "";
+
+  const startDateEnjoymentRaw = parsedData.startDateEnyoment;
+  const startDateEnjoyment = startDateEnjoymentRaw
+    ? formatDate(startDateEnjoymentRaw)
+    : "";
+
+  const endDateEnjoymentRaw = parsedData.endDateEnjoyment;
+  const endDateEnjoyment = endDateEnjoymentRaw
+    ? formatDate(endDateEnjoymentRaw)
     : "";
 
   const contractNumber =
@@ -136,5 +148,8 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
     handleExecute,
     handleAttach,
     handleSeeAttachments,
+    startDateEnjoyment,
+    endDateEnjoyment,
+    isVacationsEnjoyed,
   };
 };
