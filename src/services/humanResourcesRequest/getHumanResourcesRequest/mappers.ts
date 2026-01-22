@@ -240,6 +240,11 @@ const mapHumanResourceRequestDataApiToEntity = (
     typeof item.startDateEnyoment === "number"
       ? String(item.startDateEnyoment)
       : "",
+  endDateEnjoyment:
+    typeof item.endDateEnjoyment === "string" ||
+    typeof item.endDateEnjoyment === "number"
+      ? String(item.endDateEnjoyment)
+      : "",
   certificationType:
     typeof item.certificationType === "string" ||
     typeof item.certificationType === "number"

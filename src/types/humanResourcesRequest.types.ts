@@ -61,6 +61,7 @@ export interface HumanResourceRequestData {
   observationEmployee?: string;
   daysToPay?: string | number;
   disbursementDate?: string;
+  endDateEnjoyment?: string;
   daysOff?: string | number;
   startDateEnyoment?: string;
   certificationType?: string;
@@ -68,6 +69,7 @@ export interface HumanResourceRequestData {
 }
 
 export enum ERequestType {
+  manage_vacation_pay = "Gestión de pago de vacaciones",
   absence = "Ausencia",
   certification = "Certificación",
   disability = "Incapacidad",
@@ -108,6 +110,7 @@ export enum ERequestStatus {
   onboarding_in_progress = "Vinculación en Progreso",
   pending_registration_invitation = "Pendiente de Invitacion para registro",
   pending_to_complete_registration = "Pendiente de completar registro",
+  manage_vacation_pay = "Gestión de pago de vacaciones",
 }
 
 export enum TaskNameMapping {

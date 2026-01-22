@@ -5,6 +5,7 @@ import { useIAuth } from "@inube/iauth-react";
 import {
   HumanResourceRequest,
   HumanResourceRequestData,
+  ERequestStatus,
 } from "@ptypes/humanResourcesRequest.types";
 import { Logger } from "@utils/logger";
 import { IRoute } from "@components/layout/AppMenu/types";
@@ -18,7 +19,7 @@ import { useErrorFlag } from "@hooks/useErrorFlag";
 import { ApprovalAction } from "@services/employeeConsultation/postApprovalHumanResourceRequest/types";
 import { useHumanEmployeeResourceRequests } from "@hooks/useHumanEmployeeResourceRequests";
 import { HumanEmployeeResourceRequest } from "@ptypes/humanEmployeeResourcesRequest.types";
-import { ERequestStatus } from "@ptypes/humanResourcesRequest.types";
+import { usePatchHumanResourceDisbursement } from "@hooks/usePatchHumanResourceDisbursement";
 
 function isRequestConfigKey(
   value: string,
@@ -48,6 +49,23 @@ function getVacationEndDate(requestData: HumanResourceRequest): Date | null {
   return endDate;
 }
 
+function formatDateWithOffset(date: string): string {
+  const d = new Date(date);
+
+  const offsetMinutes = -d.getTimezoneOffset();
+  const sign = offsetMinutes >= 0 ? "+" : "-";
+  const absOffset = Math.abs(offsetMinutes);
+
+  const hours = String(Math.floor(absOffset / 60)).padStart(2, "0");
+  const minutes = String(absOffset % 60).padStart(2, "0");
+
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+
+  return `${yyyy}-${mm}-${dd}T00:00:00.000${sign}${hours}:${minutes}`;
+}
+
 export function useApplicationProcessLogic(appRoute: IRoute[]) {
   const { id } = useParams<{ id: string }>();
   const { state } = useLocation() as {
@@ -63,9 +81,9 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
   const { user } = useIAuth();
   const navigate = useNavigate();
 
-  const [decision, setDecision] = useState("");
-  const [comment, setComment] = useState("");
-
+  const [decision, setDecision] = useState<string>("");
+  const [comment, setComment] = useState<string>("");
+  const [disbursementDate, setDisbursementDate] = useState<string>("");
   const [showVacationInfo, setShowVacationInfo] = useState(false);
 
   const requestNumberParam = state?.requestNumber ?? id ?? "";
@@ -80,6 +98,9 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     useHumanEmployeeResourceRequests<HumanEmployeeResourceRequest>(
       (data) => data,
     );
+
+  const { updateDisbursementDate, isLoading: isUpdatingDisbursement } =
+    usePatchHumanResourceDisbursement();
 
   const employeeRequest = employeeRequests.find(
     (req) => req.humanResourceRequestId === requestData?.humanResourceRequestId,
@@ -164,6 +185,21 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
   const taskCodeToUse = assignedTask?.taskCode ?? "";
   const taskManagingId = assignedTask?.taskManagingId ?? "";
 
+  const shouldShowDisbursementDateField = useMemo(() => {
+    const status = requestData?.humanResourceRequestStatus as
+      | string
+      | undefined;
+    const type = requestData?.humanResourceRequestType as string | undefined;
+
+    const isManageVacationPay = status === "manage_vacation_pay";
+    const isPaidVacations = type === "paid_vacations";
+
+    return isManageVacationPay && isPaidVacations;
+  }, [
+    requestData?.humanResourceRequestStatus,
+    requestData?.humanResourceRequestType,
+  ]);
+
   const rawLabel =
     requestData?.humanResourceRequestDescription ?? state?.title ?? "";
 
@@ -227,6 +263,55 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     message: errorUpdate?.message ?? undefined,
   });
 
+  const handleSaveDisbursementDate = useCallback(
+    async (dateValue: string) => {
+      if (
+        !requestData?.humanResourceRequestId ||
+        !requestData?.humanResourceRequestData
+      ) {
+        return false;
+      }
+
+      try {
+        let currentData = {};
+        try {
+          currentData =
+            typeof requestData.humanResourceRequestData === "string"
+              ? JSON.parse(requestData.humanResourceRequestData)
+              : requestData.humanResourceRequestData;
+        } catch (e) {
+          Logger.warn("Error parsing humanResourceRequestData", {
+            error: e instanceof Error ? e.message : String(e),
+          });
+        }
+
+        const disbursementDateFormatted = formatDateWithOffset(dateValue);
+
+        const updatedData = {
+          ...currentData,
+          disbursementDate: disbursementDateFormatted,
+        };
+
+        await updateDisbursementDate({
+          humanResourceRequestId: requestData.humanResourceRequestId,
+          humanResourceRequestData: JSON.stringify(updatedData),
+          modifyJustification:
+            "Registro de fecha de desembolso de vacaciones pagadas",
+        });
+
+        setDisbursementDate(dateValue);
+        return true;
+      } catch (err) {
+        Logger.error(
+          "Error saving disbursement date",
+          err instanceof Error ? err : new Error(String(err)),
+        );
+        return false;
+      }
+    },
+    [requestData, updateDisbursementDate],
+  );
+
   const handleSend = useCallback(
     async (commentToSend?: string) => {
       if (!decision || !requestData?.humanResourceRequestId || !assignedTask) {
@@ -243,6 +328,7 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
           onSuccess: () => {
             setComment("");
             setDecision("");
+            setDisbursementDate("");
             void refetch();
             navigate("/requests");
           },
@@ -277,6 +363,8 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     setDecision,
     comment,
     setComment,
+    disbursementDate,
+    setDisbursementDate,
     showActions: Boolean(assignedTask),
     requestData,
     isLoadingRequest,
@@ -291,11 +379,14 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     handleAttach,
     handleSeeAttachments,
     handleSend,
+    handleSaveDisbursementDate,
     loadingUpdate,
     allTasksCompleted,
     vacationValidation,
     showVacationInfo,
     openVacationInfo,
     closeVacationInfo,
+    shouldShowDisbursementDateField,
+    isUpdatingDisbursement,
   };
 }
