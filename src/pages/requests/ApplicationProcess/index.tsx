@@ -8,6 +8,7 @@ import {
   useMediaQuery,
   Button,
   Select,
+  Icon,
 } from "@inubekit/inubekit";
 import React from "react";
 import {
@@ -15,12 +16,14 @@ import {
   MdOutlineCheckCircle,
   MdOutlineVisibility,
   MdOutlineHowToReg,
+  MdInfoOutline,
 } from "react-icons/md";
 
 import { labels } from "@i18n/labels";
 import { Logger } from "@utils/logger";
 import { useDeleteRequest } from "@hooks/useDeleteRequest";
 import { TextAreaModal } from "@components/modals/TextAreaModal";
+import { InfoModal } from "@components/modals/InfoModal";
 import { AppMenu } from "@components/layout/AppMenu";
 import { spacing } from "@design/tokens/spacing";
 import { Fieldset } from "@components/data/Fieldset";
@@ -107,6 +110,10 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     handleSaveDisbursementDate,
     loadingUpdate,
     allTasksCompleted,
+    vacationValidation,
+    showVacationInfo,
+    openVacationInfo,
+    closeVacationInfo,
     shouldShowDisbursementDateField,
     isUpdatingDisbursement,
   } = useApplicationProcessLogic(appRoute);
@@ -118,6 +125,12 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
   const [decisionError, setDecisionError] = useState<string | undefined>(
     undefined,
   );
+
+  const isDisabledByVacation = vacationValidation.shouldDisable;
+  const isFieldDisabled =
+    Boolean(allTasksCompleted) ||
+    Boolean(loadingDecisions) ||
+    Boolean(isDisabledByVacation);
 
   const infoItems = [
     {
@@ -229,6 +242,22 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       label: HumanDecisionTranslations[opt as HumanDecision] ?? opt,
     })) ?? [];
 
+  const getSelectPlaceholder = () => {
+    if (allTasksCompleted) {
+      return "Todas las tareas completadas";
+    }
+    if (isDisabledByVacation) {
+      return "Pendiente de finalización de disfrute";
+    }
+    if (loadingDecisions) {
+      return labels.requests.applicationProcess.fieldset.loadingOptions;
+    }
+    if (errorDecisions) {
+      return labels.requests.applicationProcess.fieldset.errorLoadingOptions;
+    }
+    return labels.requests.applicationProcess.fieldset.selectOptionPlaceholder;
+  };
+
   return (
     <AppMenu
       appName={displayRequestLabel}
@@ -294,6 +323,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                 <Text>
                   {labels.requests.applicationProcess.fieldset.verifyingText}
                 </Text>
+
                 <Stack alignItems="flex-end" gap={spacing.s150}>
                   <Select
                     name="decision"
@@ -301,18 +331,7 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                     label={
                       labels.requests.applicationProcess.fieldset.decisionLabel
                     }
-                    placeholder={
-                      allTasksCompleted
-                        ? "Todas las tareas completadas"
-                        : loadingDecisions
-                          ? labels.requests.applicationProcess.fieldset
-                              .loadingOptions
-                          : errorDecisions
-                            ? labels.requests.applicationProcess.fieldset
-                                .errorLoadingOptions
-                            : labels.requests.applicationProcess.fieldset
-                                .selectOptionPlaceholder
-                    }
+                    placeholder={getSelectPlaceholder()}
                     options={decisionOptions}
                     value={decision}
                     onChange={(_, value) => {
@@ -323,35 +342,56 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
                     fullwidth
                     message={decisionError}
                     invalid={!!decisionError}
-                    disabled={allTasksCompleted ?? loadingDecisions}
+                    disabled={isFieldDisabled}
                   />
                   <StyledDecisionContainer $hasError={!!decisionError}>
-                    <Button
-                      appearance="primary"
-                      variant="filled"
-                      disabled={allTasksCompleted ?? loadingUpdate}
-                      onClick={() => {
-                        if (!decision) {
-                          setDecisionError(
-                            labels.requests.applicationProcess.validations
-                              .mustSelectDecision,
-                          );
-                          return;
-                        }
-
-                        setDecisionError(undefined);
-
-                        if (shouldShowDisbursementDateField) {
-                          setShowDisbursementModal(true);
-                        } else {
-                          setShowTextAreaModal(true);
-                        }
-                      }}
+                    <Stack
+                      direction="row"
+                      gap={spacing.s100}
+                      alignItems="center"
                     >
-                      {loadingUpdate
-                        ? labels.requests.applicationProcess.fieldset.sending
-                        : labels.requests.applicationProcess.fieldset.send}
-                    </Button>
+                      <Button
+                        appearance="primary"
+                        variant="filled"
+                        disabled={isFieldDisabled || loadingUpdate}
+                        onClick={() => {
+                          if (isDisabledByVacation) {
+                            openVacationInfo();
+                            return;
+                          }
+
+                          if (!decision) {
+                            setDecisionError(
+                              labels.requests.applicationProcess.validations
+                                .mustSelectDecision,
+                            );
+                            return;
+                          }
+
+                          setDecisionError(undefined);
+
+                          if (shouldShowDisbursementDateField) {
+                            setShowDisbursementModal(true);
+                          } else {
+                            setShowTextAreaModal(true);
+                          }
+                        }}
+                      >
+                        {loadingUpdate
+                          ? labels.requests.applicationProcess.fieldset.sending
+                          : labels.requests.applicationProcess.fieldset.send}
+                      </Button>
+
+                      {isDisabledByVacation && (
+                        <Icon
+                          icon={<MdInfoOutline />}
+                          size="20px"
+                          appearance="primary"
+                          cursorHover
+                          onClick={openVacationInfo}
+                        />
+                      )}
+                    </Stack>
                   </StyledDecisionContainer>
                 </Stack>
               </Stack>
@@ -467,6 +507,16 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
           }}
           onCloseModal={() => setShowTextAreaModal(false)}
           onSecondaryButtonClick={() => setShowTextAreaModal(false)}
+        />
+      )}
+
+      {showVacationInfo && vacationValidation.message && (
+        <InfoModal
+          title="Confirmación de disfrute de vacaciones"
+          titleDescription="Información sobre la tarea pendiente"
+          description={vacationValidation.message}
+          buttonText="Entendido"
+          onCloseModal={closeVacationInfo}
         />
       )}
 
