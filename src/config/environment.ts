@@ -19,8 +19,6 @@ interface Environment {
   CODE_VERIFIER: string;
   CODE_CHALLENGE: string;
   STATE: string;
-  APPLICATION_NAME: string;
-  ORIGINATOR_CODE: string;
 }
 
 const environment: Environment = {
@@ -39,8 +37,6 @@ const environment: Environment = {
   CODE_VERIFIER: import.meta.env.VITE_AUTH_CODE_VERIFIER as string,
   CODE_CHALLENGE: import.meta.env.VITE_AUTH_CODE_CHALLENGE as string,
   STATE: import.meta.env.VITE_AUTH_STATE as string,
-  APPLICATION_NAME: import.meta.env.VITE_APPLICATION_NAME as string,
-  ORIGINATOR_CODE: import.meta.env.VITE_ORIGINATOR_CODE as string,
 };
 
 export {

@@ -30,8 +30,13 @@ const getBusinessManagerByCode = async (
         signal: controller.signal,
       };
 
+      const queryParams = new URLSearchParams({
+        clientId: environment.ORIGINATOR_ID,
+        publicCode: businessManagerCode,
+      });
+
       const res = await fetch(
-        `${environment.IVITE_ISAAS_QUERY_PROCESS_SERVICE}/business-managers?publicCode=${businessManagerCode}`,
+        `${environment.IVITE_ISAAS_QUERY_PROCESS_SERVICE}/business-managers?${queryParams.toString()}`,
         options,
       );
 
@@ -68,5 +73,4 @@ const getBusinessManagerByCode = async (
 
   return {} as IBusinessManager;
 };
-
 export { getBusinessManagerByCode };
