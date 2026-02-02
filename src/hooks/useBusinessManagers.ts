@@ -28,10 +28,7 @@ export const useBusinessManagers = (
       try {
         const headers = getPreAuthHeaders();
 
-        const fetchedBusinessManagers = await getBusinessManagerByCode(
-          portalPublicCode.businessManagerCode,
-          headers,
-        );
+        const fetchedBusinessManagers = await getBusinessManagerByCode(headers);
 
         if (
           !fetchedBusinessManagers ||

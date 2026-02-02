@@ -23,10 +23,7 @@ export const usePortalData = (codeParame: string) => {
       try {
         const headers = getPreAuthHeaders();
 
-        const staffPortalData = await staffPortalByBusinessManager(
-          codeParame,
-          headers,
-        );
+        const staffPortalData = await staffPortalByBusinessManager(headers);
 
         if (!staffPortalData || Object.keys(staffPortalData).length === 0) {
           return;

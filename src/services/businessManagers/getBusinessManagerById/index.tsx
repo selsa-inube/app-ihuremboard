@@ -9,7 +9,6 @@ import { IBusinessManager } from "@ptypes/employeePortalBusiness.types";
 import { mapBusinessManagerApiToEntity } from "./mappers";
 
 const getBusinessManagerByCode = async (
-  businessManagerCode: string,
   headers: Record<string, string>,
 ): Promise<IBusinessManager> => {
   const maxRetries = maxRetriesServices;
@@ -30,8 +29,13 @@ const getBusinessManagerByCode = async (
         signal: controller.signal,
       };
 
+      const queryParams = new URLSearchParams({
+        clientId: environment.ORIGINATOR_ID,
+        publicCode: environment.ORIGINATOR_CODE,
+      });
+
       const res = await fetch(
-        `${environment.IVITE_ISAAS_QUERY_PROCESS_SERVICE}/business-managers?publicCode=${businessManagerCode}`,
+        `${environment.IVITE_ISAAS_QUERY_PROCESS_SERVICE}/business-managers?${queryParams.toString()}`,
         options,
       );
 
@@ -68,5 +72,4 @@ const getBusinessManagerByCode = async (
 
   return {} as IBusinessManager;
 };
-
 export { getBusinessManagerByCode };
