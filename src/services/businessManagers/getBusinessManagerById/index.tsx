@@ -9,7 +9,6 @@ import { IBusinessManager } from "@ptypes/employeePortalBusiness.types";
 import { mapBusinessManagerApiToEntity } from "./mappers";
 
 const getBusinessManagerByCode = async (
-  businessManagerCode: string,
   headers: Record<string, string>,
 ): Promise<IBusinessManager> => {
   const maxRetries = maxRetriesServices;
@@ -32,7 +31,7 @@ const getBusinessManagerByCode = async (
 
       const queryParams = new URLSearchParams({
         clientId: environment.ORIGINATOR_ID,
-        publicCode: businessManagerCode,
+        publicCode: environment.ORIGINATOR_CODE,
       });
 
       const res = await fetch(

@@ -10,10 +10,9 @@ interface AuthWrapperProps {
 }
 
 export function AuthWrapper({ children }: AuthWrapperProps) {
-  const { portalCode, publicCode, authConfig, hasAuthError, errorCode } =
-    usePortalAuth();
+  const { portalCode, authConfig, hasAuthError, errorCode } = usePortalAuth();
 
-  if (!portalCode || !publicCode) {
+  if (!portalCode) {
     return <ErrorPage errorCode={1000} />;
   }
 
@@ -30,8 +29,8 @@ export function AuthWrapper({ children }: AuthWrapperProps) {
       codeVerifier={environment.CODE_VERIFIER}
       codeChallenge={environment.CODE_CHALLENGE}
       state={environment.STATE}
-      applicationName={publicCode}
-      originatorCode={authConfig.originatorCode ?? environment.ORIGINATOR_ID}
+      applicationName={environment.APPLICATION_NAME}
+      originatorCode={environment.ORIGINATOR_CODE}
     >
       {children}
     </IAuthProvider>

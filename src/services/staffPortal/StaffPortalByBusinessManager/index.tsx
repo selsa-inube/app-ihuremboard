@@ -8,7 +8,6 @@ import { mapStaffPortalByBusinessManagerApiToEntities } from "./mappers";
 import { Logger } from "@utils/logger";
 
 const staffPortalByBusinessManager = async (
-  codeParame: string,
   headers?: Record<string, string>,
 ): Promise<IStaffPortalByBusinessManager> => {
   const maxRetries = maxRetriesServices;
@@ -17,7 +16,7 @@ const staffPortalByBusinessManager = async (
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const queryParams = new URLSearchParams({
-        publicCode: codeParame,
+        publicCode: environment.APPLICATION_NAME,
       });
 
       const controller = new AbortController();
@@ -65,11 +64,7 @@ const staffPortalByBusinessManager = async (
         Logger.error(
           "Error obteniendo staff portal by business manager después de varios intentos",
           normalizedError,
-          {
-            module: "staffPortalByBusinessManager",
-            attempt,
-            codeParame,
-          },
+          { publicCode: environment.APPLICATION_NAME },
         );
         throw normalizedError;
       }
