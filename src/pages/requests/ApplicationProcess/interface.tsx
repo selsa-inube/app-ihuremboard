@@ -365,7 +365,6 @@ export function useApplicationProcessLogic(appRoute: IRoute[]) {
     setComment,
     disbursementDate,
     setDisbursementDate,
-    showActions: Boolean(assignedTask),
     requestData,
     isLoadingRequest,
     responsibleLabel,

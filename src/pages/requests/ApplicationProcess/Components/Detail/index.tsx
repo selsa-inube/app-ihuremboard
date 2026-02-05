@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { MdOutlineMoreVert } from "react-icons/md";
 import { Stack, Icon, useMediaQuery } from "@inubekit/inubekit";
 
@@ -33,11 +33,37 @@ export function Detail(props: DetailProps) {
   } = props;
 
   const [modalOpen, setModalOpen] = useState(false);
-
+  const modalRef = useRef<HTMLDivElement>(null);
   const isSmallMobile = useMediaQuery("(max-width: 382px)");
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setModalOpen(false);
+      }
+    };
+
+    if (modalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [modalOpen]);
+
+  const handleActionClick = (action: (() => void) | undefined) => {
+    if (action) {
+      action();
+    }
+    setModalOpen(false);
+  };
+
   return (
-    <StyledDetail $isSmallMobile={isSmallMobile}>
+    <StyledDetail $isSmallMobile={isSmallMobile} ref={modalRef}>
       <Stack justifyContent="flex-end">
         <Icon
           icon={<MdOutlineMoreVert />}
@@ -54,10 +80,10 @@ export function Detail(props: DetailProps) {
             disableAttach={disableAttach}
             disableSeeAttachments={disableSeeAttachments}
             actionDescriptions={actionDescriptions}
-            onExecute={onExecute}
-            onDiscard={onDiscard}
-            onAttach={onAttach}
-            onSeeAttachments={onSeeAttachments}
+            onExecute={() => handleActionClick(onExecute)}
+            onDiscard={() => handleActionClick(onDiscard)}
+            onAttach={() => handleActionClick(onAttach)}
+            onSeeAttachments={() => handleActionClick(onSeeAttachments)}
             onClose={() => setModalOpen(false)}
             onInfoIconClick={onInfoIconClick}
           />

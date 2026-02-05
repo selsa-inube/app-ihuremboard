@@ -45,7 +45,6 @@ import { DisbursementDateModal } from "@components/modals/DisbursementDateModal"
 
 import { ManagementUI, ITraceabilityItem } from "./Components/management";
 import { RequestSummary } from "./Components/RequestSummary";
-import { ActionModal } from "./Components/Actions";
 import { StyledFieldsetContainer, StyledDecisionContainer } from "./styles";
 import { useApplicationProcessLogic } from "./interface";
 import { ITableRow, IRequest } from "./types";
@@ -93,7 +92,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
     decision,
     setDecision,
     setComment,
-    showActions,
     requestData,
     isLoadingRequest,
     responsibleLabel,
@@ -266,26 +264,6 @@ function ApplicationProcessUI(props: ApplicationProcessUIProps) {
       appDescription={displayDescription}
     >
       <Stack direction="column" gap={spacing.s200}>
-        {isMobile && showActions && (
-          <ActionModal
-            onExecute={handleExecute}
-            onDiscard={handleDiscard}
-            onAttach={handleAttach}
-            onSeeAttachments={handleSeeAttachments}
-            actionDescriptions={{
-              execute:
-                labels.requests.applicationProcess.actionsMobile.cannotExecute,
-              discard:
-                labels.requests.applicationProcess.actionsMobile.cannotDiscard,
-              attach:
-                labels.requests.applicationProcess.actionsMobile.cannotAttach,
-              seeAttachments:
-                labels.requests.applicationProcess.actionsMobile
-                  .cannotSeeAttachments,
-            }}
-          />
-        )}
-
         <RequestSummary
           requestNumber={
             requestData?.humanResourceRequestNumber ??

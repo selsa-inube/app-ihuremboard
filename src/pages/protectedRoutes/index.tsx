@@ -20,6 +20,7 @@ export function ProtectedRoutes() {
     hasManagersError,
     businessManagersData,
     errorCode,
+    isLoading: isLoadingPortalAuth,
   } = usePortalAuth();
 
   const { signOut } = useSignOut();
@@ -52,7 +53,7 @@ export function ProtectedRoutes() {
     hasManagersError,
   ]);
 
-  if (isLoading) {
+  if (isLoading || isLoadingPortalAuth) {
     return <LoadingAppUI />;
   }
 

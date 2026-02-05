@@ -70,12 +70,11 @@ const StyledMenuContainer = styled.div<IMenuContainer>`
   box-shadow: 0px 4px 8px
     ${({ theme }) => theme?.palette?.neutral?.N30 || inube.palette.neutral.N30};
   padding: ${spacing.s100};
-  z-index: 1000;
   width: ${({ $isTablet }) => ($isTablet ? "162px" : "120px")};
 
   top: ${({ $isMobile, $isTablet }) => {
-    if ($isMobile) return "150px";
-    return $isTablet ? "195px" : "216px";
+    if ($isMobile) return "108px";
+    return $isTablet ? "136px" : "216px";
   }};
 
   right: ${({ $isMobile, $isTablet }) => {
@@ -97,7 +96,6 @@ const StyledMenuIconContainer = styled.div<IMenuIconContainer>`
   position: relative;
   top: -50px;
   right: 16px;
-  z-index: 1;
   width: 0px;
 `;
 
