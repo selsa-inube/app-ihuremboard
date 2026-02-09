@@ -211,7 +211,6 @@ function RequestsUI(props: RequestsUIProps) {
         <Stack gap={spacing.s150} direction="column" width="100%">
           <Stack
             direction="row"
-            gap={spacing.s150}
             padding={
               isTablet
                 ? `${spacing.s0} ${spacing.s0} ${spacing.s150} ${spacing.s0}`

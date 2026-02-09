@@ -17,14 +17,19 @@ export const useBusinessManagers = (
     useState<IBusinessManager>({} as IBusinessManager);
   const [hasError, setHasError] = useState(false);
   const [codeError, setCodeError] = useState<number | undefined>(undefined);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const { showErrorModal } = useErrorModal();
 
   useEffect(() => {
     const fetchBusinessManagers = async () => {
-      if (!portalPublicCode?.businessManagerCode) return;
+      if (!portalPublicCode?.businessManagerCode) {
+        setIsFetching(true);
+        return;
+      }
 
       setIsFetching(true);
+      setHasError(false);
+
       try {
         const headers = getPreAuthHeaders();
 
@@ -34,6 +39,9 @@ export const useBusinessManagers = (
           !fetchedBusinessManagers ||
           Object.keys(fetchedBusinessManagers).length === 0
         ) {
+          setHasError(true);
+          setCodeError(1002);
+
           const errorConfig = modalErrorConfig[1002];
           showErrorModal({
             descriptionText: errorConfig.descriptionText,
@@ -74,7 +82,7 @@ export const useBusinessManagers = (
     };
 
     fetchBusinessManagers();
-  }, [portalPublicCode, showErrorModal]);
+  }, [portalPublicCode?.businessManagerCode, showErrorModal]);
 
   return { businessManagersData, hasError, codeError, isFetching };
 };
