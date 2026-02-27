@@ -1,18 +1,27 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { inube } from "@inubekit/inubekit";
 
 interface IStyledCollapseIcon {
   $collapse: boolean;
   $isTablet: boolean;
 }
 
+interface IStyledAppPage {
+  theme?: typeof inube;
+}
+
 interface IStyledMain {
   $fullWidth: boolean;
 }
 
-const StyledAppPage = styled.div`
+const StyledAppPage = styled.div<IStyledAppPage>`
   display: inherit;
   box-sizing: border-box;
+  margin: auto;
+  max-width: 1400px;
+  outline: 1px solid
+    ${({ theme }) => theme?.palette?.neutral?.N40 ?? inube.palette.neutral.N40};
 `;
 
 const StyledScrollableContainer = styled.div`
