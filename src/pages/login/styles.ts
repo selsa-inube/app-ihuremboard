@@ -11,6 +11,10 @@ interface IStyledOutletContainer {
   theme?: typeof inube;
 }
 
+interface IStyledLoginContainer {
+  theme?: typeof inube;
+}
+
 interface IStyledLogo {
   $screenMobile: boolean;
   theme?: typeof inube;
@@ -33,4 +37,18 @@ const StyledLogo = styled.img<IStyledLogo>`
   margin-top: ${spacing.s200};
 `;
 
-export { StyledWelcomeContainer, StyledOutletContainer, StyledLogo };
+const StyledLoginContainer = styled.div<IStyledLoginContainer>`
+  min-height: 100vh;
+  box-sizing: border-box;
+  margin: auto;
+  max-width: 1440px;
+  outline: 1px solid
+    ${({ theme }) => theme?.palette?.neutral?.N40 ?? inube.palette.neutral.N40};
+`;
+
+export {
+  StyledWelcomeContainer,
+  StyledOutletContainer,
+  StyledLogo,
+  StyledLoginContainer,
+};

@@ -22,7 +22,7 @@ const StyledAppPage = styled.div<IStyledAppPage>`
   display: inherit;
   box-sizing: border-box;
   margin: auto;
-  max-width: 1400px;
+  max-width: 1440px;
   outline: 1px solid
     ${({ theme }) => theme?.palette?.neutral?.N40 ?? inube.palette.neutral.N40};
 `;
