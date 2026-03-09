@@ -11,6 +11,7 @@ interface DetailProps {
   disableAttach?: boolean;
   disableSeeAttachments?: boolean;
   actionDescriptions?: Record<string, string>;
+  onTrim?: () => void;
   onExecute?: () => void;
   onDiscard?: () => void;
   onAttach?: () => void;
@@ -25,6 +26,7 @@ export function Detail(props: DetailProps) {
     disableAttach,
     disableSeeAttachments,
     actionDescriptions,
+    onTrim,
     onExecute,
     onDiscard,
     onAttach,
@@ -80,6 +82,7 @@ export function Detail(props: DetailProps) {
             disableAttach={disableAttach}
             disableSeeAttachments={disableSeeAttachments}
             actionDescriptions={actionDescriptions}
+            onTrim={() => handleActionClick(onTrim)}
             onExecute={() => handleActionClick(onExecute)}
             onDiscard={() => handleActionClick(onDiscard)}
             onAttach={() => handleActionClick(onAttach)}

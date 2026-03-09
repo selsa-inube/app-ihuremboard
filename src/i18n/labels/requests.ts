@@ -41,10 +41,12 @@ export const requests = {
   actions: {
     seeRequirements: "Requisitos",
     discard: "Descartar",
-
     execute: "Ejecutar",
+    trim: "Recortar",
     attach: "Adjuntar",
     seeAttachments: "Ver adjuntos",
+    goHome: "Volver a inicio",
+    closeModal: "Cerrar emergente",
   },
 
   takeRequestModal: {
@@ -76,6 +78,12 @@ export const requests = {
     requirements: {
       title: "Requisitos",
       closeButton: "Cerrar",
+    },
+
+    trimReport: {
+      title: "¡Novedad registrada!",
+      description: "La novedad de recorte fue registrada con éxito.",
+      subdescription: "¿Cómo quisieras continuar?",
     },
   },
 
@@ -114,13 +122,14 @@ export const requests = {
     contractType: "Tipo de contrato",
     disbursementDate: "Fecha de desembolso",
     employeeObservations: "Observaciones del empleado",
+    startDateEnjoyment: "Fecha de inicio de disfrute",
+    endDateEnjoyment: "Fecha de finalización de disfrute",
 
     permissions: {
       discard: "No tiene privilegios para descartar solicitudes.",
       requirements: "No tiene privilegios para ver requisitos.",
     },
   },
-
   taskBoard: {
     pendingTitle: "Tareas por hacer",
     completedTitle: "Tareas hechas",

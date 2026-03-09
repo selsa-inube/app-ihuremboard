@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Stack,
   Text,
@@ -10,8 +12,13 @@ import {
   MdKeyboardArrowDown,
   MdKeyboardArrowUp,
   MdOutlineCancel,
+  MdOutlineContentCut,
+  MdOutlineHome,
+  MdClose,
 } from "react-icons/md";
 
+import { ReportSentModal } from "@components/modals/ReportSentModal";
+import { VacationTrimModal } from "@components/modals/VacationTrimModal";
 import { spacing } from "@design/tokens/spacing";
 import { labels } from "@i18n/labels";
 
@@ -20,6 +27,7 @@ import {
   DetailsGrid,
   DetailItem,
   VerticalDivider,
+  StyledScissorsButton,
 } from "./styles";
 
 import { Detail } from "../Detail";
@@ -41,13 +49,18 @@ export function RequestSummary(props: RequestSummaryProps) {
     showDetails,
     setShowDetails,
     handleDiscard,
-    handleExecute,
     handleAttach,
     handleSeeAttachments,
+    returnDateOptions,
     startDateEnjoyment,
     endDateEnjoyment,
     isVacationsEnjoyed,
   } = useRequestSummaryLogic(props);
+
+  const navigate = useNavigate();
+
+  const [showTrimModal, setShowTrimModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const isMobile = useMediaQuery("(max-width: 1100px)");
 
@@ -70,12 +83,12 @@ export function RequestSummary(props: RequestSummaryProps) {
 
         {isMobile ? (
           <Detail
-            onExecute={handleExecute}
+            onTrim={() => setShowTrimModal(true)}
             onDiscard={handleDiscard}
             onAttach={handleAttach}
             onSeeAttachments={handleSeeAttachments}
             actionDescriptions={{
-              execute:
+              onTrim:
                 labels.requests.applicationProcess.actionsMobile.cannotExecute,
               discard:
                 labels.requests.applicationProcess.actionsMobile.cannotDiscard,
@@ -88,6 +101,13 @@ export function RequestSummary(props: RequestSummaryProps) {
           />
         ) : (
           <Stack direction="row" gap={spacing.s075} alignItems="center">
+            <StyledScissorsButton onClick={() => setShowTrimModal(true)}>
+              <Icon
+                icon={<MdOutlineContentCut />}
+                appearance="primary"
+                size="20px"
+              />
+            </StyledScissorsButton>
             <Button
               appearance="danger"
               onClick={handleDiscard}
@@ -221,7 +241,7 @@ export function RequestSummary(props: RequestSummaryProps) {
               {isVacationsEnjoyed && startDateEnjoyment && (
                 <DetailItem>
                   <Text type="label" weight="bold">
-                    Fecha de inicio de disfrute
+                    {labels.requests.summary.startDateEnjoyment}
                   </Text>
                   <Text appearance="gray" type="label">
                     {startDateEnjoyment}
@@ -232,7 +252,7 @@ export function RequestSummary(props: RequestSummaryProps) {
               {isVacationsEnjoyed && endDateEnjoyment && (
                 <DetailItem>
                   <Text type="label" weight="bold">
-                    Fecha de finalización de disfrute
+                    {labels.requests.summary.endDateEnjoyment}
                   </Text>
                   <Text appearance="gray" type="label">
                     {endDateEnjoyment}
@@ -252,6 +272,48 @@ export function RequestSummary(props: RequestSummaryProps) {
           </>
         )}
       </StyledRequestSummaryContainer>
+
+      {showTrimModal && (
+        <VacationTrimModal
+          currentReturnDate="05/Mar/2026"
+          returnDateOptions={
+            returnDateOptions.length > 0
+              ? returnDateOptions
+              : [
+                  { id: "1", label: "01/Mar/2026", value: "2026-03-01" },
+                  { id: "2", label: "15/Mar/2026", value: "2026-03-15" },
+                  { id: "3", label: "01/Abr/2026", value: "2026-04-01" },
+                ]
+          }
+          onCloseModal={() => setShowTrimModal(false)}
+          onSubmit={(values) => {
+            props.handleTrim?.(values);
+            setShowTrimModal(false);
+            setShowReportModal(true);
+          }}
+        />
+      )}
+
+      {showReportModal && (
+        <ReportSentModal
+          title={labels.requests.modals.trimReport.title}
+          description={labels.requests.modals.trimReport.description}
+          subdescription={labels.requests.modals.trimReport.subdescription}
+          variant="success"
+          actions={[
+            {
+              icon: <MdOutlineHome />,
+              label: labels.requests.actions.goHome,
+              onClick: () => navigate("/requests"),
+            },
+            {
+              icon: <MdClose />,
+              label: labels.requests.actions.closeModal,
+              onClick: () => setShowReportModal(false),
+            },
+          ]}
+        />
+      )}
     </Stack>
   );
 }

@@ -15,6 +15,10 @@ interface IDetailItem {
   theme: typeof inube;
 }
 
+interface IDetailIcon {
+  theme: typeof inube;
+}
+
 const StyledRequestSummaryContainer = styled.div<StyledRequestSummaryContainerProps>`
   display: flex;
   flex-direction: column;
@@ -50,9 +54,29 @@ const DetailItem = styled.div<IDetailItem>`
   padding: ${spacing.s150};
   border-radius: ${spacing.s075};
 `;
+
+const StyledScissorsButton = styled.div<IDetailIcon>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: ${({ theme }) =>
+    theme?.palette?.blue?.B400 || inube.palette.blue.B400};
+  border-radius: ${spacing.s075};
+  cursor: pointer;
+  flex-shrink: 0;
+
+  & svg {
+    color: white;
+    font-size: 20px;
+  }
+`;
+
 export {
   StyledRequestSummaryContainer,
   VerticalDivider,
   DetailsGrid,
   DetailItem,
+  StyledScissorsButton,
 };

@@ -11,6 +11,7 @@ interface ActionModalProps {
   disableAttach?: boolean;
   disableSeeAttachments?: boolean;
   actionDescriptions?: Record<string, string>;
+  onTrim?: () => void;
   onExecute?: () => void;
   onDiscard?: () => void;
   onAttach?: () => void;
@@ -26,7 +27,7 @@ export function ActionModal(props: ActionModalProps) {
     disableAttach,
     disableSeeAttachments,
     actionDescriptions,
-    onExecute,
+    onTrim,
     onDiscard,
     onAttach,
     onSeeAttachments,
@@ -39,7 +40,7 @@ export function ActionModal(props: ActionModalProps) {
     disableDiscard,
     disableAttach,
     disableSeeAttachments,
-    onExecute,
+    onTrim,
     onDiscard,
     onAttach,
     onSeeAttachments,
