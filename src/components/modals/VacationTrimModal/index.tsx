@@ -11,6 +11,7 @@ import {
   Select,
   Textarea,
   Fieldset,
+  IOption,
 } from "@inubekit/inubekit";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -18,24 +19,21 @@ import * as Yup from "yup";
 import { spacing } from "@design/tokens/spacing";
 import { validationMessages } from "@validations/validationMessages";
 import { labels } from "@i18n/labels";
+import { BoxAttribute } from "@components/cards/BoxAttribute";
 
-import { StyledModal, StyledContainerClose, DetailItem } from "./styles";
-
-export interface VacationTrimFormValues {
-  newReturnDate: string;
-  justification: string;
-}
+import { IVacationTrimFormValues } from "./types";
+import { StyledModal, StyledContainerClose } from "./styles";
 
 export interface VacationTrimModalProps {
   portalId?: string;
   currentReturnDate: string;
-  returnDateOptions: { id: string; label: string; value: string }[];
+  returnDateOptions: IOption[];
   isLoading?: boolean;
   onCloseModal?: () => void;
-  onSubmit?: (values: VacationTrimFormValues) => void;
+  onSubmit?: (values: IVacationTrimFormValues) => void;
 }
 
-export function VacationTrimModal(props: VacationTrimModalProps) {
+function VacationTrimModal(props: VacationTrimModalProps) {
   const {
     portalId = "portal",
     currentReturnDate,
@@ -45,7 +43,7 @@ export function VacationTrimModal(props: VacationTrimModalProps) {
     onSubmit,
   } = props;
 
-  const isMobile = useMediaQuery("(max-width: 1280px)");
+  const isTablet = useMediaQuery("(max-width: 1280px)");
   const portalNode = document.getElementById(portalId);
 
   const validationSchema = Yup.object({
@@ -55,7 +53,7 @@ export function VacationTrimModal(props: VacationTrimModalProps) {
       .max(400, labels.modal.validation.textarea.maxLength),
   });
 
-  const formik = useFormik<VacationTrimFormValues>({
+  const formik = useFormik<IVacationTrimFormValues>({
     initialValues: {
       newReturnDate: "",
       justification: "",
@@ -72,7 +70,7 @@ export function VacationTrimModal(props: VacationTrimModalProps) {
 
   return createPortal(
     <Blanket>
-      <StyledModal $smallScreen={isMobile}>
+      <StyledModal $smallScreen={isTablet}>
         <Stack alignItems="center" justifyContent="space-between">
           <Text type="headline" size="small">
             {labels.modal.vacationTrim.title}
@@ -93,24 +91,18 @@ export function VacationTrimModal(props: VacationTrimModalProps) {
         <Divider />
 
         <form onSubmit={formik.handleSubmit}>
-          <Stack direction="column" gap={spacing.s250}>
+          <Stack direction="column" gap={spacing.s100}>
             <Fieldset
               legend={labels.modal.vacationTrim.originalRequest}
               spacing="compact"
             >
-              <DetailItem>
-                <Stack direction="column" gap={spacing.s050}>
-                  <Text
-                    type="label"
-                    size="medium"
-                    appearance="gray"
-                    weight="bold"
-                  >
-                    {labels.modal.vacationTrim.currentReturnDate}
-                  </Text>
-                  <Text size="medium">{currentReturnDate}</Text>
-                </Stack>
-              </DetailItem>
+              <Stack width="100%" direction="column">
+                <BoxAttribute
+                  label={labels.modal.vacationTrim.currentReturnDate}
+                  value={currentReturnDate}
+                  direction="column"
+                />
+              </Stack>
             </Fieldset>
 
             <Select
@@ -138,7 +130,7 @@ export function VacationTrimModal(props: VacationTrimModalProps) {
               placeholder={labels.modal.vacationTrim.justificationPlaceholder}
               value={formik.values.justification}
               maxLength={400}
-              size="wide"
+              size="compact"
               status={
                 formik.touched.justification && formik.errors.justification
                   ? "invalid"
@@ -151,28 +143,29 @@ export function VacationTrimModal(props: VacationTrimModalProps) {
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
             />
-
-            <Stack justifyContent="flex-end" gap={spacing.s150}>
-              <Button
-                onClick={onCloseModal}
-                appearance="gray"
-                variant="outlined"
-                disabled={isLoading}
-              >
-                {labels.modal.generic.cancel}
-              </Button>
-              <Button
-                onClick={() => formik.handleSubmit()}
-                loading={isLoading}
-                disabled={!formik.isValid || !formik.dirty}
-              >
-                {labels.modal.vacationTrim.submit}
-              </Button>
-            </Stack>
           </Stack>
         </form>
+        <Stack justifyContent="flex-end" gap={spacing.s150}>
+          <Button
+            onClick={onCloseModal}
+            appearance="gray"
+            variant="outlined"
+            disabled={isLoading}
+          >
+            {labels.modal.generic.cancel}
+          </Button>
+          <Button
+            onClick={() => formik.handleSubmit()}
+            loading={isLoading}
+            disabled={!formik.isValid || !formik.dirty}
+          >
+            {labels.modal.vacationTrim.submit}
+          </Button>
+        </Stack>
       </StyledModal>
     </Blanket>,
     portalNode,
   );
 }
+
+export { VacationTrimModal };

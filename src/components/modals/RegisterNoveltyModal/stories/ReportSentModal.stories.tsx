@@ -5,18 +5,18 @@ import { MdOutlineHome, MdClose, MdOutlineHistory } from "react-icons/md";
 
 import { spacing } from "@design/tokens/spacing";
 
-import { ReportSentModal } from "..";
+import { RegisterNoveltyModal } from "..";
 import { props } from "./props";
 
-const meta: Meta<typeof ReportSentModal> = {
-  title: "components/modals/ReportSentModal",
-  component: ReportSentModal,
+const meta: Meta<typeof RegisterNoveltyModal> = {
+  title: "components/modals/RegisterNoveltyModal",
+  component: RegisterNoveltyModal,
   argTypes: props,
 };
 
 export default meta;
 
-type Story = StoryObj<typeof ReportSentModal>;
+type Story = StoryObj<typeof RegisterNoveltyModal>;
 
 export const Default: Story = {
   args: {
@@ -31,23 +31,7 @@ export const Default: Story = {
     return (
       <>
         <Button onClick={() => setShowModal(true)}>Open Modal</Button>
-        {showModal && (
-          <ReportSentModal
-            {...args}
-            actions={[
-              {
-                icon: <MdOutlineHome />,
-                label: "Volver a inicio",
-                onClick: () => setShowModal(false),
-              },
-              {
-                icon: <MdClose />,
-                label: "Cerrar emergente",
-                onClick: () => setShowModal(false),
-              },
-            ]}
-          />
-        )}
+        {showModal && <RegisterNoveltyModal {...args} />}
       </>
     );
   },
@@ -82,7 +66,7 @@ export const ThreeActions: Story = {
           Abrir Modal con 3 acciones
         </Button>
         {showModal && (
-          <ReportSentModal
+          <RegisterNoveltyModal
             title="¡Novedad registrada!"
             description="La novedad de recorte fue registrada con éxito. ¿Cómo quisieras continuar?"
             variant="success"
@@ -134,7 +118,7 @@ export const Comparison: Story = {
         </Stack>
 
         {showSuccessModal && (
-          <ReportSentModal
+          <RegisterNoveltyModal
             title="¡Novedad registrada!"
             description="La novedad de recorte fue registrada con éxito. ¿Cómo quisieras continuar?"
             variant="success"
@@ -154,7 +138,7 @@ export const Comparison: Story = {
         )}
 
         {showErrorModal && (
-          <ReportSentModal
+          <RegisterNoveltyModal
             title="Error en el servicio"
             description="Debido a un problema, no pudimos enviar el código para validar tu identidad."
             variant="error"

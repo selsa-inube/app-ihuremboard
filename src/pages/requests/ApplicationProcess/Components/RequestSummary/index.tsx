@@ -17,7 +17,7 @@ import {
   MdClose,
 } from "react-icons/md";
 
-import { ReportSentModal } from "@components/modals/ReportSentModal";
+import { RegisterNoveltyModal } from "@components/modals/RegisterNoveltyModal";
 import { VacationTrimModal } from "@components/modals/VacationTrimModal";
 import { spacing } from "@design/tokens/spacing";
 import { labels } from "@i18n/labels";
@@ -295,7 +295,7 @@ export function RequestSummary(props: RequestSummaryProps) {
       )}
 
       {showReportModal && (
-        <ReportSentModal
+        <RegisterNoveltyModal
           title={labels.requests.modals.trimReport.title}
           description={labels.requests.modals.trimReport.description}
           subdescription={labels.requests.modals.trimReport.subdescription}

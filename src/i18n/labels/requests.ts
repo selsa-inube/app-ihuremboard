@@ -24,6 +24,15 @@ export const requests = {
     clear: "Limpiar",
   },
 
+  infoModal: {
+    title: "Sin permisos",
+    titleDescription: "No tienes permisos para ejecutar esta acción.",
+    description:
+      "Contacta a tu administrador para solicitar los permisos necesarios.",
+    buttonText: "Entendido",
+    close: "Cerrar",
+  },
+
   types: {
     unknown: "Tipo desconocido",
   },

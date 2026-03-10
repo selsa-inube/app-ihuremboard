@@ -11,7 +11,7 @@ import {
   EContractType,
 } from "@ptypes/humanResourcesRequest.types";
 import { formatDate } from "@utils/date";
-import { VacationTrimFormValues } from "@components/modals/VacationTrimModal";
+import { IVacationTrimFormValues } from "@components/modals/VacationTrimModal/types";
 
 export interface RequestSummaryProps {
   isLoading?: boolean;
@@ -28,7 +28,7 @@ export interface RequestSummaryProps {
   handleExecute?: () => void;
   handleAttach?: () => void;
   handleSeeAttachments?: () => void;
-  handleTrim?: (values: VacationTrimFormValues) => void;
+  handleTrim?: (values: IVacationTrimFormValues) => void;
 }
 
 export const useRequestSummaryLogic = (props: RequestSummaryProps) => {

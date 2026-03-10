@@ -1,30 +1,25 @@
-import { Icon, Blanket, useMediaQuery, Text, Stack } from "@inubekit/inubekit";
-import { createPortal } from "react-dom";
 import {
   MdOutlineCheckCircle,
   MdOutlineReportGmailerrorred,
 } from "react-icons/md";
+import { Icon, Blanket, useMediaQuery, Text, Stack } from "@inubekit/inubekit";
+import { createPortal } from "react-dom";
 
-import { StyledModal, StyledCard, StyledActionsContainer } from "./styles";
+import { spacing } from "@design/tokens/spacing";
 
-export type ModalVariant = "success" | "error";
+import { IModalVariant, IModalAction } from "./types";
+import { StyledModal, StyledCard } from "./styles";
 
-export interface ModalAction {
-  icon: React.ReactNode;
-  label: string;
-  onClick?: () => void;
-}
-
-export interface ReportSentModalProps {
+export interface RegisterNoveltyModalProps {
   title: string;
   description: string;
   subdescription?: string;
-  variant?: ModalVariant;
+  variant?: IModalVariant;
   portalId?: string;
-  actions?: ModalAction[];
+  actions?: IModalAction[];
 }
 
-export function ReportSentModal(props: ReportSentModalProps) {
+export function RegisterNoveltyModal(props: RegisterNoveltyModalProps) {
   const {
     title,
     description,
@@ -64,11 +59,11 @@ export function ReportSentModal(props: ReportSentModalProps) {
           icon={currentIcon.icon}
           size="50px"
         />
-        <Stack direction="column" alignItems="center" gap="8px">
+        <Stack direction="column" alignItems="center" gap={spacing.s100}>
           <Text type="title" weight="bold" textAlign="center">
             {title}
           </Text>
-          <Stack direction="column" alignItems="center" gap="0px">
+          <Stack direction="column" alignItems="center">
             <Text appearance="gray" textAlign="center">
               {description}
             </Text>
@@ -80,8 +75,8 @@ export function ReportSentModal(props: ReportSentModalProps) {
           </Stack>
         </Stack>
 
-        {actions.length > 0 && (
-          <StyledActionsContainer>
+        {actions && (
+          <Stack justifyContent="center" gap={spacing.s200} width="100%">
             {actions.map((action, index) => (
               <StyledCard
                 key={index}
@@ -103,7 +98,7 @@ export function ReportSentModal(props: ReportSentModalProps) {
                 </Text>
               </StyledCard>
             ))}
-          </StyledActionsContainer>
+          </Stack>
         )}
       </StyledModal>
     </Blanket>,

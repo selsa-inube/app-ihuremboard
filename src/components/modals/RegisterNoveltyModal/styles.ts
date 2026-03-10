@@ -27,14 +27,6 @@ const StyledModal = styled.div<IStyledModal>`
   border-radius: ${spacing.s100};
 `;
 
-const StyledActionsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: ${spacing.s200};
-  width: 100%;
-`;
-
 const StyledCard = styled.div<IStyledCard>`
   display: flex;
   justify-content: center;
@@ -53,4 +45,4 @@ const StyledCard = styled.div<IStyledCard>`
   cursor: pointer;
 `;
 
-export { StyledModal, StyledActionsContainer, StyledCard };
+export { StyledModal, StyledCard };

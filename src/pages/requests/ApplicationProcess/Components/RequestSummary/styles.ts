@@ -7,16 +7,16 @@ interface StyledRequestSummaryContainerProps {
   theme?: typeof inube;
 }
 
-interface IVerticalDividerProps {
+interface StyledIVerticalDividerProps {
   theme: typeof inube;
 }
 
-interface IDetailItem {
+interface StyledIDetailItem {
   theme: typeof inube;
 }
 
-interface IDetailIcon {
-  theme: typeof inube;
+interface StyledIDetailIcon {
+  theme?: typeof inube;
 }
 
 const StyledRequestSummaryContainer = styled.div<StyledRequestSummaryContainerProps>`
@@ -30,7 +30,7 @@ const StyledRequestSummaryContainer = styled.div<StyledRequestSummaryContainerPr
   margin-bottom: ${spacing.s300};
 `;
 
-const VerticalDivider = styled.div<IVerticalDividerProps>`
+const VerticalDivider = styled.div<StyledIVerticalDividerProps>`
   width: 2px;
   height: 24px;
   background-color: ${({ theme }) =>
@@ -45,7 +45,7 @@ const DetailsGrid = styled.div`
   width: 100%;
 `;
 
-const DetailItem = styled.div<IDetailItem>`
+const DetailItem = styled.div<StyledIDetailItem>`
   display: flex;
   flex-direction: column;
   gap: ${spacing.s050};
@@ -55,7 +55,7 @@ const DetailItem = styled.div<IDetailItem>`
   border-radius: ${spacing.s075};
 `;
 
-const StyledScissorsButton = styled.div<IDetailIcon>`
+const StyledScissorsButton = styled.div<StyledIDetailIcon>`
   display: flex;
   align-items: center;
   justify-content: center;
