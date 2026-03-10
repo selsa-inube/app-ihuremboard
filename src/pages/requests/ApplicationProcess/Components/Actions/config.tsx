@@ -42,18 +42,22 @@ export const Actions = (props: ActionsProps): IAction[] => {
   } = props;
 
   const actionItems: ActionItem[] = [
-    {
-      id: "trim",
-      icon: <MdOutlineContentCut />,
-      appearance: "primary",
-      label: labels.requests.actions.trim,
-      onClick: onTrim,
-      isDisabled: disableExecute ?? false,
-    },
+    ...(onTrim
+      ? [
+          {
+            id: "trim",
+            icon: <MdOutlineContentCut />,
+            appearance: "primary" as const,
+            label: labels.requests.actions.trim,
+            onClick: onTrim,
+            isDisabled: disableExecute ?? false,
+          },
+        ]
+      : []),
     {
       id: "discard",
       icon: <MdOutlineCancel />,
-      appearance: "danger",
+      appearance: "danger" as const,
       label: labels.requests.actions.discard,
       onClick: onDiscard,
       isDisabled: disableDiscard ?? false,
@@ -61,7 +65,7 @@ export const Actions = (props: ActionsProps): IAction[] => {
     {
       id: "attach",
       icon: <MdAttachFile />,
-      appearance: "primary",
+      appearance: "primary" as const,
       label: labels.requests.actions.attach,
       onClick: onAttach,
       isDisabled: disableAttach ?? false,
@@ -69,7 +73,7 @@ export const Actions = (props: ActionsProps): IAction[] => {
     {
       id: "seeAttachments",
       icon: <FaRegFileLines />,
-      appearance: "dark",
+      appearance: "dark" as const,
       label: labels.requests.actions.seeAttachments,
       onClick: onSeeAttachments,
       isDisabled: disableSeeAttachments ?? false,

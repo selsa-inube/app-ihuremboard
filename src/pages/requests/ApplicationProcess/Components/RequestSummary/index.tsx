@@ -17,6 +17,7 @@ import {
   MdClose,
 } from "react-icons/md";
 
+import { mockTrimReturnDateOptions } from "@mocks/mockDataTrim/mockDataTrim";
 import { RegisterNoveltyModal } from "@components/modals/RegisterNoveltyModal";
 import { VacationTrimModal } from "@components/modals/VacationTrimModal";
 import { spacing } from "@design/tokens/spacing";
@@ -51,7 +52,6 @@ export function RequestSummary(props: RequestSummaryProps) {
     handleDiscard,
     handleAttach,
     handleSeeAttachments,
-    returnDateOptions,
     startDateEnjoyment,
     endDateEnjoyment,
     isVacationsEnjoyed,
@@ -83,13 +83,18 @@ export function RequestSummary(props: RequestSummaryProps) {
 
         {isMobile ? (
           <Detail
-            onTrim={() => setShowTrimModal(true)}
+            onTrim={
+              isVacationsEnjoyed ? () => setShowTrimModal(true) : undefined
+            }
             onDiscard={handleDiscard}
             onAttach={handleAttach}
             onSeeAttachments={handleSeeAttachments}
             actionDescriptions={{
-              onTrim:
-                labels.requests.applicationProcess.actionsMobile.cannotExecute,
+              ...(isVacationsEnjoyed && {
+                onTrim:
+                  labels.requests.applicationProcess.actionsMobile
+                    .cannotExecute,
+              }),
               discard:
                 labels.requests.applicationProcess.actionsMobile.cannotDiscard,
               attach:
@@ -101,13 +106,15 @@ export function RequestSummary(props: RequestSummaryProps) {
           />
         ) : (
           <Stack direction="row" gap={spacing.s075} alignItems="center">
-            <StyledScissorsButton onClick={() => setShowTrimModal(true)}>
-              <Icon
-                icon={<MdOutlineContentCut />}
-                appearance="primary"
-                size="20px"
-              />
-            </StyledScissorsButton>
+            {isVacationsEnjoyed && (
+              <StyledScissorsButton onClick={() => setShowTrimModal(true)}>
+                <Icon
+                  icon={<MdOutlineContentCut />}
+                  appearance="primary"
+                  size="20px"
+                />
+              </StyledScissorsButton>
+            )}
             <Button
               appearance="danger"
               onClick={handleDiscard}
@@ -273,18 +280,10 @@ export function RequestSummary(props: RequestSummaryProps) {
         )}
       </StyledRequestSummaryContainer>
 
-      {showTrimModal && (
+      {showTrimModal && isVacationsEnjoyed && (
         <VacationTrimModal
           currentReturnDate="05/Mar/2026"
-          returnDateOptions={
-            returnDateOptions.length > 0
-              ? returnDateOptions
-              : [
-                  { id: "1", label: "01/Mar/2026", value: "2026-03-01" },
-                  { id: "2", label: "15/Mar/2026", value: "2026-03-15" },
-                  { id: "3", label: "01/Abr/2026", value: "2026-04-01" },
-                ]
-          }
+          returnDateOptions={mockTrimReturnDateOptions}
           onCloseModal={() => setShowTrimModal(false)}
           onSubmit={(values) => {
             props.handleTrim?.(values);

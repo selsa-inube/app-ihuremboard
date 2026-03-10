@@ -82,7 +82,7 @@ export function Detail(props: DetailProps) {
             disableAttach={disableAttach}
             disableSeeAttachments={disableSeeAttachments}
             actionDescriptions={actionDescriptions}
-            onTrim={() => handleActionClick(onTrim)}
+            onTrim={onTrim ? () => handleActionClick(onTrim) : undefined}
             onExecute={() => handleActionClick(onExecute)}
             onDiscard={() => handleActionClick(onDiscard)}
             onAttach={() => handleActionClick(onAttach)}
