@@ -1,7 +1,4 @@
-import {
-  MdOutlineCheckCircle,
-  MdOutlineReportGmailerrorred,
-} from "react-icons/md";
+import { MdCheckCircle, MdOutlineReportGmailerrorred } from "react-icons/md";
 import { Icon, Blanket, useMediaQuery, Text, Stack } from "@inubekit/inubekit";
 import { createPortal } from "react-dom";
 
@@ -40,7 +37,7 @@ export function RegisterNoveltyModal(props: RegisterNoveltyModalProps) {
 
   const iconConfig = {
     success: {
-      icon: <MdOutlineCheckCircle />,
+      icon: <MdCheckCircle />,
       appearance: "success" as const,
     },
     error: {
@@ -59,7 +56,7 @@ export function RegisterNoveltyModal(props: RegisterNoveltyModalProps) {
           icon={currentIcon.icon}
           size="50px"
         />
-        <Stack direction="column" alignItems="center" gap={spacing.s100}>
+        <Stack direction="column" alignItems="center" gap={spacing.s300}>
           <Text type="title" weight="bold" textAlign="center">
             {title}
           </Text>

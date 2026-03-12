@@ -25,9 +25,9 @@ import { labels } from "@i18n/labels";
 
 import {
   StyledRequestSummaryContainer,
-  DetailsGrid,
-  DetailItem,
-  VerticalDivider,
+  StyledDetailsGrid,
+  StyledDetailItem,
+  StyledVerticalDivider,
   StyledScissorsButton,
 } from "./styles";
 
@@ -105,7 +105,7 @@ export function RequestSummary(props: RequestSummaryProps) {
             }}
           />
         ) : (
-          <Stack direction="row" gap={spacing.s075} alignItems="center">
+          <Stack gap={spacing.s075} alignItems="center">
             {isVacationsEnjoyed && (
               <StyledScissorsButton onClick={() => setShowTrimModal(true)}>
                 <Icon
@@ -123,7 +123,7 @@ export function RequestSummary(props: RequestSummaryProps) {
             >
               {labels.requests.actions.discard}
             </Button>
-            <VerticalDivider />
+            <StyledVerticalDivider />
             <Button variant="outlined" onClick={handleAttach} spacing="compact">
               {labels.requests.actions.attach}
             </Button>
@@ -197,85 +197,85 @@ export function RequestSummary(props: RequestSummaryProps) {
         {showDetails && (
           <>
             <Divider dashed />
-            <DetailsGrid>
-              <DetailItem>
+            <StyledDetailsGrid>
+              <StyledDetailItem>
                 <Text type="label" weight="bold">
                   {labels.requests.summary.daysToPay}
                 </Text>
                 <Text appearance="gray" type="label">
                   {daysToPay ?? labels.requests.summary.notAvailable}
                 </Text>
-              </DetailItem>
+              </StyledDetailItem>
 
-              <DetailItem>
+              <StyledDetailItem>
                 <Text type="label" weight="bold">
                   {labels.requests.summary.contractNumber}
                 </Text>
                 <Text appearance="gray" type="label">
                   {contractNumber ?? labels.requests.summary.notAvailable}
                 </Text>
-              </DetailItem>
+              </StyledDetailItem>
 
-              <DetailItem>
+              <StyledDetailItem>
                 <Text type="label" weight="bold">
                   {labels.requests.summary.businessName}
                 </Text>
                 <Text appearance="gray" type="label">
                   {businessName ?? labels.requests.summary.notAvailable}
                 </Text>
-              </DetailItem>
+              </StyledDetailItem>
 
-              <DetailItem>
+              <StyledDetailItem>
                 <Text type="label" weight="bold">
                   {labels.requests.summary.contractType}
                 </Text>
                 <Text appearance="gray" type="label">
                   {contractType ?? labels.requests.summary.notAvailable}
                 </Text>
-              </DetailItem>
+              </StyledDetailItem>
 
               {disbursementDate && (
-                <DetailItem>
+                <StyledDetailItem>
                   <Text type="label" weight="bold">
                     {labels.requests.summary.disbursementDate}
                   </Text>
                   <Text appearance="gray" type="label">
                     {disbursementDate}
                   </Text>
-                </DetailItem>
+                </StyledDetailItem>
               )}
 
               {isVacationsEnjoyed && startDateEnjoyment && (
-                <DetailItem>
+                <StyledDetailItem>
                   <Text type="label" weight="bold">
                     {labels.requests.summary.startDateEnjoyment}
                   </Text>
                   <Text appearance="gray" type="label">
                     {startDateEnjoyment}
                   </Text>
-                </DetailItem>
+                </StyledDetailItem>
               )}
 
               {isVacationsEnjoyed && endDateEnjoyment && (
-                <DetailItem>
+                <StyledDetailItem>
                   <Text type="label" weight="bold">
                     {labels.requests.summary.endDateEnjoyment}
                   </Text>
                   <Text appearance="gray" type="label">
                     {endDateEnjoyment}
                   </Text>
-                </DetailItem>
+                </StyledDetailItem>
               )}
-            </DetailsGrid>
+            </StyledDetailsGrid>
 
-            <DetailItem>
+            <StyledDetailItem>
               <Text type="label" weight="bold">
                 {labels.requests.summary.employeeObservations}
               </Text>
               <Text appearance="gray" type="label">
                 {observationEmployee ?? labels.requests.summary.notAvailable}
               </Text>
-            </DetailItem>
+            </StyledDetailItem>
           </>
         )}
       </StyledRequestSummaryContainer>

@@ -25,7 +25,7 @@ function ButtonAttribute(props: ButtonAttributeProps) {
         </StyledIcon>
       )}
 
-      <Text type="body" size="small" appearance="dark">
+      <Text size="small" appearance="dark">
         {value}
       </Text>
     </StyledContainer>
