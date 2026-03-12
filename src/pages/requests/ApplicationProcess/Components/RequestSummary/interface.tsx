@@ -11,6 +11,7 @@ import {
   EContractType,
 } from "@ptypes/humanResourcesRequest.types";
 import { formatDate } from "@utils/date";
+import { IVacationTrimFormValues } from "@components/modals/VacationTrimModal/types";
 
 export interface RequestSummaryProps {
   isLoading?: boolean;
@@ -22,10 +23,12 @@ export interface RequestSummaryProps {
   statusOptions?: IOption[];
   humanResourceRequestData?: HumanResourceRequestData;
   requestType?: string;
+  returnDateOptions?: { id: string; label: string; value: string }[];
   handleDiscard?: () => void;
   handleExecute?: () => void;
   handleAttach?: () => void;
   handleSeeAttachments?: () => void;
+  handleTrim?: (values: IVacationTrimFormValues) => void;
 }
 
 export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
@@ -40,16 +43,13 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
   const statusOptions = props.statusOptions ?? state?.statusOptions ?? [];
   const rawData =
     props.humanResourceRequestData ?? state?.humanResourceRequestData ?? "{}";
-
   const requestType = props.requestType ?? state?.requestType ?? "";
+  const returnDateOptions = props.returnDateOptions ?? [];
 
   let parsedData: HumanResourceRequestData = {};
   try {
     parsedData = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
-
-    if (typeof parsedData !== "object" || parsedData === null) {
-      parsedData = {};
-    }
+    if (typeof parsedData !== "object" || parsedData === null) parsedData = {};
   } catch (e) {
     Logger.warn("Error parseando humanResourceRequestData", {
       error: e,
@@ -101,7 +101,6 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
 
   const observationEmployee =
     parsedData.observationEmployee ?? parsedData.addressee ?? "N/A";
-
   const staffDisplayName = fullStaffName ?? "Sin responsable";
 
   const statusLabel =
@@ -148,6 +147,7 @@ export const useRequestSummaryLogic = (props: RequestSummaryProps) => {
     handleExecute,
     handleAttach,
     handleSeeAttachments,
+    returnDateOptions,
     startDateEnjoyment,
     endDateEnjoyment,
     isVacationsEnjoyed,

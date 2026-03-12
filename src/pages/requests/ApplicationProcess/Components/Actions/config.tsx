@@ -1,4 +1,8 @@
-import { MdOutlineCancel, MdAttachFile } from "react-icons/md";
+import {
+  MdOutlineCancel,
+  MdAttachFile,
+  MdOutlineContentCut,
+} from "react-icons/md";
 import { FaRegFileLines } from "react-icons/fa6";
 
 import { labels } from "@i18n/labels";
@@ -10,7 +14,7 @@ interface ActionsProps {
   disableDiscard?: boolean;
   disableAttach?: boolean;
   disableSeeAttachments?: boolean;
-  onExecute?: () => void;
+  onTrim?: () => void;
   onDiscard?: () => void;
   onAttach?: () => void;
   onSeeAttachments?: () => void;
@@ -27,19 +31,33 @@ interface ActionItem {
 
 export const Actions = (props: ActionsProps): IAction[] => {
   const {
+    disableExecute,
     disableDiscard,
     disableAttach,
     disableSeeAttachments,
+    onTrim,
     onDiscard,
     onAttach,
     onSeeAttachments,
   } = props;
 
   const actionItems: ActionItem[] = [
+    ...(onTrim
+      ? [
+          {
+            id: "trim",
+            icon: <MdOutlineContentCut />,
+            appearance: "primary" as const,
+            label: labels.requests.actions.trim,
+            onClick: onTrim,
+            isDisabled: disableExecute ?? false,
+          },
+        ]
+      : []),
     {
       id: "discard",
       icon: <MdOutlineCancel />,
-      appearance: "danger",
+      appearance: "danger" as const,
       label: labels.requests.actions.discard,
       onClick: onDiscard,
       isDisabled: disableDiscard ?? false,
@@ -47,7 +65,7 @@ export const Actions = (props: ActionsProps): IAction[] => {
     {
       id: "attach",
       icon: <MdAttachFile />,
-      appearance: "primary",
+      appearance: "primary" as const,
       label: labels.requests.actions.attach,
       onClick: onAttach,
       isDisabled: disableAttach ?? false,
@@ -55,7 +73,7 @@ export const Actions = (props: ActionsProps): IAction[] => {
     {
       id: "seeAttachments",
       icon: <FaRegFileLines />,
-      appearance: "dark",
+      appearance: "dark" as const,
       label: labels.requests.actions.seeAttachments,
       onClick: onSeeAttachments,
       isDisabled: disableSeeAttachments ?? false,

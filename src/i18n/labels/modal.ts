@@ -118,4 +118,19 @@ export const modal = {
       required: "Este campo es obligatorio",
     },
   },
+
+  vacationTrim: {
+    title: "Recorte de disfrute de vacaciones",
+    close: "Cerrar",
+    originalRequest: "Solicitud original",
+    currentReturnDate: "Fecha de reintegro actual",
+    newReturnDate: "Nueva fecha de reintegro",
+    placeholder: "Selecciona de la lista",
+    newReturnDatePlaceholder: "Seleccione una fecha",
+    justification: "Justificación",
+    justificationPlaceholder: "¿Por qué se da este recorte?",
+    cancel: "Cancelar",
+    submit: "Recortar",
+    maxCharacters: "Máximo 400 caracteres",
+  },
 };
